@@ -1,0 +1,20 @@
+html {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+    Arial, sans-serif;
+  margin: 0;
+  /* margin-top: -18px; */
+  padding: 0;
+}
+
+.title-bar {
+  -webkit-app-region: drag;
+  height: 30px;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+}
