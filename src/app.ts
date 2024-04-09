@@ -1,17 +1,8 @@
-// import { Context } from '@satorijs/satori'
+import * as Cordis from 'cordis';
 
-// // eslint-disable-next-line @typescript-eslint/no-namespace
-// export namespace App {
-//   export interface Config extends Context.Config {
-    
-//   }
-// }
+export class App extends Cordis.Context {
+  constructor() {
+    super();
 
-// export class App extends Context<App.Config> {
-//   constructor() {
-//     super()
-//   }
-// }
-
-
-
+  }
+}
