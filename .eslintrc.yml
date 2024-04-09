@@ -12,3 +12,12 @@ extends:
   - 'plugin:import/typescript'
 
 parser: '@typescript-eslint/parser'
+
+rules:
+  import/no-unresolved:
+    - error
+    - commonjs: true
+      caseSensitive: true
+      ignore:
+        - electron
+        - \.s?css$
