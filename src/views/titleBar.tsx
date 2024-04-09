@@ -1,4 +1,4 @@
-export function titleBar() {
+export default function titleBar() {
   return (
     <div className="title-bar">
       <span>Satori App for Desktop</span>
