@@ -26,4 +26,4 @@
  * ```
  */
 
-import './views/app'
+import './views/App'

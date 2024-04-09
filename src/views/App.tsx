@@ -1,5 +1,5 @@
 import { createRoot } from 'react-dom/client'
-import TitleBar from './titleBar'
+import { TitleBar } from './TitleBar'
 import '../index.css'
 
 const root = createRoot(document.body);
