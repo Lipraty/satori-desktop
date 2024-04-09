@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client'
 import { TitleBar } from './TitleBar'
-import '../index.css'
+import '../global.css'
 
 const root = createRoot(document.body);
 root.render(
