@@ -1,0 +1,5 @@
+{
+  "editor.tabSize": 2,
+  "editor.indentSize": "tabSize",
+  "typescript.tsdk": "node_modules/typescript/lib"
+}
