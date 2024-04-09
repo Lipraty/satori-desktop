@@ -90,3 +90,11 @@ typings/
 
 # Electron-Forge
 out/
+
+# Yarn v2
+.yarn/*
+!.yarn/patches
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
