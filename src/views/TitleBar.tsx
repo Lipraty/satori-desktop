@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { css } from '../utils';
 
 export interface TitleBarProps {
   title?: string;
@@ -9,7 +10,7 @@ export const TitleBar: React.FC<TitleBarProps> = (props) => {
   return (
     <div className=''>
       <style>
-        {`
+        {css`
           @scope {
             :scope {
               -webkit-app-region: drag;
