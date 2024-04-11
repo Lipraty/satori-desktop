@@ -41,6 +41,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@emotion/react": "^11.11.4",
     "@fluentui/react-components": "^9.47.5",
     "@satorijs/satori": "^3.6.5",
     "electron-squirrel-startup": "^1.0.0",

@@ -1,0 +1,46 @@
+.title-bar {
+  -webkit-app-region: drag;
+  height: 30px;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+
+  &-controls {
+    &* button {
+      border: none;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    &__windows {
+      margin-right: -12px;
+      * {
+        -webkit-app-region: no-drag;
+        height: 30px;
+        width: 46px;
+      }
+      .close:hover {
+        background-color: #ff5f56;
+      }
+    }
+    &__mac {
+      * {
+        -webkit-app-region: no-drag;
+        height: 30px;
+        width: 30px;
+      }
+      .close {
+        background-color: #ff5f56;
+      }
+      .minimize {
+        background-color: #ffbd2e;
+      }
+      .zoom {
+        background-color: #27c93f;
+      }
+    }
+  }
+}

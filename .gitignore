@@ -98,3 +98,6 @@ out/
 !.yarn/plugins
 !.yarn/sdks
 !.yarn/versions
+
+# Yarn Integrity file
+install-state.gz
