@@ -2,7 +2,7 @@ export * from './context'
 
 import { Context } from './context'
 import { WindowService } from './windowManager'
-import path from 'path'
+import * as path from 'node:path'
 
 const app = new Context()
 
