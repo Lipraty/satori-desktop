@@ -3,10 +3,10 @@ header {
   flex-direction: row;
   flex-wrap: nowrap;
   justify-content: flex-start;
+  -webkit-app-region: drag;
 }
 
 .title-bar {
-  -webkit-app-region: drag;
   height: 44px;
   display: flex;
   align-items: center;
