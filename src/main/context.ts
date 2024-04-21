@@ -2,7 +2,6 @@
 import * as Cordis from 'cordis'
 import * as Electron from 'electron'
 
-export { Service } from 'cordis'
 export interface Events<C extends Context = Context> extends Cordis.Events<C> {}
 
 export interface Context {
@@ -18,3 +17,5 @@ export class Context extends Cordis.Context {
     this.app = Electron.app
   }
 }
+
+export abstract class Service<T = any, C extends Context = Context> extends Cordis.Service<T, C> {}
