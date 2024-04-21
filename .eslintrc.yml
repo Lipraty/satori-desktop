@@ -21,3 +21,4 @@ rules:
       ignore:
         - electron
         - \.s?css$
+  "@typescript-eslint/no-unsafe-declaration-merging": "off"

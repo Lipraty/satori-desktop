@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
 import * as Cordis from 'cordis'
 import * as Electron from 'electron'
 
