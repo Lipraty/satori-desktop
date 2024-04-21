@@ -12,6 +12,20 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "jsx": "react-jsx",
-    "types": ["vite/client"]
-  }
+    "types": [
+      "vite/client"
+    ],
+    "lib": [
+      "DOM",
+      "ESNext"
+    ],
+  },
+  "include": [
+    "src/renderer/**/*",
+  ],
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ]
 }
