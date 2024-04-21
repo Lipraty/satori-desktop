@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-unresolved
 export * from './context'
 
 import { Context } from './context'
