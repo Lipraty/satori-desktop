@@ -3,7 +3,7 @@ import * as Cordis from 'cordis'
 import * as Electron from 'electron'
 
 export { Service } from 'cordis'
-export interface Events<C extends Context> extends Cordis.Events<C> {}
+export interface Events<C extends Context = Context> extends Cordis.Events<C> {}
 
 export interface Context {
   [Context.events]: Events<this>
