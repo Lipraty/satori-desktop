@@ -18,4 +18,4 @@ export class Context extends Cordis.Context {
   }
 }
 
-export abstract class Service<T = any, C extends Context = Context> extends Cordis.Service<T, C> {}
+export abstract class Service<T = unknown, C extends Context = Context> extends Cordis.Service<T, C> {}
