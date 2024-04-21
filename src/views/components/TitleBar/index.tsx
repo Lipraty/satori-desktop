@@ -18,12 +18,21 @@ export const TitleBar: React.FC<TitleBarProps> = (props) => {
     os = OS.WINDOWS
   } = props;
   return (
-    <div className='title-bar'>
-      {os === OS.MAC ? <div style={{ flex: 1 }}></div> : undefined}
-      <span>{title}</span>
-      <div style={{ flex: 1 }}></div>
-      {os === OS.WINDOWS ? <div style={{ width: '138px'}}></div> : undefined}
-    </div>
+    <header>
+      <MenuBar />
+      <div className='title-bar'>
+        {os === OS.MAC ? <div className='title-bar__macbox'></div> : undefined}
+        <span className='title-bar__title'>{title}</span>
+        <div style={{ flex: 1 }}></div>
+        {os === OS.WINDOWS ? <div className='title-bar__windowsbox'></div> : undefined}
+      </div>
+      {/* <div className='navigation'></div> */}
+    </header>
   );
 }
 
+const MenuBar: React.FC = () => {
+  return (
+    <div className='menu-bar'></div>
+  )
+}

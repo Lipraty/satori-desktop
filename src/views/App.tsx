@@ -1,14 +1,13 @@
-import React from 'react';
-import { createRoot } from 'react-dom/client'
 import { TitleBar } from './components/TitleBar'
 import './App.scss'
 
-const root = createRoot(document.body);
-root.render(
-  <>
+export const App = () => {
+  return(
+    <>
     <TitleBar />
     <main>
       <h2>Hello from React!</h2>
     </main>
   </>
-);
+  )
+}

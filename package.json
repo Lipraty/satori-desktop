@@ -3,7 +3,7 @@
   "productName": "satori-desktop",
   "version": "0.0.1",
   "description": "Satori App for Desktop",
-  "main": ".vite/build/main.js",
+  "main": ".vite/build/index.js",
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
@@ -44,6 +44,7 @@
     "@emotion/react": "^11.11.4",
     "@fluentui/react-components": "^9.47.5",
     "@satorijs/satori": "^3.6.5",
+    "cordis": "^3.13.4",
     "electron-squirrel-startup": "^1.0.0",
     "foxact": "^0.2.33",
     "react": "^18.2.0",
