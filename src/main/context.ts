@@ -1,5 +1,6 @@
-import * as Cordis from 'cordis'
 import * as Electron from 'electron'
+
+import * as Cordis from 'cordis'
 
 export interface Events<C extends Context = Context> extends Cordis.Events<C> {}
 

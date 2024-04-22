@@ -2,7 +2,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as Cordis from 'cordis'
 import * as React from 'react'
-import { createRoot, Root } from 'react-dom/client'
+import { createRoot } from 'react-dom/client'
+
 import * as MainApp from './client/App'
 
 export type Events<C extends Context> = Cordis.Events<C>
@@ -56,7 +57,7 @@ export class Context extends Cordis.Context {
     return this.react.createElement(this.App.Provider, null, this.react.createElement(component))
   }
 
-  page(options: PageOptions) {
+  page(_options: PageOptions) {
     
   }
 }

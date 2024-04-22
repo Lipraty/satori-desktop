@@ -21,4 +21,11 @@ rules:
       ignore:
         - electron
         - \.s?css$
+  import/order:
+    - error
+    - groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index']
+      newlines-between: 'always'
   "@typescript-eslint/no-unsafe-declaration-merging": "off"
+  "@typescript-eslint/no-unused-vars":
+    - error
+    - argsIgnorePattern: '^_'

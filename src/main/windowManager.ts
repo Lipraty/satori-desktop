@@ -1,6 +1,7 @@
 import { BrowserWindow, BrowserWindowConstructorOptions } from "electron";
-import { Context, Service } from "./context";
 import * as path from 'node:path'
+
+import { Context, Service } from "./context";
 
 declare module '.' {
   interface Context {
