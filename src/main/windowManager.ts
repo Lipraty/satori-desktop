@@ -9,7 +9,8 @@ declare module '.' {
   }
 
   interface Events {
-    'window-ready': (window: BrowserWindow) => void
+    'window/ready': (window: BrowserWindow) => void
+    'window/all-closed': () => void
   }
 }
 
@@ -37,10 +38,11 @@ export class WindowService extends Service {
       if (process.env.NODE_ENV === 'development')
         this.mainWindow.webContents.openDevTools()
 
-      this.ctx.emit('window-ready', this.mainWindow)
+      this.ctx.emit('window/ready', this.mainWindow)
     })
 
     ctx.app.on('window-all-closed', () => {
+      this.ctx.emit('window/all-closed')
       if (process.platform !== 'darwin') {
         this.ctx.scope.dispose()
         ctx.app.quit()
