@@ -1,6 +1,7 @@
 html {
   margin: 0;
   padding: 0;
+  background: transparent;
 }
 
 body {
@@ -9,7 +10,7 @@ body {
   margin: 0;
   /* margin-top: -18px; */
   padding: 0;
-  background-color: #f0f0f0;
+  background-color: rgba($color: #000000, $alpha: 0.06);
 }
 
 main {

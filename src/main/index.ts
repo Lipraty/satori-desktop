@@ -13,6 +13,7 @@ app.plugin(WindowService, {
   titleBarStyle: 'hidden',
   titleBarOverlay: true,
   backgroundMaterial: 'mica',
+  backgroundColor: 'transparent',
   useContextSize: true,
   maximizable: false,
   webPreferences: {
