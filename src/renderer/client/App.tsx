@@ -7,13 +7,11 @@ export const App = () => {
   return (
     <>
       <TitleBar title='Satori App for Desktop' />
-      <div className="container">
-        <NavBar />
-        <main>
-          <h1>Hello, world!</h1>
-          <p>Welcome to satori app!</p>
-        </main>
-      </div>
+      <NavBar />
+      <main>
+        <h1>Hello, world!</h1>
+        <p>Welcome to satori app!</p>
+      </main>
     </>
   )
 }
