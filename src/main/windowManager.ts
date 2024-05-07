@@ -1,4 +1,4 @@
-import { BrowserWindow, BrowserWindowConstructorOptions } from "electron";
+import { BrowserWindow, BrowserWindowConstructorOptions, nativeTheme } from "electron";
 import * as path from 'node:path'
 
 import { Context, Service } from "./context";
@@ -13,6 +13,8 @@ declare module '.' {
     'window/all-closed': () => void
   }
 }
+
+export const isDarkTheme = () => nativeTheme.shouldUseDarkColors
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace WindowService {
@@ -53,6 +55,14 @@ export class WindowService extends Service {
       if (BrowserWindow.getAllWindows().length === 0) {
         this.mainWindow = new BrowserWindow(config)
       }
+    })
+
+    nativeTheme.on('updated', () => {
+      this.mainWindow.setTitleBarOverlay({
+        symbolColor: isDarkTheme() ? '#ffffff' : '#000000',
+        color: '#00000000',
+        height: 44,
+      })
     })
   }
 

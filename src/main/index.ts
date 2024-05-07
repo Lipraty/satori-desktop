@@ -3,7 +3,7 @@ export * from './context'
 import * as path from 'node:path'
 
 import { Context } from './context'
-import { WindowService } from './windowManager'
+import { WindowService, isDarkTheme } from './windowManager'
 
 const app = new Context()
 
@@ -12,6 +12,7 @@ app.plugin<WindowService.Config>(WindowService, {
   height: 653,
   titleBarStyle: 'hidden',
   titleBarOverlay: {
+    symbolColor: isDarkTheme() ? '#ffffff' : '#000000',
     color: '#00000000',
     height: 44,
   },
