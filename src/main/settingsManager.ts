@@ -34,7 +34,7 @@ export class SettingsManager extends Service {
   constructor(ctx: Context, config: SettingsManager.Config) {
     super(ctx, 'settings')
 
-    this.settingsFilePath = resolve(app.getPath('appData'), app.getName(), 'settings.json')
+    this.settingsFilePath = resolve(app.getPath('userData'), 'settings.json')
 
     this.settings = new Proxy<Settings>({} as Settings, {
       get: (_, key) => {
