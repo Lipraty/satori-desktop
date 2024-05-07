@@ -16,7 +16,6 @@ declare module '.' {
 
 export const isDarkTheme = () => nativeTheme.shouldUseDarkColors
 
-// eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace WindowService {
   export interface Config extends BrowserWindowConstructorOptions {}
 }

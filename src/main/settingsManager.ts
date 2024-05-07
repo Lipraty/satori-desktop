@@ -2,6 +2,7 @@ import { existsSync, readFileSync } from 'node:fs'
 import { writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { app } from 'electron'
+
 import { Context, Service } from './context'
 
 declare module '.' {
@@ -10,6 +11,7 @@ declare module '.' {
   }
 
   interface Events {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     'settings/changed': (key: keyof Settings, value: any, oldValue?: any) => void
   }
 }
@@ -31,7 +33,7 @@ export class SettingsManager extends Service {
 
   saveTimer?: NodeJS.Timeout
 
-  constructor(ctx: Context, config: SettingsManager.Config) {
+  constructor(ctx: Context, public config: SettingsManager.Config) {
     super(ctx, 'settings')
 
     this.settingsFilePath = resolve(app.getPath('userData'), 'settings.json')

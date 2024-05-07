@@ -25,7 +25,8 @@ rules:
     - error
     - groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index']
       newlines-between: 'always'
-  "@typescript-eslint/no-unsafe-declaration-merging": "off"
-  "@typescript-eslint/no-unused-vars":
+  '@typescript-eslint/no-namespace': 'off'
+  '@typescript-eslint/no-unsafe-declaration-merging': 'off'
+  '@typescript-eslint/no-unused-vars':
     - error
     - argsIgnorePattern: '^_'
