@@ -1,4 +1,5 @@
 // import { Context } from "..";
+import { NavBar } from "./components/NavBar"
 import { TitleBar } from "./components/TitleBar"
 
 export const App = () => {
@@ -6,10 +7,13 @@ export const App = () => {
   return (
     <>
       <TitleBar title='Satori App for Desktop' />
-      <main>
-        <h1>Hello, world!</h1>
-        <p>Welcome to satori app!</p>
-      </main>
+      <div className="container">
+        <NavBar />
+        <main>
+          <h1>Hello, world!</h1>
+          <p>Welcome to satori app!</p>
+        </main>
+      </div>
     </>
   )
 }
