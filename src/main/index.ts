@@ -7,14 +7,16 @@ import { WindowService } from './windowManager'
 
 const app = new Context()
 
-app.plugin(WindowService, {
+app.plugin<WindowService.Config>(WindowService, {
   width: 1076,
   height: 653,
   titleBarStyle: 'hidden',
-  titleBarOverlay: true,
+  titleBarOverlay: {
+    color: '#00000000',
+    height: 44,
+  },
   backgroundMaterial: 'mica',
-  backgroundColor: 'transparent',
-  useContextSize: true,
+  backgroundColor: '#00000000',
   maximizable: false,
   webPreferences: {
     preload: path.join(__dirname, 'preload.js'),
