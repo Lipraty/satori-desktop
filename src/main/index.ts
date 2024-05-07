@@ -4,6 +4,7 @@ import * as path from 'node:path'
 
 import { Context } from './context'
 import { WindowService, isDarkTheme } from './windowManager'
+import { SettingsManager } from './settingsManager'
 
 const app = new Context()
 
@@ -23,5 +24,7 @@ app.plugin<WindowService.Config>(WindowService, {
     preload: path.join(__dirname, 'preload.js'),
   },
 })
+
+app.plugin<SettingsManager.Config>(SettingsManager, {})
 
 app.start()
