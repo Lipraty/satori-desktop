@@ -2,6 +2,7 @@ import { existsSync, readFileSync } from 'node:fs'
 import { writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { app } from 'electron'
+
 import { Context, Service } from './context'
 
 declare module '.' {
