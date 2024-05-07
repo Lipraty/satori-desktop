@@ -55,4 +55,8 @@ export class WindowService extends Service {
       }
     })
   }
+
+  setWindowMaterial(material: "auto" | "none" | "mica" | "acrylic" | "tabbed") {
+    this.mainWindow.setBackgroundMaterial(material)
+  }
 }
