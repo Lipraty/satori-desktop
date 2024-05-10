@@ -76,6 +76,10 @@ export class WindowService extends Service {
         this.mainWindow = new BrowserWindow(config)
       }
     })
+
+    ctx.on('dispose', () => {
+      this.mainWindow.close()
+    })
   }
 
   setWindowMaterial(material: 'auto' | 'none' | 'mica' | 'acrylic' | 'tabbed') {
