@@ -5,9 +5,15 @@ import * as path from 'node:path'
 import { Context } from './context'
 import { WindowService, isDarkTheme } from './windowManager'
 import { SettingsManager } from './settingsManager'
+import { IPCManager } from './ipcManager'
+import { SystemManager } from './systemManager'
 
 const app = new Context()
 
+// TODO: loader
+app.plugin<SettingsManager.Config>(SettingsManager, {})
+app.plugin<IPCManager.Config>(IPCManager, {})
+app.plugin<SystemManager.Config>(SystemManager, {})
 app.plugin<WindowService.Config>(WindowService, {
   width: 1076,
   height: 653,
@@ -24,7 +30,5 @@ app.plugin<WindowService.Config>(WindowService, {
     preload: path.join(__dirname, 'preload.js'),
   },
 })
-
-app.plugin<SettingsManager.Config>(SettingsManager, {})
 
 app.start()
