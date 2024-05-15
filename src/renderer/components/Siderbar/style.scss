@@ -17,13 +17,24 @@
     width: 64px;
     border-radius: 4px;
 
-    &-active {
+    &:hover {
       @include dark {
-        background-color: #454545;
+        background-color: rgba($color: white, $alpha: 0.05);
       }
 
       @include light {
-        background-color: white;
+        background-color: rgba($color: black, $alpha: 0.05);
+      }
+      
+    }
+
+    &-active {
+      @include dark {
+        background-color: #454545 !important;
+      }
+
+      @include light {
+        background-color: white !important;
       }
     }
 

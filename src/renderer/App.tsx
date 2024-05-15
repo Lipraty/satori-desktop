@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { FluentProvider, webDarkTheme, webLightTheme, type Theme } from "@fluentui/react-components"
-import { HomeFilled, ChatFilled, SettingsFilled } from "@fluentui/react-icons"
+import { PersonRegular, ChatFilled, SettingsRegular } from "@fluentui/react-icons"
 
 import { useThemeListener } from "./hooks/useThemeListener"
 import { TitleBar } from "./components/Titlebar"
@@ -20,8 +20,9 @@ export const App = () => {
 
   const useSiderbar = [
     { label: 'Messages', icon: <ChatFilled />, active: true },
+    { label: 'Contact', icon: <PersonRegular />},
     { spacer: true },
-    { label: 'Settings', icon: <SettingsFilled /> },
+    { label: 'Settings', icon: <SettingsRegular /> },
   ]
 
   console.log(theme)
