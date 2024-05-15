@@ -38,14 +38,6 @@ body {
 }
 
 main {
-  @include light {
-    background-color: white;
-    border: 1px solid rgba($color: #242424, $alpha: 0.1);
-  }
-  @include dark {
-    background-color: #242424;
-    border: 1px solid rgba($color: white, $alpha: 0.1);
-  }
   flex: 1;
   width: 100%;
   border-radius: 6px;
