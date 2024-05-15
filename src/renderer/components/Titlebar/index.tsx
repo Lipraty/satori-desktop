@@ -12,7 +12,7 @@ export interface TitleBarProps {
   os?: OS;
 }
 
-export const TitleBar: React.FC<TitleBarProps> = (props) => {
+export const TitleBar = (props: TitleBarProps) => {
   const {
     title = 'Satori App for Desktop',
     os = OS.WINDOWS
@@ -35,7 +35,7 @@ export const TitleBar: React.FC<TitleBarProps> = (props) => {
   );
 }
 
-const MenuBar: React.FC = () => {
+const MenuBar = () => {
   return (
     <div className='menu-bar'></div>
   )
