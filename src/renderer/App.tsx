@@ -42,7 +42,7 @@ export const App = () => {
           )}
         </Sidebar>
         <main>
-          <ViewBox>
+          <ViewBox fixed width="260px">
             Hello World
           </ViewBox>
           <ViewBox>
