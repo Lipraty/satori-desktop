@@ -7,9 +7,7 @@ interface ViewBoxProps {
   width?: string | number
 }
 
-export const ViewBox = (props: PropsWithChildren<ViewBoxProps>) => {
-  let { col } = props
-  const { fixed, width } = props
+export const ViewBox = ({ col, fixed, width, children }: PropsWithChildren<ViewBoxProps>) => {
   let colStyle = {}
 
   if (!fixed) {
@@ -31,7 +29,7 @@ export const ViewBox = (props: PropsWithChildren<ViewBoxProps>) => {
 
   return (
     <div className="main-view" style={colStyle}>
-      <div className="main-view__context">{props.children}</div>
+      <div className="main-view__context">{children}</div>
     </div>
   )
 }
