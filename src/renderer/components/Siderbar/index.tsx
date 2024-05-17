@@ -1,12 +1,12 @@
 import './style.scss'
 import { tokens } from '@fluentui/react-components'
-import { PropsWithChildren } from 'react'
+import { MouseEventHandler, PropsWithChildren, ReactNode } from 'react'
 
 import { Icon } from '../Icon'
 
-interface SidebarProps { }
-
-export const Sidebar = ({ children }: PropsWithChildren<SidebarProps>) => {
+export const Sidebar = ({ children }: {
+  children: ReactNode
+}) => {
   return (
     <div className="sidebar">
       {children}
@@ -15,28 +15,28 @@ export const Sidebar = ({ children }: PropsWithChildren<SidebarProps>) => {
 }
 
 interface SidebarItemProps {
-  icon?: string
+  icon?: ReactNode
   label?: string
   active?: boolean
-  spacer?: boolean
+  onClick: MouseEventHandler<HTMLDivElement>
 }
 
 Sidebar.Item = ({
-  icon, label, active, spacer
+  icon, label, active, onClick
 }: SidebarItemProps) => {
-  if (spacer)
+
     return (
-      <div className="sidebar-item" style={{
-        flex: 1,
-        backgroundColor: 'transparent'
-      }}></div>
-    )
-  else
-    return (
-      <div className={`sidebar-item ${active ? 'sidebar-item-active' : ''}`} style={active ? {} : {}}>
+      <div onClick={onClick} className={`sidebar-item ${active ? 'sidebar-item-active' : ''}`} style={active ? {} : {}}>
         {active ? <div className="sidebar-item__indicator" /> : <></>}
-        {icon ? <Icon name={icon} filled={active}/> : <></>}
+        {icon}
         {!active ? <span className="sidebar-item__label">{label}</span> : <></>}
       </div >
     )
+}
+
+Sidebar.Divider = ()=>{
+  return  <div className="sidebar-item" style={{
+    flex: 1,
+    backgroundColor: 'transparent'
+  }} />
 }
