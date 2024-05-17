@@ -42,7 +42,7 @@ export class WindowService extends Service {
     }
 
     nativeTheme.on('updated', () => {
-      this.mainWindow.setTitleBarOverlay({
+      this.mainWindow.setTitleBarOverlay && this.mainWindow.setTitleBarOverlay({
         symbolColor: isDarkTheme() ? '#ffffff' : '#000000',
         color: '#00000000',
         height: 44,
