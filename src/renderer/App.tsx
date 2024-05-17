@@ -3,7 +3,7 @@ import { FluentProvider, webDarkTheme, webLightTheme, type Theme } from "@fluent
 
 import { useThemeListener } from "./hooks/useThemeListener"
 import { TitleBar } from "./components/Titlebar"
-import { Sidebar, SidebarItem } from "./components/Siderbar"
+import { Sidebar } from "./components/Siderbar"
 import { ViewBox } from "./components/ViewBox"
 
 export const getTheme = () => (useThemeListener() ? webDarkTheme : webLightTheme)
@@ -36,7 +36,7 @@ export const App = () => {
       }}>
         <Sidebar>
           {useSiderbar.map((item, index) =>
-            <SidebarItem key={index} active={item.active} icon={item.icon} label={item.label} spacer={item.spacer} />
+            <Sidebar.Item key={index} active={item.active} icon={item.icon} label={item.label} spacer={item.spacer} />
           )}
         </Sidebar>
         <main>

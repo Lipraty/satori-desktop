@@ -21,7 +21,7 @@ interface SidebarItemProps {
   spacer?: boolean
 }
 
-export const SidebarItem = (props: SidebarItemProps) => {
+Sidebar.Item = (props: SidebarItemProps) => {
   console.log(props)
   if (props.spacer)
     return (
