@@ -1,0 +1,93 @@
+@use "../mixins.scss" as *;
+
+.list {
+  flex: 1;
+  margin: 0;
+  padding: 0;
+
+  @include dark {
+    color: white;
+  }
+
+  @include light {
+    color: black;
+  }
+
+  &--one-line .list-item__subtitle {
+    -webkit-line-clamp: 1;
+  }
+
+  &--two-line .list-item__subtitle {
+    -webkit-line-clamp: 2;
+  }
+
+  &--three-line .list-item__subtitle {
+    -webkit-line-clamp: 3;
+  }
+
+  &-item {
+    display: flex;
+    padding: 1rem 1.2rem;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.622rem;
+    transition: background-color 250ms cubic-bezier(1, 0, 1, 1);
+
+
+    &:hover {
+      @include dark {
+        background-color: rgba($color: white, $alpha: 0.05);
+      }
+
+      @include light {
+        background-color: rgba($color: black, $alpha: 0.05);
+      }
+    }
+
+    &--selected {
+      @include dark {
+        background-color: rgba($color: white, $alpha: 0.042);
+      }
+
+      @include light {
+        background-color: rgba($color: black, $alpha: 0.042);
+      }
+
+    }
+
+    &__title {
+      hyphens: auto;
+      font-size: 1rem;
+      font-weight: 400;
+      word-wrap: break-word;
+      word-break: normal;
+      text-overflow: ellipsis;
+      line-height: 1.5rem;
+      padding: 0;
+      margin: 0;
+    }
+
+    &__subtitle {
+      -webkit-box-orient: vertical;
+      display: -webkit-box;
+      overflow: hidden;
+      font-size: 0.875rem;
+      font-weight: 400;
+      letter-spacing: 0.0178em;
+      opacity: 0.8;
+      line-height: 1rem;
+      padding: 0;
+      margin: 0;
+    }
+
+    &__icon {
+      width: 24px;
+      height: 24px;
+    }
+
+    &__content {
+      flex: 1;
+      max-width: 100%;
+    }
+  }
+}
