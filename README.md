@@ -19,10 +19,6 @@ The universal and cross-platform chat application based on the Satori protocol.
 - Todo list: TODO
 - Documentation: TODO
 
-#### Dependencies
-
-- [@sediko/keanbyou](https://github.com/kaenbyoujs/kaenbyou/tree/master/packages/app-server)
-
 ### UI Design
 
 - [JSDesign](https://js.design/f/YcrbVO?p=jl2EY3zpvG&mode=design)
