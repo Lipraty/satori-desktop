@@ -2,7 +2,7 @@ import './style.scss'
 import { tokens } from '@fluentui/react-components'
 import { PropsWithChildren } from 'react'
 
-import { Icon } from '../Icon'
+import { Icon, IconNames } from '../Icon'
 
 interface SidebarProps { }
 
@@ -36,7 +36,7 @@ export const SidebarItem = (props: SidebarItemProps) => {
         {props.active ? <div className="sidebar-item__indicator" style={{
           backgroundColor: tokens.colorNeutralForeground2BrandSelected
         }}></div> : <></>}
-        {props.icon ? <Icon name={props.icon} filled={props.active}/> : <></>}
+        {props.icon ? <Icon name={props.icon as IconNames} filled={props.active}/> : <></>}
         {!props.active ? <span className="sidebar-item__label">{props.label}</span> : <></>}
       </div >
     )
