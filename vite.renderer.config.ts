@@ -1,5 +1,6 @@
 import type { ConfigEnv, UserConfig } from 'vite';
 import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react'
 
 import { pluginExposeRenderer } from './vite.base.config';
 
@@ -16,7 +17,7 @@ export default defineConfig((env) => {
     build: {
       outDir: `.vite/renderer/${name}`,
     },
-    plugins: [pluginExposeRenderer(name)],
+    plugins: [pluginExposeRenderer(name), react()],
     resolve: {
       preserveSymlinks: true,
     },

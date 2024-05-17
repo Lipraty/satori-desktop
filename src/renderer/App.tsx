@@ -9,7 +9,7 @@ import { SatoriDesktopColors } from "./components/color-provider"
 import { useCurrentPage } from "./hooks/globals"
 import { Icon, IconNames } from "./components/Icon"
 
-export const getTheme = () => (useThemeListener() ? webDarkTheme : webLightTheme)
+const getTheme = () => (useThemeListener() ? webDarkTheme : webLightTheme)
 
 export const App = () => {
   const [theme, setTheme] = useState<Theme>(getTheme())
@@ -49,10 +49,10 @@ export const App = () => {
           </Sidebar>
           <main>
             <ViewBox fixed width="260px">
-              Hello World
+              Hello World222
             </ViewBox>
             <ViewBox>
-              Hello World2
+              Hello World22
             </ViewBox>
           </main>
         </SatoriDesktopColors>
