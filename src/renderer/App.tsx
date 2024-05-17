@@ -5,6 +5,7 @@ import { useThemeListener } from "./hooks/useThemeListener"
 import { TitleBar } from "./components/Titlebar"
 import { Sidebar } from "./components/Siderbar"
 import { ViewBox } from "./components/ViewBox"
+import { SatoriDesktopColors } from "./components/color-provider"
 
 export const getTheme = () => (useThemeListener() ? webDarkTheme : webLightTheme)
 
@@ -34,19 +35,21 @@ export const App = () => {
         width: '100%',
         backgroundColor: 'transparent',
       }}>
-        <Sidebar>
-          {useSiderbar.map((item, index) =>
-            <Sidebar.Item key={index} active={item.active} icon={item.icon} label={item.label} spacer={item.spacer} />
-          )}
-        </Sidebar>
-        <main>
-          <ViewBox fixed width="260px">
-            Hello World
-          </ViewBox>
-          <ViewBox>
-            Hello World2
-          </ViewBox>
-        </main>
+        <SatoriDesktopColors>
+          <Sidebar>
+            {useSiderbar.map((item, index) =>
+              <Sidebar.Item key={index} active={item.active} icon={item.icon} label={item.label} spacer={item.spacer} />
+            )}
+          </Sidebar>
+          <main>
+            <ViewBox fixed width="260px">
+              Hello World
+            </ViewBox>
+            <ViewBox>
+              Hello World2
+            </ViewBox>
+          </main>
+        </SatoriDesktopColors>
       </FluentProvider>
     </>
   )

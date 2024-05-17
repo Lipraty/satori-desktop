@@ -6,10 +6,10 @@ import { Icon } from '../Icon'
 
 interface SidebarProps { }
 
-export const Sidebar = (props: PropsWithChildren<SidebarProps>) => {
+export const Sidebar = ({ children }: PropsWithChildren<SidebarProps>) => {
   return (
     <div className="sidebar">
-      {props.children}
+      {children}
     </div>
   )
 }
@@ -21,9 +21,10 @@ interface SidebarItemProps {
   spacer?: boolean
 }
 
-Sidebar.Item = (props: SidebarItemProps) => {
-  console.log(props)
-  if (props.spacer)
+Sidebar.Item = ({
+  icon, label, active, spacer
+}: SidebarItemProps) => {
+  if (spacer)
     return (
       <div className="sidebar-item" style={{
         flex: 1,
@@ -32,12 +33,10 @@ Sidebar.Item = (props: SidebarItemProps) => {
     )
   else
     return (
-      <div className={`sidebar-item ${props.active ? 'sidebar-item-active' : ''}`} style={props.active ? {} : {}}>
-        {props.active ? <div className="sidebar-item__indicator" style={{
-          backgroundColor: tokens.colorNeutralForeground2BrandSelected
-        }}></div> : <></>}
-        {props.icon ? <Icon name={props.icon} filled={props.active}/> : <></>}
-        {!props.active ? <span className="sidebar-item__label">{props.label}</span> : <></>}
+      <div className={`sidebar-item ${active ? 'sidebar-item-active' : ''}`} style={active ? {} : {}}>
+        {active ? <div className="sidebar-item__indicator" /> : <></>}
+        {icon ? <Icon name={icon} filled={active}/> : <></>}
+        {!active ? <span className="sidebar-item__label">{label}</span> : <></>}
       </div >
     )
 }
