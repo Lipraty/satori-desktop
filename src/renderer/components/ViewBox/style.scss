@@ -7,8 +7,8 @@
 
   @include dark {
     color: white;
-    border: 1px solid rgba($color: white, $alpha: 0.08);
-    background-color: rgba($color: black, $alpha: 0.3);
+    border: 1px solid rgba($color: white, $alpha: 0.05);
+    background-color: rgba($color: white, $alpha: 0.032);
   }
 
   @include light {
