@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react"
 import { FluentProvider, webDarkTheme, webLightTheme, type Theme } from "@fluentui/react-components"
-import { PersonRegular, ChatFilled, SettingsRegular } from "@fluentui/react-icons"
 
 import { useThemeListener } from "./hooks/useThemeListener"
 import { TitleBar } from "./components/Titlebar"
 import { Sidebar, SidebarItem } from "./components/Siderbar"
 import { ViewBox } from "./components/ViewBox"
-
 
 export const getTheme = () => (useThemeListener() ? webDarkTheme : webLightTheme)
 
@@ -19,10 +17,10 @@ export const App = () => {
   }, [theme])
 
   const useSiderbar = [
-    { label: 'Messages', icon: <ChatFilled />, active: true },
-    { label: 'Contact', icon: <PersonRegular />},
+    { label: 'Messages', icon: 'Chat', active: true },
+    { label: 'Contact', icon: 'Person'},
     { spacer: true },
-    { label: 'Settings', icon: <SettingsRegular /> },
+    { label: 'Settings', icon: 'Settings' },
   ]
 
   console.log(theme)

@@ -1,7 +1,8 @@
 import './style.scss'
 import { tokens } from '@fluentui/react-components'
-import { CircleRegular } from '@fluentui/react-icons'
-import { cloneElement, PropsWithChildren } from 'react'
+import { PropsWithChildren } from 'react'
+
+import { Icon } from '../Icon'
 
 interface SidebarProps { }
 
@@ -14,7 +15,7 @@ export const Sidebar = (props: PropsWithChildren<SidebarProps>) => {
 }
 
 interface SidebarItemProps {
-  icon?: React.ReactElement
+  icon?: string
   label?: string
   active?: boolean
   spacer?: boolean
@@ -35,13 +36,7 @@ export const SidebarItem = (props: SidebarItemProps) => {
         {props.active ? <div className="sidebar-item__indicator" style={{
           backgroundColor: tokens.colorNeutralForeground2BrandSelected
         }}></div> : <></>}
-
-        {props.icon ? cloneElement(props.icon, {
-          className: "sidebar-item__icon",
-          style: {
-            color: props.active ? tokens.colorNeutralForeground2BrandSelected : ''
-          }
-        }) : <CircleRegular />}
+        {props.icon ? <Icon name={props.icon} filled={props.active}/> : <></>}
         {!props.active ? <span className="sidebar-item__label">{props.label}</span> : <></>}
       </div >
     )
