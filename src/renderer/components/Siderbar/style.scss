@@ -17,6 +17,10 @@
     width: 64px;
     border-radius: 4px;
 
+    * {
+      transition: all 0.2s ease-in-out;
+    }
+
     &:hover {
       @include dark {
         background-color: rgba($color: white, $alpha: 0.05);
@@ -35,6 +39,14 @@
 
       @include light {
         background-color: white !important;
+      }
+
+      svg {
+        color: var(--colorNeutralForeground2BrandSelected);
+      }
+
+      .sidebar-item__label {
+        transform: translateY(-4px);
       }
     }
 
@@ -72,5 +84,6 @@
         color: #242424;
       }
     }
+    
   }
 }
