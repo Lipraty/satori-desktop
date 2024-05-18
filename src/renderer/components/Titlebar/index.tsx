@@ -12,11 +12,10 @@ export interface TitleBarProps {
   os?: OS;
 }
 
-export const TitleBar = (props: TitleBarProps) => {
-  const {
-    title = 'Satori App for Desktop',
-    os = OS.WINDOWS
-  } = props;
+export const TitleBar = ({
+  title = 'Satori App for Desktop',
+  os = OS.WINDOWS
+}: TitleBarProps) => {
   return (
     <header>
       <MenuBar />
