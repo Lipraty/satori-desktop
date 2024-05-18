@@ -2,7 +2,7 @@ import './style.scss'
 import { tokens } from '@fluentui/react-components'
 import { MouseEventHandler, PropsWithChildren, ReactNode } from 'react'
 
-import { Icon } from '../Icon'
+import { Icon, IconNames } from '../Icon'
 
 export const Sidebar = ({ children }: {
   children: ReactNode
@@ -26,10 +26,12 @@ Sidebar.Item = ({
 }: SidebarItemProps) => {
 
     return (
-      <div onClick={onClick} className={`sidebar-item ${active ? 'sidebar-item-active' : ''}`} style={active ? {} : {}}>
-        {active ? <div className="sidebar-item__indicator" /> : <></>}
-        {icon}
-        {!active ? <span className="sidebar-item__label">{label}</span> : <></>}
+      <div onClick={onClick} className={`sidebar-item ${props.active ? 'sidebar-item-active' : ''}`} style={props.active ? {} : {}}>
+        {props.active && <div className="sidebar-item__indicator" style={{
+          backgroundColor: tokens.colorNeutralForeground2BrandSelected
+        }}></div>}
+        {props.icon && <Icon name={props.icon as IconNames} filled={props.active}/>}
+        {!props.active && <span className="sidebar-item__label">{props.label}</span>}
       </div >
     )
 }
