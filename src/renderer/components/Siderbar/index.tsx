@@ -15,7 +15,7 @@ export const Sidebar = ({ children }: {
 }
 
 interface SidebarItemProps {
-  icon?: ReactNode
+  icon?: string
   label?: string
   active?: boolean
   onClick: MouseEventHandler<HTMLDivElement>
@@ -26,12 +26,12 @@ Sidebar.Item = ({
 }: SidebarItemProps) => {
 
     return (
-      <div onClick={onClick} className={`sidebar-item ${props.active ? 'sidebar-item-active' : ''}`} style={props.active ? {} : {}}>
-        {props.active && <div className="sidebar-item__indicator" style={{
+      <div onClick={onClick} className={`sidebar-item ${active ? 'sidebar-item-active' : ''}`} style={active ? {} : {}}>
+        {active && <div className="sidebar-item__indicator" style={{
           backgroundColor: tokens.colorNeutralForeground2BrandSelected
         }}></div>}
-        {props.icon && <Icon name={props.icon as IconNames} filled={props.active}/>}
-        {!props.active && <span className="sidebar-item__label">{props.label}</span>}
+        {icon && <Icon name={icon as IconNames} filled={active} color={active && tokens.colorNeutralForeground2BrandSelected}/>}
+        {!active && <span className="sidebar-item__label">{label}</span>}
       </div >
     )
 }

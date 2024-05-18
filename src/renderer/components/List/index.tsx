@@ -2,6 +2,7 @@ import { Avatar } from '@fluentui/react-components'
 
 import { Icon, IconNames, } from '../Icon'
 import './style.scss'
+import { MouseEventHandler } from 'react'
 
 export interface ListProps {
   line?: 'one' | 'two' | 'three'
@@ -9,9 +10,7 @@ export interface ListProps {
   style?: React.CSSProperties
 }
 
-export const List = (props: ListProps) => {
-  const { line = 'one', children, style } = props
-
+export const List = ({ line = 'one', children, style }: ListProps) => {
   return (
     <ul className={['list', `list--${line}-line`].join(' ')} style={style}>
       {children}
@@ -24,7 +23,7 @@ export interface ListSubheaderProps {
   children?: React.ReactElement
 }
 
-export const ListSubheader = (props: ListSubheaderProps) => { }
+List.Subheader = ({ }: ListSubheaderProps) => { }
 
 export interface ListItemProps {
   title?: string
@@ -34,11 +33,10 @@ export interface ListItemProps {
   icon?: IconNames
   iconAppend?: IconNames
   children?: React.ReactElement
+  onClick?: MouseEventHandler<HTMLLIElement>
 }
 
-export const ListItem = (props: ListItemProps) => {
-  const { title, subtitle, selected = false, avatar, icon, iconAppend, children } = props
-
+List.Item = ({ title, subtitle, selected = false, avatar, icon, iconAppend, children }: ListItemProps) => {
   const childrenComp: React.ReactElement[] = []
   const classList = ['list-item']
 
@@ -53,7 +51,7 @@ export const ListItem = (props: ListItemProps) => {
   return (
     <li className={classList.join(' ')}>
       {(icon && !avatar) && <Icon name={icon} sized="24" />}
-      {(avatar && !icon) && <Avatar name={title} image={typeof avatar === 'string' && {src: avatar}} size={40}/>}
+      {(avatar && !icon) && <Avatar name={title} image={typeof avatar === 'string' && { src: avatar }} size={40} />}
       <div className="list-item__content">
         {childrenComp}
       </div>
