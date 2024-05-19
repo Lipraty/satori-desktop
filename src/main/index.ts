@@ -7,6 +7,7 @@ import { WindowService, isDarkTheme } from './windowManager'
 import { SettingsManager } from './settingsManager'
 import { IPCManager } from './ipcManager'
 import { SystemManager } from './systemManager'
+import { DevToolsManager } from './devToolsManager'
 
 const app = new Context()
 
@@ -29,5 +30,6 @@ app.plugin<WindowService.Config>(WindowService, {
     preload: path.join(__dirname, 'preload.js'),
   },
 })
+app.plugin(DevToolsManager, {})
 
 app.start()
