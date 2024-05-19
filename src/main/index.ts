@@ -25,7 +25,6 @@ app.plugin<WindowService.Config>(WindowService, {
   },
   backgroundMaterial: 'mica',
   backgroundColor: '#00000000',
-  maximizable: false,
   webPreferences: {
     preload: path.join(__dirname, 'preload.js'),
   },
