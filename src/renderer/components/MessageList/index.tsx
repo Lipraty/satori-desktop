@@ -1,8 +1,9 @@
+import { useCallback } from "react"
+
 import { ViewBox } from "@/renderer/components/ViewBox"
 import { List } from "@/renderer/components/List"
 import { IconNames } from "@/renderer/components/Icon"
 
-import { useCallback } from "react"
 
 export const MessagingList = () => {
   const ListItem = useCallback(

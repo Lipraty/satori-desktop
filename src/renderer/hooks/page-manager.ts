@@ -1,6 +1,7 @@
 import { createContextState } from 'foxact/create-context-state'
-import { SidebarItemProps } from '@/renderer/components/Sidebar'
 import React, { useCallback } from 'react'
+
+import { SidebarItemProps } from '@/renderer/components/Sidebar'
 
 export interface PageContext extends SidebarItemProps {
   component?: React.ReactElement

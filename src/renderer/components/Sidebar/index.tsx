@@ -1,6 +1,6 @@
 import './style.scss'
 import { tokens } from '@fluentui/react-components'
-import { MouseEventHandler, PropsWithChildren, ReactNode } from 'react'
+import { MouseEventHandler, ReactNode } from 'react'
 
 import { Icon, IconNames } from '@/renderer/components/Icon'
 

@@ -9,7 +9,8 @@
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
-    "lint": "eslint --ext .ts,.tsx ."
+    "lint": "eslint --ext .ts,.tsx .",
+    "format": "prettier --check . "
   },
   "devDependencies": {
     "@electron-forge/cli": "^7.4.0",
@@ -29,6 +30,7 @@
     "electron": "30.0.6",
     "electron-extension-installer": "^1.2.0",
     "eslint": "^8.57.0 <9.0.0",
+    "eslint-import-resolver-typescript": "^3.6.1",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-react": "^7.34.1",
     "eslint-plugin-react-refresh": "^0.4.7",

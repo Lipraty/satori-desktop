@@ -1,8 +1,9 @@
 import { Avatar } from '@fluentui/react-components'
+import { MouseEventHandler } from 'react'
 
 import { Icon, IconNames, } from '../Icon'
+
 import './style.scss'
-import { MouseEventHandler } from 'react'
 
 export interface ListProps {
   line?: 'one' | 'two' | 'three'
@@ -23,7 +24,7 @@ export interface ListSubheaderProps {
   children?: React.ReactElement
 }
 
-List.Subheader = ({ }: ListSubheaderProps) => { }
+List.Subheader = (_o: ListSubheaderProps) => { }
 
 export interface ListItemProps {
   title?: string
