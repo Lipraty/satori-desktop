@@ -14,11 +14,11 @@ export const Sidebar = ({ children }: {
   )
 }
 
-interface SidebarItemProps {
+export interface SidebarItemProps {
   icon?: string
   label?: string
   active?: boolean
-  onClick: MouseEventHandler<HTMLDivElement>
+  onClick?: MouseEventHandler<HTMLDivElement>
 }
 
 Sidebar.Item = ({
