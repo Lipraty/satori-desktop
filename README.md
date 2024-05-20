@@ -1,6 +1,12 @@
-# Satori App for Desktop (SAD) 
+<div align="center">
+
+[![Satori App for Desktop](./sad-logo.png)](https://github.com/Lipraty/satori-desktop)
+
+# Satori App Desktop
 
 The universal and cross-platform chat application based on the Satori protocol.
+
+</div>
 
 <details open>
 
@@ -38,8 +44,6 @@ Download the latest release from the [releases page]().
 ## Contributing
 
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
-
-## Acknowledgements
 
 [![contributors](https://contrib.rocks/image?repo=Lipraty/satori-desktop)](https://github.com/Lipraty/satori-desktop/graphs/contributors)
 
