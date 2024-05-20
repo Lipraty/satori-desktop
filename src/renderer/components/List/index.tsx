@@ -1,7 +1,7 @@
 import { Avatar } from '@fluentui/react-components'
 import { MouseEventHandler } from 'react'
 
-import { Icon, IconNames, } from '../Icon'
+import { Icon, IconNames } from '@renderer/components/Icon'
 
 import './style.scss'
 

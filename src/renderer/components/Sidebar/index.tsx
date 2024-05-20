@@ -2,7 +2,7 @@ import './style.scss'
 import { tokens } from '@fluentui/react-components'
 import { MouseEventHandler, ReactNode } from 'react'
 
-import { Icon, IconNames } from '@/renderer/components/Icon'
+import { Icon, IconNames } from '@renderer/components/Icon'
 
 export const Sidebar = ({ children }: {
   children: ReactNode

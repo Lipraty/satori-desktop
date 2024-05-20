@@ -1,3 +1,5 @@
+import { fileURLToPath } from 'node:url';
+
 import type { ConfigEnv, UserConfig } from 'vite';
 import { defineConfig, mergeConfig } from 'vite';
 
@@ -22,6 +24,9 @@ export default defineConfig((env) => {
     plugins: [pluginHotRestart('restart')],
     define,
     resolve: {
+      alias: {
+        '@main': fileURLToPath(new URL('./src/main', import.meta.url)),
+      },
       // Load the Node.js entry.
       mainFields: ['module', 'jsnext:main', 'jsnext'],
     },

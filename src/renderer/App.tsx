@@ -1,11 +1,11 @@
 import { useCallback, useState } from "react"
 import { FluentProvider, webDarkTheme, webLightTheme, type Theme } from "@fluentui/react-components"
 
-import { useThemeListener } from "@/renderer/hooks/use-theme-listener"
-import { useCurrentPage } from "@/renderer/hooks/globals"
-import { TitleBar } from "@/renderer/components/Titlebar"
-import { Sidebar } from "@/renderer/components/Sidebar"
-import { IconNames } from "@/renderer/components/Icon"
+import { useThemeListener } from "@renderer/hooks/use-theme-listener"
+import { useCurrentPage } from "@renderer/hooks/globals"
+import { TitleBar } from "@renderer/components/Titlebar"
+import { Sidebar } from "@renderer/components/Sidebar"
+import { IconNames } from "@renderer/components/Icon"
 
 const getTheme = () => (useThemeListener() ? webDarkTheme : webLightTheme)
 

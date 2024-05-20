@@ -16,6 +16,7 @@ export const Icon = ({ name, color, sized = 'unsized', filled = false }: IconPro
   const IconCompName = `${name}${sized === 'unsized' ? '' : sized}${filled ? 'Filled' : 'Regular'}`
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
+  // eslint-disable-next-line import/namespace
   const IconByFIcon = (FIcons)[IconCompName as IconNames]
 
   // if (!IconByFIcon) return null

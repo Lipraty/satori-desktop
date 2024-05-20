@@ -1,11 +1,7 @@
 import * as React from 'react'
 import './style.scss'
 
-export enum OS {
-  WINDOWS = 'windows',
-  MAC = 'mac',
-  LINUX = 'linux',
-}
+import { OS } from '@shared/types'
 
 export interface TitleBarProps {
   title?: string;

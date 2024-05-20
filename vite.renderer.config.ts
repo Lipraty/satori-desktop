@@ -23,7 +23,7 @@ export default defineConfig((env) => {
     resolve: {
       preserveSymlinks: true,
       alias: {
-        '@/renderer': fileURLToPath(new URL("./src/renderer", import.meta.url)),
+        '@renderer': fileURLToPath(new URL("./src/renderer", import.meta.url)),
       },
     },
     clearScreen: false,

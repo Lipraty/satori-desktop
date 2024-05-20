@@ -1,8 +1,8 @@
 import { useCallback } from "react"
 
-import { ViewBox } from "@/renderer/components/ViewBox"
-import { List } from "@/renderer/components/List"
-import { IconNames } from "@/renderer/components/Icon"
+import { ViewBox } from "@renderer/components/ViewBox"
+import { List } from "@renderer/components/List"
+import { IconNames } from "@renderer/components/Icon"
 
 
 export const MessagingList = () => {
