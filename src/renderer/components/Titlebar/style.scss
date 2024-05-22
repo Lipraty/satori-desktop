@@ -10,6 +10,13 @@ header {
   height: 44px;
   display: flex;
   align-items: center;
+  padding: 0 12px;
+
+  &__icon {
+    height: 24px;
+    width: 24px;
+    margin-right: 10px;
+  }
 
   &__title {
     font-size: 14px;
