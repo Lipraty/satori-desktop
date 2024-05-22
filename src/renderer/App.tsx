@@ -2,32 +2,34 @@ import { useCallback, useState } from "react"
 import { FluentProvider, webDarkTheme, webLightTheme, type Theme } from "@fluentui/react-components"
 
 import { useThemeListener } from "@renderer/hooks/use-theme-listener"
-import { useCurrentPage } from "@renderer/hooks/globals"
+import { useCurrentView } from "@renderer/hooks/view-manager"
 import { TitleBar } from "@renderer/components/Titlebar"
 import { Sidebar } from "@renderer/components/Sidebar"
 import { IconNames } from "@renderer/components/Icon"
+
+import { views } from "./views"
 
 const getTheme = () => (useThemeListener() ? webDarkTheme : webLightTheme)
 
 export const App = () => {
   const [theme, setTheme] = useState<Theme>(getTheme())
   const [loading, setLoading] = useState<boolean>(true)
-  const { setCurrentPage, currentPage } = useCurrentPage()
+  const { setCurrentView, currentView } = useCurrentView()
 
   const SidebarItem = useCallback(
     ({ icon, label, name }: { icon: IconNames, label: string, name: string }) =>
       <Sidebar.Item icon={icon}
         label={label}
-        active={currentPage === name}
+        active={currentView === name}
         onClick={()=>{
-          setCurrentPage(name)
+          setCurrentView(name)
         }}
         />
-    , [currentPage])
+    , [currentView])
 
   return (
     <>
-      <TitleBar title='Satori App for Desktop' />
+      <TitleBar title='Satori App for Desktop' icon="accesses/icons/icon.png" />
       <FluentProvider theme={theme} style={{
         display: 'flex',
         height: 'calc(100vh - 44px)',
@@ -35,13 +37,16 @@ export const App = () => {
         backgroundColor: 'transparent',
       }}>
         <Sidebar>
-            <SidebarItem key={'si1'} icon='Chat' label="Messaging" name="Chat"/>
-            <SidebarItem key={'si2'} icon='Person' label="Contact" name="Person"/>
-            <Sidebar.Divider />
-            <SidebarItem key={'si3'} icon='Settings' label="Settings" name="Settings"/>
+          {views.filter(view => !view.append).map((view) => (
+            <SidebarItem key={`sidebar-${view.name}`} icon={view.icon as IconNames} label={view.name} name={view.name} />
+          ))}
+          <Sidebar.Divider />
+          {views.filter(view => view.append).map((view) => (
+            <SidebarItem key={`sidebar-${view.name}`} icon={view.icon as IconNames} label={view.name} name={view.name} />
+          ))}
         </Sidebar>
         <main>
-          
+          {views.find((view) => view.name === currentView)?.component}
         </main>
       </FluentProvider>
     </>
