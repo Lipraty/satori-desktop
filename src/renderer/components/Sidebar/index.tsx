@@ -1,6 +1,6 @@
 import './style.scss'
 import { tokens } from '@fluentui/react-components'
-import { MouseEventHandler, ReactNode } from 'react'
+import { MouseEventHandler, ReactElement, ReactNode } from 'react'
 
 import { Icon, IconNames } from '@renderer/components/Icon'
 
@@ -18,26 +18,29 @@ export interface SidebarItemProps {
   icon?: string
   label?: string
   active?: boolean
+  children?: ReactElement
   onClick?: MouseEventHandler<HTMLDivElement>
 }
 
 Sidebar.Item = ({
-  icon, label, active, onClick
+  icon, label, active, children, onClick
 }: SidebarItemProps) => {
 
-    return (
-      <div onClick={onClick} className={`sidebar-item ${active ? 'sidebar-item-active' : ''}`} style={active ? {} : {}}>
-        {active && <div className="sidebar-item__indicator" style={{
-          backgroundColor: tokens.colorNeutralForeground2BrandSelected
-        }}></div>}
-        {icon && <Icon name={icon as IconNames} filled={active} color={active && tokens.colorNeutralForeground2BrandSelected}/>}
+  return (
+    <div onClick={onClick} className={`sidebar-item ${active ? 'sidebar-item-active' : ''}`} style={active ? {} : {}}>
+      {active && <div className="sidebar-item__indicator" style={{
+        backgroundColor: tokens.colorNeutralForeground2BrandSelected
+      }}></div>}
+      {children ?? <>
+        {icon && <Icon name={icon as IconNames} filled={active} color={active && tokens.colorNeutralForeground2BrandSelected} />}
         {!active && <span className="sidebar-item__label">{label}</span>}
-      </div >
-    )
+      </>}
+    </div >
+  )
 }
 
-Sidebar.Divider = ()=>{
-  return  <div className="sidebar-item" style={{
+Sidebar.Divider = () => {
+  return <div className="sidebar-item" style={{
     flex: 1,
     backgroundColor: 'transparent'
   }} />

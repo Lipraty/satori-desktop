@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react"
-import { FluentProvider, webDarkTheme, webLightTheme, type Theme } from "@fluentui/react-components"
+import { Avatar, FluentProvider, webDarkTheme, webLightTheme, type Theme } from "@fluentui/react-components"
 
 import { useThemeListener } from "@renderer/hooks/use-theme-listener"
 import { useCurrentView } from "@renderer/hooks/view-manager"
@@ -21,15 +21,15 @@ export const App = () => {
       <Sidebar.Item icon={icon}
         label={label}
         active={currentView === name}
-        onClick={()=>{
+        onClick={() => {
           setCurrentView(name)
         }}
-        />
+      />
     , [currentView])
 
   return (
     <>
-      <TitleBar title='Satori App for Desktop' icon="accesses/icons/icon.png" />
+      <TitleBar title='Satori App for Desktop' icon="assets/icons/icon.png" />
       <FluentProvider theme={theme} style={{
         display: 'flex',
         height: 'calc(100vh - 44px)',
@@ -37,6 +37,13 @@ export const App = () => {
         backgroundColor: 'transparent',
       }}>
         <Sidebar>
+          <Sidebar.Item>
+            <Avatar name="Satori" badge={{
+              status: 'available',
+            }} image={{
+              src: 'https://koishi.chat/logo.png'
+            }}/>
+          </Sidebar.Item>
           {views.filter(view => !view.append).map((view) => (
             <SidebarItem key={`sidebar-${view.name}`} icon={view.icon as IconNames} label={view.name} name={view.name} />
           ))}
