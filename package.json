@@ -48,7 +48,10 @@
   "dependencies": {
     "@emotion/react": "^11.11.4",
     "@fluentui/react-components": "^9.47.5",
+    "@satorijs/adapter-satori": "^1.2.1",
+    "@satorijs/core": "^4.0.0",
     "@satorijs/satori": "^3.7.0",
+    "@shikitor/core": "^0.0.5",
     "@vitejs/plugin-react": "^4.2.1",
     "cordis": "^3.13.4",
     "electron-squirrel-startup": "^1.0.1",
