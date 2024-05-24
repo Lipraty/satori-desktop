@@ -4,7 +4,7 @@ import { List } from '@renderer/components/List'
 import { ViewBox } from '@renderer/components/ViewBox'
 
 export const ContactView = () => <>
-  <ViewBox fixed width="220px">
+  <ViewBox fixed width="220px" rightRadius>
     <List line="one" style={{
       margin: '0 -12px',
     }}>
