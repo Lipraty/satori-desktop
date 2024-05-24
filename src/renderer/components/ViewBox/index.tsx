@@ -7,9 +7,10 @@ interface ViewBoxProps {
   width?: string | number
   rightRadius?: boolean
   style?: React.CSSProperties
+  transparent?: boolean
 }
 
-export const ViewBox = ({ col, fixed, width, children, style = {}, rightRadius = false }: PropsWithChildren<ViewBoxProps>) => {
+export const ViewBox = ({ col, fixed, width, children, style = {}, rightRadius = false, transparent = false }: PropsWithChildren<ViewBoxProps>) => {
   let colStyle = {}
 
   if (!fixed) {
@@ -31,7 +32,8 @@ export const ViewBox = ({ col, fixed, width, children, style = {}, rightRadius =
 
   return (
     <div className="main-view" style={Object.assign(colStyle, {
-      borderTopRightRadius: rightRadius ? 'var(--borderRadiusMedium)' : '0',
+      borderTopRightRadius: rightRadius ? 'var(--borderRadiusLarge)' : '0',
+      backgroundColor: transparent ? 'transparent' : '',
     })}>
       <div className="main-view__context" style={style}>{children}</div>
     </div>
