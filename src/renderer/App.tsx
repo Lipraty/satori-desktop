@@ -53,7 +53,7 @@ export const App = () => {
           </Sidebar.Item>
         </Sidebar>
         <main>
-          {views.find((view) => view.name === currentView)?.component}
+          {views.find((view) => view.name === currentView && view.component)?.component}
         </main>
       </FluentProvider>
     </>
