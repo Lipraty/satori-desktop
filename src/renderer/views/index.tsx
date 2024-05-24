@@ -1,8 +1,9 @@
 import { ReactElement } from "react"
 
-import { MessagingView } from "./Meassaging"
+import { MessagingView } from "./Messaging"
 import { ContactView } from "./Contact"
 import { SettingsView } from "./Settings"
+import { NetworksView } from "./Networks"
 
 export interface View {
   icon?: string
@@ -24,6 +25,13 @@ export const views: View[] = [
     name: 'Person',
     sidebar: true,
     component: <ContactView />
+  },
+  {
+    name: 'Networks',
+    icon: 'PlugConnectedSettings',
+    sidebar: true,
+    append: true,
+    component: <NetworksView />
   },
   {
     icon: 'Settings',
