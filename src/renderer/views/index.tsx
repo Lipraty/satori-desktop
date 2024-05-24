@@ -30,7 +30,6 @@ export const views: View[] = [
     name: 'Networks',
     icon: 'PlugConnectedSettings',
     sidebar: true,
-    append: true,
     component: <NetworksView />
   },
   {
