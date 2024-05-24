@@ -2,7 +2,7 @@
 
 .main-view {
   flex: 1;
-  border-radius: 6px;
+  border-top-left-radius: var(--borderRadiusMedium);
   transition: background-color 250ms cubic-bezier(1, 0, 1, 1);
 
   @include dark {

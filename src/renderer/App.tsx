@@ -37,13 +37,6 @@ export const App = () => {
         backgroundColor: 'transparent',
       }}>
         <Sidebar>
-          <Sidebar.Item>
-            <Avatar name="Satori" badge={{
-              status: 'available',
-            }} image={{
-              src: 'https://koishi.chat/logo.png'
-            }}/>
-          </Sidebar.Item>
           {views.filter(view => !view.append).map((view) => (
             <SidebarItem key={`sidebar-${view.name}`} icon={view.icon as IconNames} label={view.name} name={view.name} />
           ))}
@@ -51,6 +44,13 @@ export const App = () => {
           {views.filter(view => view.append).map((view) => (
             <SidebarItem key={`sidebar-${view.name}`} icon={view.icon as IconNames} label={view.name} name={view.name} />
           ))}
+          <Sidebar.Item>
+            <Avatar name="Satori" badge={{
+              status: 'available',
+            }} image={{
+              src: 'https://koishi.chat/logo.png'
+            }}/>
+          </Sidebar.Item>
         </Sidebar>
         <main>
           {views.find((view) => view.name === currentView)?.component}
