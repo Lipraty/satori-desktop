@@ -9,18 +9,38 @@ export interface IconProps {
   color?: string
   sized?: '16' | '20' | '24' | '28' | '32' | '48' | 'unsized'
   filled?: boolean
+  bundle?: boolean
 }
 
-export const Icon = ({ name, color, sized = 'unsized', filled = false }: IconProps) => {
+export const Icon = ({ name, color, sized = 'unsized', filled = false, bundle = false }: IconProps) => {
 
-  const IconCompName = `${name}${sized === 'unsized' ? '' : sized}${filled ? 'Filled' : 'Regular'}`
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  // eslint-disable-next-line import/namespace
-  const IconByFIcon = (FIcons)[IconCompName as IconNames]
+  const FilledIconName = `${name}${sized === 'unsized' ? '' : sized}Filled`
+  const RegularIconName = `${name}${sized === 'unsized' ? '' : sized}Regular`
 
-  // if (!IconByFIcon) return null
-  return <IconByFIcon style={{
-    color,
-  }}/>
+
+  if (bundle) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    // eslint-disable-next-line import/namespace
+    const FilledIcon: FIcons.FluentIcon = (FIcons)[FilledIconName as IconNames]
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    // eslint-disable-next-line import/namespace
+    const RegularIcon: FIcons.FluentIcon = (FIcons)[RegularIconName as IconNames]
+
+    const Bundle = FIcons.bundleIcon(FilledIcon, RegularIcon)
+
+    return <Bundle style={{
+      color,
+    }} />
+  } else {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    // eslint-disable-next-line import/namespace
+    const IconByFIcon: FIcons.FluentIcon = (FIcons)[filled ? FilledIconName : RegularIconName as IconNames]
+
+    return <IconByFIcon style={{
+      color,
+    }} />
+  }
 }
