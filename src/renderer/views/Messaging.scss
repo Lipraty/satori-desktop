@@ -1,0 +1,56 @@
+.messaging {
+  &-titlebar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    padding-top: 12px;
+    padding-bottom: 0.1rem;
+    height: 40px;
+    background-color: var(--colorNeutralBackgroundAlpha2);
+    border-bottom: 1px solid var(--colorNeutralBackground4);
+
+    &__title {
+      display: inline;
+      font-size: 1.2rem;
+      font-weight: 550;
+      margin: 0;
+    }
+  }
+
+  &-context {
+    display: flex;
+    gap: 1rem;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    padding: 0 12px;
+    box-sizing: border-box;
+    overflow: auto;
+    overflow-anchor: none;
+    background: var(--colorNeutralBackgroundAlpha);
+  }
+
+  &-sender {
+    display: flex;
+    align-items: center;
+    padding: 1rem 12px;
+    background-color: var(--colorNeutralBackgroundAlpha2);
+    border-top: 1px solid var(--colorNeutralBackground4);
+  }
+}
+
+.message {
+  display: flex;
+  padding: 0.35rem 0;
+  width: 90%;
+  align-items: flex-end;
+
+  .fui-Card {
+    flex: 1 1 auto;
+  }
+
+  .fui-Avatar {
+    margin-bottom: 1rem;
+  }
+}
