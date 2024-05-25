@@ -3,7 +3,7 @@
 .list {
   flex: 1;
   margin: 0;
-  padding: 0;
+  padding: 0.5rem 0;
 
   @include dark {
     color: white;
@@ -27,7 +27,7 @@
 
   &-item {
     display: flex;
-    padding: 1rem 1.2rem;
+    padding: 0.5rem 1.2rem;
     flex-direction: row;
     align-items: center;
     gap: 0.622rem;
@@ -57,7 +57,7 @@
 
     &__title {
       hyphens: auto;
-      font-size: 1rem;
+      font-size: var(--fontSizeBase300);
       font-weight: 400;
       word-wrap: break-word;
       word-break: normal;
@@ -71,7 +71,7 @@
       -webkit-box-orient: vertical;
       display: -webkit-box;
       overflow: hidden;
-      font-size: 0.875rem;
+      font-size: var(--fontSizeBase200);
       font-weight: 400;
       letter-spacing: 0.0178em;
       opacity: 0.8;
@@ -92,8 +92,8 @@
   }
 
   &-subheader {
-    padding: 0.5rem 1.2rem;
-    font-size: 0.875rem;
+    padding: 0 1.2rem;
+    font-size: var(--fontSizeBase300);
     font-weight: 500;
     opacity: 0.8;
     line-height: 1rem;
@@ -106,7 +106,7 @@
       margin: 0;
       padding: 0;
       font-weight: lighter;
-      font-size: 1rem;
+      font-size: 0.875rem;
       color: #ccc;
     }
   }

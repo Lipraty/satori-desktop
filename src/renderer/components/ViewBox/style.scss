@@ -4,17 +4,17 @@
   flex: 1;
   border-top-left-radius: var(--borderRadiusLarge);
   transition: background-color 250ms cubic-bezier(1, 0, 1, 1);
-  background-color: var(--colorNeutralBackgroundAlpha2);
-  overflow: hidden;
 
   @include dark {
     color: white;
     border: 1px solid rgba($color: white, $alpha: 0.05);
+    background-color: rgba($color: white, $alpha: 0.032);
   }
 
   @include light {
     color: black;
     border: 1px solid rgba($color: black, $alpha: 0.08);
+    background-color: var(--colorNeutralBackgroundAlpha2);
   }
 
   &__context {
