@@ -4,6 +4,7 @@
   flex: 1;
   border-top-left-radius: var(--borderRadiusLarge);
   transition: background-color 250ms cubic-bezier(1, 0, 1, 1);
+  overflow: hidden;
 
   @include dark {
     color: white;
@@ -22,6 +23,7 @@
     width: 100%;
     display: flex;
     padding: 12px;
+    overflow: hidden;
     box-sizing: border-box;
   }
 }
