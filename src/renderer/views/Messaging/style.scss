@@ -84,7 +84,7 @@
 
 .message {
   display: flex;
-  padding: 0.35rem 0;
+  padding: 1rem 0;
   width: 90%;
   align-items: flex-end;
 
@@ -96,7 +96,8 @@
   }
 
   &-avatar {
-    margin-bottom: 1rem;
+    position: sticky;
+    bottom: 1rem;
   }
 
   &-content {

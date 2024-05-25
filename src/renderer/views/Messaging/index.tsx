@@ -74,7 +74,10 @@ export const MessagingView = () => {
             {(index: number) => {
               return (
                 <div className='message'>
-                  <Avatar className='message-avatar' name="Shigma" size={40} />
+                  <Avatar className='message-avatar' name="Shigma" size={40} style={{
+                    position: 'sticky',
+                    bottom: '1rem',
+                  }}/>
                   <div className='message-content'>
                     <Body1 className='message-content__username'>
                       Shigma
