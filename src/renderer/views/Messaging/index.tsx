@@ -4,7 +4,7 @@ import { VirtualizerScrollViewDynamic } from '@fluentui/react-components/unstabl
 import { } from '@shikitor/core'
 // import {} from '@shikitor/react'
 
-import './Messaging.scss'
+import './style.scss'
 
 import { Icon, IconNames } from '@renderer/components/Icon'
 import { List } from '@renderer/components/List'
@@ -70,7 +70,7 @@ export const MessagingView = () => {
         </div>
         <div className='messaging-context'>
           <span className='message-timestamp'>Today</span>
-          <VirtualizerScrollViewDynamic numItems={1} itemSize={20}>
+          <VirtualizerScrollViewDynamic numItems={118} itemSize={20}>
             {(index: number) => {
               return (
                 <div className='message'>
@@ -82,6 +82,7 @@ export const MessagingView = () => {
                     <Card appearance='filled'>
                       <CardPreview style={{
                         padding: '12px',
+                        userSelect: 'text'
                       }}>
                         {'content'}
                       </CardPreview>
@@ -89,6 +90,7 @@ export const MessagingView = () => {
                     <Card appearance='filled'>
                       <CardPreview style={{
                         padding: '12px',
+                        userSelect: 'text'
                       }}>
                         {content}
                       </CardPreview>
