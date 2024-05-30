@@ -1,6 +1,5 @@
-import { useCallback } from 'react'
-import { Avatar, Body1, Button, Caption1, Card, CardFooter, CardPreview, Input, TabList, Tab } from '@fluentui/react-components'
-import { VirtualizerScrollViewDynamic } from '@fluentui/react-components/unstable'
+import { useCallback, useState } from 'react'
+import { Avatar, Button, Caption1, Input, TabList, Tab, TabValue } from '@fluentui/react-components'
 import { } from '@shikitor/core'
 // import {} from '@shikitor/react'
 
@@ -10,6 +9,10 @@ import { Icon, IconNames } from '@renderer/components/Icon'
 import { List } from '@renderer/components/List'
 import { ViewBox } from '@renderer/components/ViewBox'
 
+import { MessageChat } from './MessageChat'
+import { MessageFiles } from './MessageFiles'
+import { MessagePhotos } from './MessagePhotos'
+
 
 export const MessagingView = () => {
   const ListItem = useCallback(
@@ -17,11 +20,7 @@ export const MessagingView = () => {
       <List.Item title={title} subtitle={subtitle} selected={selected ?? false} avatar={avatar} icon={icon} />
     , [])
 
-  const content = '你说的对，但是《koishi》是由关门歇业自主研发的一款跨平台，高性能的机器人框架。p框架发生在一个被称作「node.js」的幻想世界，在这里，被内存选中的元素将被授予「类型」导引typescript之力。你将扮演一位名为「开发者」的神秘角色在自由的旅行中邂逅报错各异、能力独特的彩色括号们，和他们一起击败any，找回失散的类型——同时，逐步发掘「世革马」的真相。'
-  const messageActions = [{
-
-  }]
-
+  const [selectedTab, setSelectedTab] = useState<TabValue>('chat')
 
   return (
     <>
@@ -33,11 +32,11 @@ export const MessagingView = () => {
           margin: '0 -12px',
         }}>
           <List.Subheader title="PINNED" />
-          <ListItem key={'key1'} title="Shigma" avatar subtitle={content} />
+          <ListItem key={'key1'} title="Shigma" avatar subtitle={'content'} />
           <List.Subheader title="MESSAGES" />
-          <ListItem key={'key2'} title="Maiko Tan" avatar subtitle={content} />
-          <ListItem key={'key3'} title="Il Harper" avatar subtitle={content} />
-          <ListItem key={'key4'} title="Koishi" avatar subtitle={content} />
+          <ListItem key={'key2'} title="Maiko Tan" avatar subtitle={'content'} />
+          <ListItem key={'key3'} title="Il Harper" avatar subtitle={'content'} />
+          <ListItem key={'key4'} title="Koishi" avatar subtitle={'content'} />
           <List.Item>
             <Caption1 style={{
               display: 'block',
@@ -57,71 +56,36 @@ export const MessagingView = () => {
         <div className='messaging-titlebar'>
           <Avatar name="Shigma" size={28} />
           <span className='messaging-titlebar__title'>Shigma</span>
-          <TabList size='large'>
-            <Tab value='chat'>Chat</Tab>
-            <Tab value='files'>Files</Tab>
-            <Tab value='photos'>Photos</Tab>
+          <TabList size='large' selectedValue={selectedTab} onTabSelect={(e, d) => { setSelectedTab(d.value) }}>
+            <Tab id='Chat' value='chat'>Chat</Tab>
+            <Tab id='Files' value='files'>Files</Tab>
+            <Tab id='Photos' value='photos'>Photos</Tab>
           </TabList>
           <div style={{
             flex: '1',
             maxWidth: '100%',
-          }}/>
-          <Button shape='circular' appearance='transparent' icon={<Icon name='PersonInfo' bundle/>} />
+          }} />
+          <Button shape='circular' appearance='transparent' icon={<Icon name='PersonInfo' bundle />} />
         </div>
         <div className='messaging-context'>
-          <span className='message-timestamp'>Today</span>
-          <VirtualizerScrollViewDynamic numItems={118} itemSize={20}>
-            {(index: number) => {
-              return (
-                <div className='message'>
-                  <Avatar className='message-avatar' name="Shigma" size={40} style={{
-                    position: 'sticky',
-                    bottom: '1rem',
-                  }}/>
-                  <div className='message-content'>
-                    <Body1 className='message-content__username'>
-                      Shigma
-                    </Body1>
-                    <Card appearance='filled'>
-                      <CardPreview style={{
-                        padding: '12px',
-                        userSelect: 'text'
-                      }}>
-                        {'content'}
-                      </CardPreview>
-                    </Card>
-                    <Card appearance='filled'>
-                      <CardPreview style={{
-                        padding: '12px',
-                        userSelect: 'text'
-                      }}>
-                        {content}
-                      </CardPreview>
-                      <CardFooter>
-                        <Button>Btn1</Button>
-                        <Button>Btn2</Button>
-                      </CardFooter>
-                    </Card>
-                  </div>
-                </div>
-              )
-            }}
-          </VirtualizerScrollViewDynamic>
+          {selectedTab === 'chat' && <MessageChat />}
+          {selectedTab === 'files' && <MessageFiles />}
+          {selectedTab === 'photos' && <MessagePhotos />}
         </div>
         <div className='messaging-sender'>
           <div className='messaging-sender__actions'>
-            <Button appearance='transparent' icon={<Icon name='TextEditStyle' bundle/>} />
-            <Button appearance='transparent' icon={<Icon name='Image' bundle/>} />
-            <Button appearance='transparent' icon={<Icon name='Attach' bundle/>} />
-            <Button appearance='transparent' icon={<Icon name='Emoji' bundle/>} />
+            <Button appearance='transparent' icon={<Icon name='TextEditStyle' bundle />} />
+            <Button appearance='transparent' icon={<Icon name='Image' bundle />} />
+            <Button appearance='transparent' icon={<Icon name='Attach' bundle />} />
+            <Button appearance='transparent' icon={<Icon name='Emoji' bundle />} />
             <div style={{
               flex: '1',
               maxWidth: '100%'
-            }}/>
+            }} />
           </div>
           <Input size='large' placeholder="Type a message" appearance='filled-darker' contentAfter={
-            <Button appearance='transparent' icon={<Icon name='Send' bundle/>} />
-          }/>
+            <Button appearance='transparent' icon={<Icon name='Send' bundle />} />
+          } />
         </div>
       </ViewBox>
     </>
