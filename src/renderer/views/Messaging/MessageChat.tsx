@@ -7,7 +7,7 @@ export const MessageChat = memo(() => {
 
   return (<>
     <span className='message-timestamp'>Today</span>
-    <VirtualizerScrollViewDynamic reversed numItems={118} itemSize={20}>
+    <VirtualizerScrollViewDynamic reversed numItems={118} itemSize={10}>
       {(_index: number) => {
         return (
           <div className='message'>

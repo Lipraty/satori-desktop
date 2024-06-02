@@ -1,7 +1,7 @@
-import { useCallback, useState } from 'react'
+import { StrictMode, useCallback, useMemo, useState } from 'react'
 import { Avatar, Button, Caption1, Input, TabList, Tab, TabValue } from '@fluentui/react-components'
-import { } from '@shikitor/core'
-// import {} from '@shikitor/react'
+import { Editor } from '@shikitor/react'
+// import provideCompletions from '@shikitor/core/dist/plugins/provide-completions'
 
 import './style.scss'
 
@@ -15,12 +15,20 @@ import { MessagePhotos } from './MessagePhotos'
 
 
 export const MessagingView = () => {
+  // const bundledEditorPlugins = [
+  //   provideCompletions({
+  //     popupPlacement: 'top',
+  //     footer: false
+  //   })
+  // ]
+
   const ListItem = useCallback(
     ({ title, subtitle, selected, avatar, icon }: { title: string, subtitle?: string, selected?: boolean, avatar?: string | boolean, icon?: IconNames }) =>
       <List.Item title={title} subtitle={subtitle} selected={selected ?? false} avatar={avatar} icon={icon} />
     , [])
 
   const [selectedTab, setSelectedTab] = useState<TabValue>('chat')
+  const [messageText, setMessageText] = useState('')
 
   return (
     <>
@@ -82,10 +90,24 @@ export const MessagingView = () => {
               flex: '1',
               maxWidth: '100%'
             }} />
+            <Button appearance='transparent' icon={<Icon name='ChevronUpDown' bundle />} />
           </div>
-          <Input size='large' placeholder="Type a message" appearance='filled-darker' contentAfter={
-            <Button appearance='transparent' icon={<Icon name='Send' bundle />} />
-          } />
+          <span className='fui-Input'>
+            <div className='fui-Input__input'>
+              <StrictMode>
+                <Editor value={messageText} onChange={setMessageText} options={useMemo(() => ({
+                  theme: 'github-dark',
+                  language: 'markdown',
+                  lineNumbers: 'off',
+                  placeholder: 'Type a message...',
+                  autoSize: { maxRows: 7, minRows: 1 }
+                }), [])} />
+              </StrictMode>
+            </div>
+            <span className='fui-Input__contentAfter'>
+              <Button appearance='transparent' icon={<Icon name='Send' bundle />} />
+            </span>
+          </span>
         </div>
       </ViewBox>
     </>
