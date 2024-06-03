@@ -1,9 +1,13 @@
 import { StrictMode, useCallback, useMemo, useState } from 'react'
-import { Avatar, Button, Caption1, Input, TabList, Tab, TabValue } from '@fluentui/react-components'
+import { Avatar, Button, Caption1, Input, TabList, Tab, TabValue, tokens } from '@fluentui/react-components'
 import { Editor } from '@shikitor/react'
-// import provideCompletions from '@shikitor/core/dist/plugins/provide-completions'
+import provideCompletions from '@shikitor/core/plugins/provide-completions'
+import providePopup from '@shikitor/core/plugins/provide-popup'
+import provideSelectionToolbox from '@shikitor/core/plugins/provide-selection-toolbox'
+import selectionToolboxForMd from '@shikitor/core/plugins/selection-toolbox-for-md'
 
 import './style.scss'
+import '@shikitor/react/index.css'
 
 import { Icon, IconNames } from '@renderer/components/Icon'
 import { List } from '@renderer/components/List'
@@ -15,12 +19,15 @@ import { MessagePhotos } from './MessagePhotos'
 
 
 export const MessagingView = () => {
-  // const bundledEditorPlugins = [
-  //   provideCompletions({
-  //     popupPlacement: 'top',
-  //     footer: false
-  //   })
-  // ]
+  const bundledEditorPlugins = [
+    providePopup,
+    provideCompletions({
+      popupPlacement: 'top',
+      footer: false
+    }),
+    provideSelectionToolbox,
+    selectionToolboxForMd
+  ]
 
   const ListItem = useCallback(
     ({ title, subtitle, selected, avatar, icon }: { title: string, subtitle?: string, selected?: boolean, avatar?: string | boolean, icon?: IconNames }) =>
@@ -92,15 +99,15 @@ export const MessagingView = () => {
             }} />
             <Button appearance='transparent' icon={<Icon name='ChevronUpDown' bundle />} />
           </div>
-          <span className='fui-Input'>
+          <span>
             <div className='fui-Input__input'>
               <StrictMode>
-                <Editor value={messageText} onChange={setMessageText} options={useMemo(() => ({
+                <Editor value={messageText} onChange={setMessageText} plugins={bundledEditorPlugins} options={useMemo(() => ({
                   theme: 'github-dark',
                   language: 'markdown',
                   lineNumbers: 'off',
                   placeholder: 'Type a message...',
-                  autoSize: { maxRows: 7, minRows: 1 }
+                  // autoSize: { maxRows: 7, minRows: 1 }
                 }), [])} />
               </StrictMode>
             </div>

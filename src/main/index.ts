@@ -18,7 +18,7 @@ import { DevToolsManager } from './external/devToolsManager'
 const app = new Context()
 
 // TODO: loader
-app.plugin(Satori)
+// app.plugin(Satori)
 app.plugin<SettingsManager.Config>(SettingsManager, {})
 app.plugin<IPCManager.Config>(IPCManager, {})
 app.plugin<SystemManager.Config>(SystemManager, {})
@@ -38,10 +38,10 @@ app.plugin<WindowService.Config>(WindowService, {
   },
 })
 app.plugin(DevToolsManager, {})
-app.plugin(CordisHTTP, {})
-app.plugin(AdapterSatori, {
-  endpoint: 'http://localhost:5500/satori',
-  token: '8f69490142b1da3ed0968e8658aa12af49a3774fc5c9ccc65f1b31b0cb152f3b'
-})
+// app.plugin(CordisHTTP, {})
+// app.plugin(AdapterSatori, {
+//   endpoint: 'http://localhost:5500/satori',
+//   token: '8f69490142b1da3ed0968e8658aa12af49a3774fc5c9ccc65f1b31b0cb152f3b'
+// })
 
 app.start()
