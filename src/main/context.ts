@@ -1,10 +1,14 @@
 import * as Electron from 'electron'
 
 import * as Cordis from 'cordis'
-import * as Satori from '@satorijs/core'
-export * from '@satorijs/core'
 
-export class Context extends Satori.Context {
+export interface Events<C extends Context = Context> extends Cordis.Events<C> {}
+
+export interface Context {
+  [Context.events]: Events<this>
+}
+
+export class Context extends Cordis.Context {
   app: Electron.App
 
   constructor() {

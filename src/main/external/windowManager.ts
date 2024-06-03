@@ -1,9 +1,9 @@
 import { BrowserWindow, BrowserWindowConstructorOptions, nativeTheme } from 'electron'
 import * as path from 'node:path'
 
-import { Context, Service } from './context'
+import { Context, Service } from '../context'
 
-declare module '.' {
+declare module '..' {
   interface Context {
     window: WindowService
   }

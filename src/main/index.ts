@@ -2,19 +2,23 @@ export * from './context'
 
 import * as path from 'node:path'
 
-// adapter load
+// Cordis plugin
+import CordisHTTP from '@cordisjs/plugin-http'
+// Satori
+import Satori from '@satorijs/core'
 import AdapterSatori from '@satorijs/adapter-satori'
 
 import { Context } from './context'
-import { WindowService, isDarkTheme } from './windowManager'
-import { SettingsManager } from './settingsManager'
-import { IPCManager } from './ipcManager'
-import { SystemManager } from './systemManager'
-import { DevToolsManager } from './devToolsManager'
+import { WindowService, isDarkTheme } from './external/windowManager'
+import { SettingsManager } from './external/settingsManager'
+import { IPCManager } from './external/ipcManager'
+import { SystemManager } from './external/systemManager'
+import { DevToolsManager } from './external/devToolsManager'
 
 const app = new Context()
 
 // TODO: loader
+app.plugin(Satori)
 app.plugin<SettingsManager.Config>(SettingsManager, {})
 app.plugin<IPCManager.Config>(IPCManager, {})
 app.plugin<SystemManager.Config>(SystemManager, {})
@@ -34,6 +38,7 @@ app.plugin<WindowService.Config>(WindowService, {
   },
 })
 app.plugin(DevToolsManager, {})
+app.plugin(CordisHTTP, {})
 app.plugin(AdapterSatori, {
   endpoint: 'http://localhost:5500/satori',
   token: '8f69490142b1da3ed0968e8658aa12af49a3774fc5c9ccc65f1b31b0cb152f3b'

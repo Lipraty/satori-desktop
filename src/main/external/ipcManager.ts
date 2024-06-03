@@ -1,6 +1,6 @@
 import { ipcMain, IpcMain } from 'electron'
 
-import { Context, Service } from './context'
+import { Context, Service } from '../context'
 
 export namespace IPCManager {
   export interface Config { }

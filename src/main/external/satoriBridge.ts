@@ -2,7 +2,7 @@ import { IpcMainEvent, WebContents } from 'electron'
 
 import { Event, EventName, Methods, Method } from '@satorijs/protocol'
 
-import { Context } from './context'
+import { Context } from '../context'
 import { } from './windowManager'
 
 export class SatoriBridge {
