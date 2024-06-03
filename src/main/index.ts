@@ -3,7 +3,7 @@ export * from './context'
 import * as path from 'node:path'
 
 // adapter load
-import * as AdapterSatori from '@satorijs/adapter-satori'
+import AdapterSatori from '@satorijs/adapter-satori'
 
 import { Context } from './context'
 import { WindowService, isDarkTheme } from './windowManager'

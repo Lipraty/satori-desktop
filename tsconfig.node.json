@@ -4,7 +4,7 @@
     "target": "ESNext",
     "composite": true,
     "resolveJsonModule": true,
-    "moduleResolution": "Node",
+    "moduleResolution": "Bundler",
     "allowSyntheticDefaultImports": true,
     "types": [
       "node"
