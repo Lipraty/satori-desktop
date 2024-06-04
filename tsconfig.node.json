@@ -1,16 +1,11 @@
 {
+  "extends": "@electron-toolkit/tsconfig/tsconfig.node.json",
   "compilerOptions": {
-    "module": "ESNext",
-    "target": "ESNext",
     "composite": true,
-    "resolveJsonModule": true,
     "moduleResolution": "Bundler",
-    "allowSyntheticDefaultImports": true,
     "types": [
-      "node"
-    ],
-    "lib": [
-      "ESNext"
+      "node",
+      "electron-vite/node",
     ],
   },
   "include": [
