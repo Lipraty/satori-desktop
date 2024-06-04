@@ -94,6 +94,10 @@
         max-width: 100%;
       }
 
+      .shikitor textarea:focus {
+        animation: bottom-border;
+      }
+
       &-contentAfter {
         display: flex;
         align-items: center;

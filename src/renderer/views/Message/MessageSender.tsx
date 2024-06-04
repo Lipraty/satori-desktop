@@ -43,15 +43,13 @@ export const MessageSender = () => {
       <Button appearance='transparent' icon={<Icon name='ChevronUpDown' bundle />} />
     </div>
     <span className="message-sender__input">
-      <StrictMode>
-        <Editor className="message-sender__input-input" plugins={bundledEditorPlugins} options={useMemo(() => ({
-          theme: `github-${theme}` as 'github-light' | 'github-dark',
-          language: 'markdown',
-          lineNumbers: 'off',
-          placeholder: 'Type a message...',
-          autoSize: { maxRows: 7, minRows: 1 }
-        }), [])} />
-      </StrictMode>
+      <Editor className="message-sender__input-input" plugins={bundledEditorPlugins} options={useMemo(() => ({
+        theme: `github-${theme}` as 'github-light' | 'github-dark',
+        language: 'markdown',
+        lineNumbers: 'off',
+        placeholder: 'Type a message...',
+        autoSize: { maxRows: 7, minRows: 1 }
+      }), [])} />
       <span className='message-sender__input-contentAfter'>
         <Button appearance='transparent' icon={<Icon name='Send' bundle />} />
       </span>
