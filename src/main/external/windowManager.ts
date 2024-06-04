@@ -23,7 +23,7 @@ export namespace WindowService {
 export class WindowService extends Service {
   static inject = ['settings']
 
-  mainWindow: BrowserWindow
+  mainWindow!: BrowserWindow
 
   constructor(ctx: Context, config: WindowService.Config) {
     super(ctx, 'window')

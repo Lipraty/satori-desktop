@@ -41,10 +41,10 @@ export class SettingsManager extends Service {
     this.settings = new Proxy<Settings>({} as Settings, {
       get: (_, key) => {
         if (!this.settingsObj) this.readSettings()
-        return this.settingsObj[key as keyof Settings]
+        return this.settingsObj![key as keyof Settings]
       },
       set: (_, key, value) => {
-        this.settingsObj[key as keyof Settings] = value
+        this.settingsObj![key as keyof Settings] = value
         this.saveSettings()
         return true
       },
