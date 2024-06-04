@@ -8,6 +8,9 @@ The universal and cross-platform chat application based on the Satori protocol.
 
 </div>
 
+> [!NOTE]
+> This is project under development and not ready for production use. Welcome to contribute to this project.
+
 <details open>
 
 <summary>Roadmap</summary>
@@ -31,9 +34,14 @@ The universal and cross-platform chat application based on the Satori protocol.
 
 ## Technologies
 
-- [Electron](https://www.electronjs.org/) is an open-source framework developed and maintained by GitHub. It allows for the development of desktop GUI applications using web technologies: It combines the Chromium rendering engine and the Node.js runtime.
-- [React](https://reactjs.org/) is an open-source, front end, JavaScript library for building user interfaces or UI components.
-  - [Foxact](https://foxact.skk.moe/) is a React component library that is React Hooks/Utils done right. It is designed to be simple, flexible, and easy to use.
+- [Cordis](https://github.com/cordiverse/cordis): Meta-Framework for Modern Applications.
+- [Satori](https://github.com/satorijs/satori): THe universal messager protocol.
+- [Electron](https://www.electronjs.org/): Open-source framework developed and maintained by GitHub.
+- [React](https://reactjs.org/): A JavaScript library for building user interfaces.
+  - [Foxact](https://foxact.skk.moe/): React component library that is React Hooks/Utils done right.
+  - [Zustand](https://zustand-demo.pmnd.rs/): A small, fast and scaleable bearbones state-management solution.
+  - [SWR](https://swr.vercel.app/): React Hooks library for data fetching.
+- [Shikitor](https://github.com/NWYLZW/shikitor): A simple and lightweight code editor for the web based on shiki.
 
 </details>
 
