@@ -1,6 +1,6 @@
 import { ReactElement } from "react"
 
-import { MessagingView } from "./Messaging"
+import { MessagingView } from "./Message"
 import { ContactView } from "./Contact"
 import { SettingsView } from "./Settings"
 import { NetworksView } from "./Networks"

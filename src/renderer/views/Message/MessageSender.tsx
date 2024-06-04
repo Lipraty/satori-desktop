@@ -30,8 +30,8 @@ export const MessageSender = () => {
 
   const [theme, setTheme] = useState(getTheme())
 
-  return (<div className='messaging-sender'>
-    <div className='messaging-sender__actions'>
+  return (<div className='message-sender'>
+    <div className='message-sender__actions'>
       <Button appearance='transparent' icon={<Icon name='TextEditStyle' bundle />} />
       <Button appearance='transparent' icon={<Icon name='Image' bundle />} />
       <Button appearance='transparent' icon={<Icon name='Attach' bundle />} />
@@ -42,9 +42,9 @@ export const MessageSender = () => {
       }} />
       <Button appearance='transparent' icon={<Icon name='ChevronUpDown' bundle />} />
     </div>
-    <span className="messaging-sender__input">
+    <span className="message-sender__input">
       <StrictMode>
-        <Editor className="messaging-sender__input-input" plugins={bundledEditorPlugins} options={useMemo(() => ({
+        <Editor className="message-sender__input-input" plugins={bundledEditorPlugins} options={useMemo(() => ({
           theme: `github-${theme}` as 'github-light' | 'github-dark',
           language: 'markdown',
           lineNumbers: 'off',
@@ -52,7 +52,7 @@ export const MessageSender = () => {
           autoSize: { maxRows: 7, minRows: 1 }
         }), [])} />
       </StrictMode>
-      <span className='messaging-sender__input-contentAfter'>
+      <span className='message-sender__input-contentAfter'>
         <Button appearance='transparent' icon={<Icon name='Send' bundle />} />
       </span>
     </span>

@@ -1,6 +1,11 @@
 @use "../../components/mixins.scss" as *;
 
-.messaging {
+.message {
+  display: flex;
+  padding: 1rem 0;
+  width: 100%;
+  align-items: flex-end;
+
   &-titlebar {
     display: flex;
     justify-content: space-between;
@@ -79,14 +84,24 @@
       display: flex;
       margin-bottom: 6px;
     }
-  }
-}
 
-.message {
-  display: flex;
-  padding: 1rem 0;
-  width: 90%;
-  align-items: flex-end;
+    &__input {
+      display: flex;
+      width: 100%;
+
+      &-input {
+        flex: 1 1 100%;
+        max-width: 100%;
+      }
+
+      &-contentAfter {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 6px;
+      }
+    }
+  }
 
   &-timestamp {
     font-size: var(--fontSizeBase200);
@@ -104,6 +119,7 @@
     display: flex;
     flex-direction: column;
     gap: 6px;
+    max-width: 76%;
 
     &__username {
       margin-left: 12px;

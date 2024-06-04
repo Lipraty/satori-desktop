@@ -46,7 +46,7 @@ List.Item = ({ title, subtitle, selected = false, avatar, icon, iconAppend, chil
   const classList = ['list-item']
 
   if (title) childrenComp.push(<h3 className="list-item__title">{title}</h3>)
-  if (!subtitle)
+  if (!subtitle && children)
     childrenComp.push(children)
   else
     if (subtitle) childrenComp.push(<p className="list-item__subtitle">{subtitle}</p>)
@@ -56,7 +56,7 @@ List.Item = ({ title, subtitle, selected = false, avatar, icon, iconAppend, chil
   return (
     <li className={classList.join(' ')}>
       {(icon && !avatar) && <Icon name={icon} sized="24" />}
-      {(avatar && !icon) && <Avatar name={title} image={typeof avatar === 'string' && { src: avatar }} size={40} />}
+      {(avatar && !icon) && <Avatar name={title} image={typeof avatar === 'string' ? { src: avatar } : undefined} size={40} />}
       <div className="list-item__content">
         {childrenComp}
       </div>
