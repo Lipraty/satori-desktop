@@ -1,10 +1,5 @@
-import { StrictMode, useCallback, useMemo, useState } from 'react'
-import { Avatar, Button, Caption1, Input, TabList, Tab, TabValue, tokens } from '@fluentui/react-components'
-import { Editor } from '@shikitor/react'
-import provideCompletions from '@shikitor/core/plugins/provide-completions'
-import providePopup from '@shikitor/core/plugins/provide-popup'
-import provideSelectionToolbox from '@shikitor/core/plugins/provide-selection-toolbox'
-import selectionToolboxForMd from '@shikitor/core/plugins/selection-toolbox-for-md'
+import { useCallback, useState } from 'react'
+import { Avatar, Button, Caption1, Input, TabList, Tab, TabValue } from '@fluentui/react-components'
 
 import './style.scss'
 import '@shikitor/react/index.css'
@@ -16,18 +11,9 @@ import { ViewBox } from '@renderer/components/ViewBox'
 import { MessageChat } from './MessageChat'
 import { MessageFiles } from './MessageFiles'
 import { MessagePhotos } from './MessagePhotos'
-
+import { MessageSender } from './MessageSender'
 
 export const MessagingView = () => {
-  const bundledEditorPlugins = [
-    providePopup,
-    provideCompletions({
-      popupPlacement: 'top',
-      footer: false
-    }),
-    provideSelectionToolbox,
-    selectionToolboxForMd
-  ]
 
   const ListItem = useCallback(
     ({ title, subtitle, selected, avatar, icon }: { title: string, subtitle?: string, selected?: boolean, avatar?: string | boolean, icon?: IconNames }) =>
@@ -87,35 +73,7 @@ export const MessagingView = () => {
           {selectedTab === 'files' && <MessageFiles />}
           {selectedTab === 'photos' && <MessagePhotos />}
         </div>
-        <div className='messaging-sender'>
-          <div className='messaging-sender__actions'>
-            <Button appearance='transparent' icon={<Icon name='TextEditStyle' bundle />} />
-            <Button appearance='transparent' icon={<Icon name='Image' bundle />} />
-            <Button appearance='transparent' icon={<Icon name='Attach' bundle />} />
-            <Button appearance='transparent' icon={<Icon name='Emoji' bundle />} />
-            <div style={{
-              flex: '1',
-              maxWidth: '100%'
-            }} />
-            <Button appearance='transparent' icon={<Icon name='ChevronUpDown' bundle />} />
-          </div>
-          <span>
-            <div className='fui-Input__input'>
-              <StrictMode>
-                <Editor value={messageText} onChange={setMessageText} plugins={bundledEditorPlugins} options={useMemo(() => ({
-                  theme: 'github-dark',
-                  language: 'markdown',
-                  lineNumbers: 'off',
-                  placeholder: 'Type a message...',
-                  // autoSize: { maxRows: 7, minRows: 1 }
-                }), [])} />
-              </StrictMode>
-            </div>
-            <span className='fui-Input__contentAfter'>
-              <Button appearance='transparent' icon={<Icon name='Send' bundle />} />
-            </span>
-          </span>
-        </div>
+        <MessageSender />
       </ViewBox>
     </>
   )
