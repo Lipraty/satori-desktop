@@ -3,7 +3,6 @@ import { Message, List as PList } from "@satorijs/protocol"
 import { Avatar, Button, Caption1, TabList, Tab, TabValue } from '@fluentui/react-components'
 
 import './style.scss'
-import '@shikitor/react/index.css'
 
 import { Icon, IconNames } from '@renderer/components/Icon'
 import { List } from '@renderer/components/List'

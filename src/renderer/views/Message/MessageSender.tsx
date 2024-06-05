@@ -1,4 +1,4 @@
-import { StrictMode, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import { Button } from "@fluentui/react-components"
 import { Editor } from "@shikitor/react"
 import provideCompletions from '@shikitor/core/plugins/provide-completions'
@@ -9,6 +9,10 @@ import selectionToolboxForMd from '@shikitor/core/plugins/selection-toolbox-for-
 import { Icon } from "@renderer/components/Icon"
 import { useThemeListener } from "@renderer/hooks/use-theme-listener"
 import './style.scss'
+import '@shikitor/react/index.css'
+import '@shikitor/core/plugins/provide-completions.css'
+import '@shikitor/core/plugins/provide-popup.css'
+import '@shikitor/core/plugins/provide-selection-toolbox.css'
 
 export interface MessageSenderProps {
   messageText: string
@@ -21,7 +25,7 @@ export const MessageSender = () => {
   const bundledEditorPlugins = [
     providePopup,
     provideCompletions({
-      popupPlacement: 'top',
+      popupPlacement: 'bottom',
       footer: false
     }),
     provideSelectionToolbox,
@@ -48,7 +52,7 @@ export const MessageSender = () => {
         language: 'markdown',
         lineNumbers: 'off',
         placeholder: 'Type a message...',
-        autoSize: { maxRows: 7, minRows: 1 }
+        autoSize: { maxRows: 4, minRows: 1 }
       }), [])} />
       <span className='message-sender__input-contentAfter'>
         <Button appearance='transparent' icon={<Icon name='Send' bundle />} />
