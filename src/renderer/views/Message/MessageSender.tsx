@@ -5,6 +5,7 @@ import provideCompletions from '@shikitor/core/plugins/provide-completions'
 import providePopup from '@shikitor/core/plugins/provide-popup'
 import provideSelectionToolbox from '@shikitor/core/plugins/provide-selection-toolbox'
 import selectionToolboxForMd from '@shikitor/core/plugins/selection-toolbox-for-md'
+import codeStyler from '@shikitor/core/plugins/code-styler'
 
 import { Icon } from "@renderer/components/Icon"
 import { useThemeListener } from "@renderer/hooks/use-theme-listener"
@@ -29,7 +30,8 @@ export const MessageSender = () => {
       footer: false
     }),
     provideSelectionToolbox,
-    selectionToolboxForMd
+    selectionToolboxForMd,
+    codeStyler
   ]
 
   const [theme, setTheme] = useState(getTheme())
@@ -46,15 +48,17 @@ export const MessageSender = () => {
       }} />
       <Button appearance='transparent' icon={<Icon name='ChevronUpDown' bundle />} />
     </div>
-    <span className="message-sender__input">
-      <Editor className="message-sender__input-input" plugins={bundledEditorPlugins} options={useMemo(() => ({
-        theme: `github-${theme}` as 'github-light' | 'github-dark',
-        language: 'markdown',
-        lineNumbers: 'off',
-        placeholder: 'Type a message...',
-        autoSize: { maxRows: 4, minRows: 1 }
-      }), [])} />
-      <span className='message-sender__input-contentAfter'>
+    <span className="message-sender-input">
+      <div className="message-sender-input__content">
+        <Editor plugins={bundledEditorPlugins} options={useMemo(() => ({
+          theme: `github-${theme}` as 'github-light' | 'github-dark',
+          language: 'markdown',
+          lineNumbers: 'off',
+          placeholder: 'Type a message...',
+          autoSize: { maxRows: 115, minRows: 1 }
+        }), [])} />
+      </div>
+      <span className='message-sender-input__contentAfter'>
         <Button appearance='transparent' icon={<Icon name='Send' bundle />} />
       </span>
     </span>

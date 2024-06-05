@@ -88,42 +88,77 @@
       margin-bottom: 6px;
     }
 
-    &__input {
-      display: flex;
+    &-input {
+      display: inline-flex;
+      box-sizing: border-box;
+      flex-wrap: nowrap;
+      flex-direction: row;
+      align-items: center;
       width: 100%;
+      padding: var(--spacingVerticalSNudge) calc(var(--spacingHorizontalMNudge) + var(--spacingHorizontalXXS));
       border-width: var(--strokeWidthThin);
       border-color: var(--colorNeutralStroke1);
       border-bottom-color: var(--colorNeutralStrokeAccessible);
+      border-bottom-width: var(--strokeWidthThick);
       border-style: solid;
       border-radius: var(--borderRadiusMedium);
-      position: relative;
-      box-sizing: border-box;
-      min-height: 52px !important;
-      padding: var(--spacingVerticalSNudge) calc(var(--spacingHorizontalMNudge) + var(--spacingHorizontalXXS));
+
 
       &:focus-within {
-        border-block-width: var(--strokeWidthThick);
+        border-bottom-width: var(--strokeWidthThick);
         border-bottom-color: var(--colorCompoundBrandStroke);
       }
 
-      &-input {
+      &__content {
+        display: inline-flex;
         flex: 1 1 100%;
         max-width: 100%;
-      }
+        max-height: 6rem;
+        position: relative;
+        overflow: auto;
 
-      .shikitor {
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-
-        &-lines {
-          display: none;
+        &::-webkit-scrollbar {
+          width: 6px;
         }
 
-        textarea {
-          overflow: hidden;
+        .shikitor {
+          width: 100%;
+          height: 100%;
+          font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+          font-size: var(--fontSizeBase300);
+          background-color: transparent !important;
+
+          &-input::selection {
+            color: transparent;
+            border-radius: 2px;
+
+            @include dark {
+              background-color: rgba($color: white, $alpha: 0.2);
+            }
+
+            @include light {
+              background-color: rgba($color: black, $alpha: 0.2);
+            }
+          }
+
+          &-container, &-output, &-placeholder, &-input {
+            background-color: transparent;
+            .shiki, .shiki * {
+              background-color: transparent !important;
+            }
+          }
+
+          textarea {
+            overflow: hidden;
+          }
+
+          &-lines {
+            display: none;
+          }
         }
       }
 
-      &-contentAfter {
+      &__contentAfter {
         display: flex;
         align-items: center;
         justify-content: center;
