@@ -155,6 +155,11 @@
           &-lines {
             display: none;
           }
+
+          // This not fix the text space issue, can't selection next line in newline text of long it that is wrapped
+          // &-output-token {
+          //   white-space: normal;
+          // }
         }
       }
 
@@ -186,7 +191,7 @@
     max-width: 76%;
 
     &__username {
-      margin-left: 12px;
+      margin: 0 12px;
     }
 
     .fui-Card {
