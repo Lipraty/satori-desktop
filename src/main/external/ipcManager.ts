@@ -19,7 +19,7 @@ export class IPCManager extends Service {
   #listeners: IPCManager.EventListeners = {}
 
   constructor(ctx: Context, public config: IPCManager.Config) {
-    super(ctx, 'ipcManager')
+    super(ctx, 'ipc')
     this.ipcMain = ipcMain
   }
 

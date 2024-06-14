@@ -5,6 +5,8 @@ import { app } from 'electron'
 
 import { Context, Service } from '../context'
 
+import { DEFAULT_SETTINGS } from './defaultSettings'
+
 declare module '..' {
   interface Context {
     settings: SettingsManager
@@ -17,9 +19,9 @@ declare module '..' {
 }
 
 export type ThemeKey = 'light' | 'dark' | 'system'
-
-export interface Settings {
-  theme: ThemeKey
+type DefSettings = typeof DEFAULT_SETTINGS
+export type Settings = {
+  [K in keyof DefSettings]: DefSettings[K]
 }
 
 export namespace SettingsManager {
@@ -57,9 +59,7 @@ export class SettingsManager extends Service {
   }
 
   getDefaultSettings(): Settings {
-    return {
-      theme: 'system',
-    }
+    return DEFAULT_SETTINGS
   }
 
   readSettings() {
