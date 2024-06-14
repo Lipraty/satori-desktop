@@ -35,6 +35,7 @@ export const MessageSender = () => {
   ]
 
   const [theme, setTheme] = useState(getTheme())
+  const [messageText, setMessageText] = useState('')
 
   return (<div className='message-sender'>
     <div className='message-sender__actions'>
@@ -50,13 +51,20 @@ export const MessageSender = () => {
     </div>
     <span className="message-sender-input">
       <div className="message-sender-input__content">
-        <Editor plugins={bundledEditorPlugins} options={useMemo(() => ({
-          theme: `github-${theme}` as 'github-light' | 'github-dark',
-          language: 'markdown',
-          lineNumbers: 'off',
-          placeholder: 'Type a message...',
-          autoSize: { maxRows: 115, minRows: 1 }
-        }), [])} />
+        <Editor
+          plugins={bundledEditorPlugins}
+          // await fix it in upstream
+          // value={messageText}
+          // onChange={useMemo(() => setMessageText,[])}
+          onMounted={shiki => shiki.focus()}
+          defaultOptions={{
+            language: 'markdown',
+            lineNumbers: 'off',
+            autoSize: { maxRows: 115, minRows: 1 }
+          }} options={useMemo(() => ({
+            theme: `github-${theme}` as 'github-light' | 'github-dark',
+            placeholder: 'Type a message...',
+          }), [])} />
       </div>
       <span className='message-sender-input__contentAfter'>
         <Button appearance='transparent' icon={<Icon name='Send' bundle />} />
