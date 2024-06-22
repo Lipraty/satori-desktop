@@ -7,6 +7,12 @@ html {
   background-color: none;
   background-color: transparent;
   background: transparent;
+  @include dark {
+    color-scheme: dark;
+  }
+  @include light {
+    color-scheme: light;
+  }
 }
 
 body {
