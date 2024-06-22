@@ -1,5 +1,5 @@
-import { useCallback, useState } from "react"
-import { Avatar, FluentProvider, webDarkTheme, webLightTheme, type Theme } from "@fluentui/react-components"
+import { useCallback } from "react"
+import { Avatar, FluentProvider, webDarkTheme, webLightTheme } from "@fluentui/react-components"
 
 import { useThemeListener } from "@renderer/hooks/use-theme-listener"
 import { useCurrentView } from "@renderer/hooks/view-manager"
@@ -9,11 +9,9 @@ import { IconNames } from "@renderer/components/Icon"
 
 import { views } from "./views"
 
-const getTheme = () => (useThemeListener() ? webDarkTheme : webLightTheme)
-
 export const App = () => {
-  const [theme, setTheme] = useState<Theme>(getTheme())
-  const [loading, setLoading] = useState<boolean>(true)
+  const darkThemeStatus = useThemeListener()
+  // const [loading, setLoading] = useState<boolean>(true)
   const { setCurrentView, currentView } = useCurrentView()
 
   const SidebarItem = useCallback(
@@ -30,7 +28,7 @@ export const App = () => {
   return (
     <>
       <TitleBar title='Satori App for Desktop' icon="assets/icons/icon.png" />
-      <FluentProvider theme={theme} style={{
+      <FluentProvider theme={darkThemeStatus ? webDarkTheme : webLightTheme} style={{
         display: 'flex',
         height: 'calc(100vh - 44px)',
         width: '100%',

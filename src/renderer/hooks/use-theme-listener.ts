@@ -1,26 +1,31 @@
-import { useSyncExternalStore } from 'react';
+import { useSyncExternalStore } from 'react'
 
-const MATCH_MEDIA_QUERY_LIGHT_THEME = '(prefers-color-scheme: light)';
+export type ThemeKey = 'system' | 'light' | 'dark'
 
-let isDarkTheme = false;
+const MATCH_MEDIA_QUERY_DARK_THEME = '(prefers-color-scheme: dark)'
 
-const getIsDarkTheme = () => isDarkTheme;
+let isDarkTheme = window.matchMedia(MATCH_MEDIA_QUERY_DARK_THEME).matches
+
+const getDarkThemeSnapshot = () => {
+  return isDarkTheme
+}
 
 const subscribe = (callback: () => void) => {
-  const lightThemeMatchMedia = window.matchMedia(MATCH_MEDIA_QUERY_LIGHT_THEME);
+  const darkMatchMedia = window.matchMedia(MATCH_MEDIA_QUERY_DARK_THEME)
 
-  const updateThemeCallback = ()=>{
-    isDarkTheme = !lightThemeMatchMedia.matches;
-    callback();
-  }
-  lightThemeMatchMedia.addEventListener('change', updateThemeCallback);
-  
-  updateThemeCallback()
+  darkMatchMedia.addEventListener('change', (ev) => {
+    console.log('dark theme changed', ev.matches)
+    updateTheme(ev.matches)
+    callback()
+  })
   return () => {
-    lightThemeMatchMedia.removeEventListener('change', updateThemeCallback);
-  };
-};
+    darkMatchMedia.removeEventListener('change', callback)
+  }
+}
+
+export const updateTheme = (isDark: boolean) => 
+  isDarkTheme = isDark
 
 export const useThemeListener = () => {
-  return useSyncExternalStore(subscribe, getIsDarkTheme);
-};
+  return useSyncExternalStore(subscribe, getDarkThemeSnapshot)
+}
