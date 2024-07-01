@@ -25,6 +25,7 @@ app.plugin<WindowService.Config>(WindowService, {
   width: 1076,
   height: 653,
   titleBarStyle: 'hidden',
+  maximizable: false, // https://github.com/electron/electron/issues/42393
   titleBarOverlay: {
     symbolColor: isDarkTheme() ? '#ffffff' : '#000000',
     color: '#00000000',
