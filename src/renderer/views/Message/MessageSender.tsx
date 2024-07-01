@@ -39,7 +39,7 @@ export const MessageSender = () => {
 
   return (<div className='message-sender'>
     <div className='message-sender__actions'>
-      <Button appearance='transparent' icon={<Icon name='TextEditStyle' bundle />} />
+      {/* <Button appearance='transparent' icon={<Icon name='TextEditStyle' bundle />} /> */}
       <Button appearance='transparent' icon={<Icon name='Image' bundle />} />
       <Button appearance='transparent' icon={<Icon name='Attach' bundle />} />
       <Button appearance='transparent' icon={<Icon name='Emoji' bundle />} />
