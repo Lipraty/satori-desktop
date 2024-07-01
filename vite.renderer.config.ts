@@ -24,6 +24,7 @@ export default defineConfig((env) => {
       preserveSymlinks: true,
       alias: {
         '@renderer': fileURLToPath(new URL("./src/renderer", import.meta.url)),
+        '@shared': fileURLToPath(new URL("./src/shared", import.meta.url)),
       },
     },
     clearScreen: false,
