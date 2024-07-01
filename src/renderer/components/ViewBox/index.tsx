@@ -14,7 +14,7 @@ export const ViewBox = ({ col, fixed, width, children, style = {}, rightRadius =
   let colStyle = {}
 
   if (!fixed) {
-    if (col !== 'auto' && (col < 1 || col > 12) || !col) col = 'auto'
+    if (!col || col !== 'auto' && (col < 1 || col > 12)) col = 'auto'
 
     colStyle = col === 'auto' ? {
       flex: '1 1 auto',
