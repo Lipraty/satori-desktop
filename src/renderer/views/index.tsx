@@ -27,7 +27,7 @@ export const views: View[] = [
     component: <ContactView />
   },
   {
-    name: 'Networks',
+    name: 'Network',
     icon: 'PlugConnectedSettings',
     sidebar: true,
     component: <NetworksView />
