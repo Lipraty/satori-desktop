@@ -1,52 +1,51 @@
-import { ipcMain, IpcMain } from 'electron'
+import { ipcMain, IpcMain, IpcMainEvent, IpcRendererEvent, webContents } from 'electron'
+
+import { IpcEvents } from '@shared/types'
 
 import { Context, Service } from '../context'
 
 export namespace IPCManager {
   export interface Config { }
-  export interface EventListeners {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    [k: string]: (IpcMainEvent, ...args: any[]) => void
-  }
 
-  export type EventName = keyof EventListeners
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  export type EventListener = EventListeners[EventName]
+  export interface Events extends IpcEvents { }
+
+  export type EventsKeys = keyof Events
+
+  export type Handler<K extends keyof Events> = (e: IpcMainEvent | IpcRendererEvent, ...args: Parameters<Events[K]>[]) => void
 }
 
 export class IPCManager extends Service {
   ipcMain: IpcMain
-  #listeners: IPCManager.EventListeners = {}
+  private handlers: { [K in IPCManager.EventsKeys]?: IPCManager.Handler<K>[] } = {}
 
   constructor(ctx: Context, public config: IPCManager.Config) {
     super(ctx, 'ipc')
     this.ipcMain = ipcMain
-  }
 
-  on(events: IPCManager.EventName, listener: IPCManager.EventListener) {
-    if (this.#listeners[events]) {
-      throw new Error(`Event ${events} already registered`)
-    }
-    this.#listeners[events] = listener
-    this.ipcMain.on(`${events}`, listener)
-  }
-
-  remove(events: IPCManager.EventName, listener: IPCManager.EventListener) {
-    if (!this.#listeners[events]) {
-      throw new Error(`Event ${events} not registered`)
-    }
-    this.ipcMain.removeListener(`${events}`, listener)
-    delete this.#listeners[events]
-  }
-
-  removeAll(events?: IPCManager.EventName) {
-    if (events) {
-      if (!this.#listeners[events]) {
-        throw new Error(`Event ${events} not registered`)
+    ctx.on('dispose', () => {
+      // remove all listeners
+      for (const event in this.handlers) {
+        ipcMain.removeAllListeners(event)
       }
-      this.ipcMain.removeListener(`${events}`, this.#listeners[events])
-      delete this.#listeners[events]
-      return
+      this.handlers = {}
+    })
+  }
+
+  on<K extends IPCManager.EventsKeys>(event: K, handler: IPCManager.Handler<K>): void {
+    if (!this.handlers[event]) {
+      Object.assign(this.handlers, { [event]: [] })
+      ipcMain.on(event, (e: IpcMainEvent, ...args: IPCManager.Events[K][]) => {
+        this.handlers[event]?.forEach(h => h(e, ...args))
+        this.ctx.logger.debug(`IPC event: ${event}`)
+      })
     }
+    this.handlers[event]?.push(handler)
+  }
+
+  send<K extends IPCManager.EventsKeys>(event: K, ...args: Parameters<IPCManager.Events[K]>) {
+    webContents.getAllWebContents().forEach((webContent) => {
+      webContent.send(event, ...args)
+      this.ctx.logger.debug('IPC send: ', event)
+    })
   }
 }

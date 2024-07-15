@@ -13,3 +13,5 @@ export namespace Contact {
     GUILD
   }
 }
+
+export interface IpcEvents {}
