@@ -34,6 +34,7 @@ export const ViewBox = ({ col, fixed, width, children, style = {}, rightRadius =
     <div className="main-view" style={Object.assign(colStyle, {
       borderTopRightRadius: rightRadius ? 'var(--borderRadiusLarge)' : '0',
       backgroundColor: transparent ? 'transparent' : '',
+      border: transparent ? 'none' : '',
     })}>
       <div className="main-view__context" style={style}>{children}</div>
     </div>
