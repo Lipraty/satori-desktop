@@ -12,17 +12,28 @@ declare global {
   }
 }
 
-export const useIpcManager = <K extends keyof IpcEvents>(event: K, handler: IpcEvents[K]) => {
-  useEffect(() => {
-    window.ipcManager.on(event, handler)
-    return () => {
-      window.ipcManager.off(event, handler)
-    };
-  }, [event, handler])
-
-  const send = (...args: Parameters<IpcEvents[K]>) => {
-    window.ipcManager.send(event, ...args)
+/**
+ * send event to ipcMain
+ * @param event Event name
+ */
+export function useIpcManager<K extends keyof IpcEvents>(event: K): (...args: Parameters<IpcEvents[K]>) => void
+/**
+ * listen event from ipcMain
+ * @param event Event name
+ * @param handler Event handler
+ */
+export function useIpcManager<K extends keyof IpcEvents>(event: K, handler: IpcEvents[K]): void
+export function useIpcManager<K extends keyof IpcEvents>(event: K, handler?: IpcEvents[K]): void | ((...args: Parameters<IpcEvents[K]>) => void) {
+  if (!handler) {
+    return (...args: Parameters<IpcEvents[K]>) => {
+      window.ipcManager.send(event, ...args)
+    }
+  } else {
+    useEffect(() => {
+      window.ipcManager.on(event, handler)
+      return () => {
+        window.ipcManager.off(event, handler)
+      };
+    }, [event, handler])
   }
-
-  return send
 }
