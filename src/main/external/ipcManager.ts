@@ -4,6 +4,12 @@ import { IpcEvents } from '@shared/types'
 
 import { Context, Service } from '../context'
 
+declare module '../context' {
+  export interface Context {
+    ipc: IPCManager
+  }
+}
+
 export namespace IPCManager {
   export interface Config { }
 
@@ -34,7 +40,8 @@ export class IPCManager extends Service {
   on<K extends IPCManager.EventsKeys>(event: K, handler: IPCManager.Handler<K>): void {
     if (!this.handlers[event]) {
       Object.assign(this.handlers, { [event]: [] })
-      ipcMain.on(event, (e: IpcMainEvent, ...args: IPCManager.Events[K][]) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ipcMain.on(event, (e: IpcMainEvent, ...args: any[]) => {
         this.handlers[event]?.forEach(h => h(e, ...args))
         this.ctx.logger.debug(`IPC event: ${event}`)
       })
