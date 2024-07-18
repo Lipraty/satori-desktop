@@ -1,9 +1,11 @@
 import { BrowserWindow, BrowserWindowConstructorOptions, nativeTheme } from 'electron'
 import * as path from 'node:path'
 
-import { Context, Service } from '../context'
+import { Context, Service } from '@main'
 
-declare module '..' {
+import { } from './settingsManager'
+
+declare module '@main' {
   interface Context {
     window: WindowService
   }
@@ -17,7 +19,7 @@ declare module '..' {
 export const isDarkTheme = () => nativeTheme.shouldUseDarkColors
 
 export namespace WindowService {
-  export interface Config extends BrowserWindowConstructorOptions {}
+  export interface Config extends BrowserWindowConstructorOptions { }
 }
 
 export class WindowService extends Service {

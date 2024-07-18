@@ -17,7 +17,7 @@ export namespace Contact {
   }
 }
 
-export interface IpcEvents {
+export interface SatoriIpcApiFuncs {
   // message
   createMessage: (channelId: string, content: Element.Fragment, guildId?: string, options?: SendOptions) => Promise<Message[]>
   sendMessage: (channelId: string, content: Element.Fragment, guildId?: string, options?: SendOptions) => Promise<string[]>
@@ -39,7 +39,7 @@ export interface IpcEvents {
   createUpload: (...uploads: Upload[]) => Promise<string[]>
 
   // user
-  getLogin(): Promise<Login>
+  getLogin: () => Promise<Login>
   getUser: (userId: string, guildId?: string) => Promise<User>
   getFriendList: (next?: string) => Promise<List<User>>
   getFriendIter(): AsyncIterable<User>
@@ -48,7 +48,7 @@ export interface IpcEvents {
   // guild
   getGuild: (guildId: string) => Promise<Guild>
   getGuildList: (next?: string) => Promise<List<Guild>>
-  getGuildIter(): AsyncIterable<Guild>
+  getGuildIter: () => AsyncIterable<Guild>
 
   // guild member
   getGuildMember: (guildId: string, userId: string) => Promise<GuildMember>
@@ -83,34 +83,37 @@ export interface IpcEvents {
 
   // commands
   updateCommands: (commands: Command[]) => Promise<void>
+}
 
-  // Events
-  'internal/session': (session: Session) => void;
-  'interaction/command': (session: Session) => void;
-  'interaction/button': (session: Session) => void;
-  'message': (session: Session) => void;
-  'message-created': (session: Session) => void;
-  'message-deleted': (session: Session) => void;
-  'message-updated': (session: Session) => void;
-  'message-pinned': (session: Session) => void;
-  'message-unpinned': (session: Session) => void;
-  'guild-added': (session: Session) => void;
-  'guild-removed': (session: Session) => void;
-  'guild-updated': (session: Session) => void;
-  'guild-member-added': (session: Session) => void;
-  'guild-member-removed': (session: Session) => void;
-  'guild-member-updated': (session: Session) => void;
-  'guild-role-created': (session: Session) => void;
-  'guild-role-deleted': (session: Session) => void;
-  'guild-role-updated': (session: Session) => void;
-  'reaction-added': (session: Session) => void;
-  'reaction-removed': (session: Session) => void;
-  'login-added': (session: Session) => void;
-  'login-removed': (session: Session) => void;
-  'login-updated': (session: Session) => void;
-  'friend-request': (session: Session) => void;
-  'guild-request': (session: Session) => void;
-  'guild-member-request': (session: Session) => void;
-  'before-send': (session: Session, options: SendOptions) => Promise<void | boolean> | void | boolean;
-  'send': (session: Session) => void;
+export interface IpcEvents extends SatoriIpcApiFuncs {
+  // #region Satori Ipc Events
+  'chat/internal/session': (session: Session) => void
+  'chat/interaction/command': (session: Session) => void
+  'chat/interaction/button': (session: Session) => void
+  'chat/message': (session: Session) => void
+  'chat/message-created': (session: Session) => void
+  'chat/message-deleted': (session: Session) => void
+  'chat/message-updated': (session: Session) => void
+  'chat/message-pinned': (session: Session) => void
+  'chat/message-unpinned': (session: Session) => void
+  'chat/guild-added': (session: Session) => void
+  'chat/guild-removed': (session: Session) => void
+  'chat/guild-updated': (session: Session) => void
+  'chat/guild-member-added': (session: Session) => void
+  'chat/guild-member-removed': (session: Session) => void
+  'chat/guild-member-updated': (session: Session) => void
+  'chat/guild-role-created': (session: Session) => void
+  'chat/guild-role-deleted': (session: Session) => void
+  'chat/guild-role-updated': (session: Session) => void
+  'chat/reaction-added': (session: Session) => void
+  'chat/reaction-removed': (session: Session) => void
+  'chat/login-added': (session: Session) => void
+  'chat/login-removed': (session: Session) => void
+  'chat/login-updated': (session: Session) => void
+  'chat/friend-request': (session: Session) => void
+  'chat/guild-request': (session: Session) => void
+  'chat/guild-member-request': (session: Session) => void
+  'chat/before-send': (session: Session, options: SendOptions) => Promise<void | boolean> | void | boolean
+  'chat/send': (session: Session) => void
+  // #endregion
 }

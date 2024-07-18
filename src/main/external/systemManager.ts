@@ -1,8 +1,8 @@
 import { systemPreferences, SystemPreferences } from 'electron'
 
-import { Context, Service } from '../context'
+import { Context, Service } from '@main'
 
-declare module '..' {
+declare module '@main' {
   interface Context {
     system: SystemManager
   }

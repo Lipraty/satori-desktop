@@ -1,6 +1,6 @@
 import { default as installExtension, REACT_DEVELOPER_TOOLS } from 'electron-extension-installer'
 
-import { Context, Service } from '../context'
+import { Context, Service } from '@main'
 
 export class DevToolsManager extends Service {
   constructor(ctx: Context, _config = {}) {

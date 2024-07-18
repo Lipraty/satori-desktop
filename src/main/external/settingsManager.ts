@@ -3,11 +3,11 @@ import { writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { app } from 'electron'
 
-import { Context, Service } from '../context'
+import { Context, Service } from '@main'
 
 import { DEFAULT_SETTINGS } from './defaultSettings'
 
-declare module '..' {
+declare module '@main' {
   interface Context {
     settings: SettingsManager
   }

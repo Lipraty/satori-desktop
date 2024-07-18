@@ -1,10 +1,9 @@
 import { ipcMain, IpcMain, IpcMainEvent, IpcRendererEvent, webContents } from 'electron'
 
+import { Context, Service } from '@main'
 import { IpcEvents } from '@shared/types'
 
-import { Context, Service } from '../context'
-
-declare module '../context' {
+declare module '@main' {
   export interface Context {
     ipc: IPCManager
   }

@@ -8,7 +8,9 @@
       "electron-vite/node",
     ],
     "paths": {
+      "@main": ["./src/main/index.ts"],
       "@shared/*": ["./src/shared/*"],
+      "@main/*": ["./src/main/*"],
     }
   },
   "include": [
