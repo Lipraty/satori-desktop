@@ -322,15 +322,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cordisjs/core@npm:3.15.1":
-  version: 3.15.1
-  resolution: "@cordisjs/core@npm:3.15.1"
-  dependencies:
-    cosmokit: "npm:^1.6.2"
-  checksum: 10/0e8e6da21b6f4b91c9ae3a1809c2503d45ede100769da3d13846be4346ef2de434690eba2f46840559594a2582a5bdc28b04a901c1d60e8ee67d94156022dad8
-  languageName: node
-  linkType: hard
-
 "@cordisjs/core@npm:3.16.0":
   version: 3.16.0
   resolution: "@cordisjs/core@npm:3.16.0"
@@ -340,16 +331,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cordisjs/loader@npm:^0.10.1":
-  version: 0.10.1
-  resolution: "@cordisjs/loader@npm:0.10.1"
+"@cordisjs/core@npm:3.17.6":
+  version: 3.17.6
+  resolution: "@cordisjs/core@npm:3.17.6"
   dependencies:
     cosmokit: "npm:^1.6.2"
-    dotenv: "npm:^16.4.5"
-    js-yaml: "npm:^4.1.0"
-  peerDependencies:
-    "@cordisjs/core": ^3.15.1
-  checksum: 10/7f05074706ee7da34a9e42f8885901d98d0b0bf057b7dd86f53aab98ef201381c6003eb0bfeef5656fbd70ad84e58d0984772d214a8b8f4f6531ce1a4a4d0b9d
+  checksum: 10/9291aeab8047d4037f63d3780b6ee02bc7e43d33cdad63b67692778f3de16268aeb9d4f74b26bd03270db382ea8d5b797aeae0b641dc000ac54776e4a4b62e5e
   languageName: node
   linkType: hard
 
@@ -366,6 +353,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@cordisjs/loader@npm:^0.12.6":
+  version: 0.12.6
+  resolution: "@cordisjs/loader@npm:0.12.6"
+  dependencies:
+    cosmokit: "npm:^1.6.2"
+    dotenv: "npm:^16.4.5"
+    js-yaml: "npm:^4.1.0"
+  peerDependencies:
+    "@cordisjs/core": ^3.17.6
+  checksum: 10/34a0877a367cf2e8fb60509d4da677dd84644c4bf913512f1786113cb7170d6e3b3aa4a1485e162722ed7cf6ef8a70ec01f8fe5c91d6955bc54da993f91df384
+  languageName: node
+  linkType: hard
+
 "@cordisjs/logger@npm:^0.3.2":
   version: 0.3.2
   resolution: "@cordisjs/logger@npm:0.3.2"
@@ -377,17 +377,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cordisjs/plugin-http@npm:^0.4.0":
-  version: 0.4.2
-  resolution: "@cordisjs/plugin-http@npm:0.4.2"
+"@cordisjs/logger@npm:^0.3.3":
+  version: 0.3.3
+  resolution: "@cordisjs/logger@npm:0.3.3"
   dependencies:
     cosmokit: "npm:^1.6.2"
-    file-type: "npm:^16.5.4"
-    mime-db: "npm:^1.52.0"
-    ws: "npm:^8.16.0"
+    reggol: "npm:^1.7.0"
   peerDependencies:
-    cordis: ^3.14.0
-  checksum: 10/16285be181e9fc14eb4dfd10cf424ceb0eef6f180780cfed50ab63195efd60c7b2833f7cd42dca480b684ec0d905db709ffc84b598ffc68e2513be64cf0792fc
+    "@cordisjs/core": ^3.17.1
+  checksum: 10/8bc0badca0f99b8991a8781ccd8b7d1c3fd43181d16bf514e63d0281d2bfae4b8478beb6dc6199c0a582823df3ebcaa376949c10bef44151dbfda6169b6b67ec
   languageName: node
   linkType: hard
 
@@ -402,6 +400,32 @@ __metadata:
   peerDependencies:
     cordis: ^3.15.1
   checksum: 10/b323bc11b84d235e1fc0199fde1198c6ccc0b02753bbef8cd06db5b4954049aba58053b68b11fce4606a0086c77a9aabbd2f39e3c2d50750ef64b0e57338bf85
+  languageName: node
+  linkType: hard
+
+"@cordisjs/plugin-http@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "@cordisjs/plugin-http@npm:0.6.0"
+  dependencies:
+    cosmokit: "npm:^1.6.2"
+    file-type: "npm:^16.5.4"
+    mime-db: "npm:^1.52.0"
+    ws: "npm:^8.16.0"
+  peerDependencies:
+    cordis: ^3.17.4
+  checksum: 10/eade6a3c224825263a81acf06300d19c6a7d7d31a37c5d6badd40dc865129a60e740f108afe675b0b23a264113a429b2994158f72288ac0e627fa11213d3b5c5
+  languageName: node
+  linkType: hard
+
+"@cordisjs/schema@npm:^0.1.1":
+  version: 0.1.1
+  resolution: "@cordisjs/schema@npm:0.1.1"
+  dependencies:
+    cosmokit: "npm:^1.6.2"
+    schemastery: "npm:^3.14.6"
+  peerDependencies:
+    "@cordisjs/core": ^3.17.0
+  checksum: 10/2e3a503a2ffc4a8f3c007fefe2c046580dba7c95b863b328b78887634225743f175fb6ac8f4388c1288bad882b2d6623c8e811d4056bf390a576f979672cfbe6
   languageName: node
   linkType: hard
 
@@ -3118,32 +3142,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@satorijs/core@npm:3.7.0":
-  version: 3.7.0
-  resolution: "@satorijs/core@npm:3.7.0"
+"@satorijs/core@npm:4.1.3, @satorijs/core@npm:^4.1.3":
+  version: 4.1.3
+  resolution: "@satorijs/core@npm:4.1.3"
   dependencies:
-    "@cordisjs/plugin-http": "npm:^0.4.0"
+    "@cordisjs/plugin-http": "npm:^0.6.0"
     "@satorijs/element": "npm:^3.1.7"
-    "@satorijs/protocol": "npm:^1.3.1"
-    cordis: "npm:^3.14.0"
-    cosmokit: "npm:^1.6.2"
-    ws: "npm:^8.16.0"
-  checksum: 10/aadf3367b782f2e0622140d7d121e217db160dfd605f5899ae9e0d602f8ca6534f51e5b0cc8c276ba3ccdb0528817ff6f757587b0632297617bd8ccc02bd94f0
-  languageName: node
-  linkType: hard
-
-"@satorijs/core@npm:^4.1.0":
-  version: 4.1.0
-  resolution: "@satorijs/core@npm:4.1.0"
-  dependencies:
-    "@cordisjs/plugin-http": "npm:^0.5.1"
-    "@satorijs/element": "npm:^3.1.7"
-    "@satorijs/protocol": "npm:^1.4.0"
-    cordis: "npm:^3.15.3"
+    "@satorijs/protocol": "npm:^1.4.1"
+    cordis: "npm:^3.17.5"
     cosmokit: "npm:^1.6.2"
   peerDependencies:
-    cordis: ^3.15.3
-  checksum: 10/721e1db880efa610cb46e4d0475f8005ebb75ed346e3aafd9dac82a12e9325d856a90caaf8d72952fba7c836ca42c6f81bc4d6458433323cb8a093581e7ad014
+    cordis: ^3.17.5
+  checksum: 10/408f4e34f4df074a3233c25422ff042d609b9ac4a8abd496dc22877f5e1ae0dc3a72ba7d407af83ac5cf2ac8fbfb66f068c41b8c8d98fb87ac02007f20eca741
   languageName: node
   linkType: hard
 
@@ -3153,26 +3163,6 @@ __metadata:
   dependencies:
     cosmokit: "npm:^1.6.2"
   checksum: 10/57eb3d64457fa6b93aebcbc0446fd8a352598759cdc751fcabd0c8ef18a705d60aed4dbc221110002e19b91acf440a562eb48d775d41e758c40eff1e75a8ba58
-  languageName: node
-  linkType: hard
-
-"@satorijs/protocol@npm:^1.3.1":
-  version: 1.3.2
-  resolution: "@satorijs/protocol@npm:1.3.2"
-  dependencies:
-    "@satorijs/element": "npm:^3.1.7"
-    cosmokit: "npm:^1.6.2"
-  checksum: 10/6f6f1ff9270c0bc484d53f046b20aae478fddce3920db9388b3db5d972b82dd9e97ad1eba86118e5dcc74ade63e046c2eae301b1035bbc0c186eab1b95e90a91
-  languageName: node
-  linkType: hard
-
-"@satorijs/protocol@npm:^1.4.0":
-  version: 1.4.0
-  resolution: "@satorijs/protocol@npm:1.4.0"
-  dependencies:
-    "@satorijs/element": "npm:^3.1.7"
-    cosmokit: "npm:^1.6.2"
-  checksum: 10/4a72c732b83a375b4428cefb6ab5135845dd1a03988bff53b6d16e4e081111d2798786c4ee645e785130408ab2ddb324be3832af8d83001fc718023660c63c0f
   languageName: node
   linkType: hard
 
@@ -3186,13 +3176,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@satorijs/satori@npm:^3.7.0":
-  version: 3.7.0
-  resolution: "@satorijs/satori@npm:3.7.0"
+"@satorijs/satori@npm:^4.1.3":
+  version: 4.1.3
+  resolution: "@satorijs/satori@npm:4.1.3"
   dependencies:
-    "@satorijs/core": "npm:3.7.0"
+    "@satorijs/core": "npm:4.1.3"
     cosmokit: "npm:^1.6.2"
-  checksum: 10/871f4d74d016ab2e2cfe0a843183ec1a072a5cd4fe0ed08a96fed98b71d9d516e99f67fdbae3cb070af6c96b8371a3a6c5d402798d37c12f68894e16052223de
+  peerDependencies:
+    cordis: ^3.17.5
+  checksum: 10/d6a3e38f55716e2cb4c4945ffb63804cd2e34e7f07ffac49750ec916315d1562cacac0c87aa68904c520e0ac3efab9dbfaed8665394cf58f9f612e6d2975f49c
   languageName: node
   linkType: hard
 
@@ -4617,26 +4609,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cordis@npm:^3.14.0":
-  version: 3.15.1
-  resolution: "cordis@npm:3.15.1"
-  dependencies:
-    "@cordisjs/core": "npm:3.15.1"
-    "@cordisjs/loader": "npm:^0.10.1"
-    "@cordisjs/logger": "npm:^0.3.2"
-    "@cordisjs/timer": "npm:^0.3.2"
-    cac: "npm:^6.7.14"
-    cosmokit: "npm:^1.6.2"
-    kleur: "npm:^4.1.5"
-    reggol: "npm:^1.6.3"
-    schemastery: "npm:^3.14.6"
-  bin:
-    cordis: lib/bin/cordis.mjs
-  checksum: 10/e0404f2553a2a98a1b818b6a4f9d9ae0bb670d973af857081dc9159eaf9d41607b06a6d60da5247707da4482ebdf1fbb9cdba6eb41712cf583294fa2c7303533
-  languageName: node
-  linkType: hard
-
-"cordis@npm:^3.15.3, cordis@npm:^3.16.0":
+"cordis@npm:^3.16.0":
   version: 3.16.0
   resolution: "cordis@npm:3.16.0"
   dependencies:
@@ -4652,6 +4625,27 @@ __metadata:
   bin:
     cordis: lib/bin/cordis.mjs
   checksum: 10/86e763a3c655db99faee6f8f0abde6bbdc9848cbc6721d8c2c4e55bd7443e7e61128103d813341415c1d02bc05fb2e30b88c50b130a070f6d345b8038ebbce86
+  languageName: node
+  linkType: hard
+
+"cordis@npm:^3.17.5":
+  version: 3.17.6
+  resolution: "cordis@npm:3.17.6"
+  dependencies:
+    "@cordisjs/core": "npm:3.17.6"
+    "@cordisjs/loader": "npm:^0.12.6"
+    "@cordisjs/logger": "npm:^0.3.3"
+    "@cordisjs/schema": "npm:^0.1.1"
+    "@cordisjs/timer": "npm:^0.3.2"
+    cac: "npm:^6.7.14"
+    cosmokit: "npm:^1.6.2"
+    kleur: "npm:^4.1.5"
+    reggol: "npm:^1.7.0"
+  peerDependencies:
+    cordis: "*"
+  bin:
+    cordis: lib/bin/cordis.mjs
+  checksum: 10/80e878aee99c6b64b3294cbf0fff57c13d2a54c7aae53d9b3f4e1f2e71c02daeb53d261449a49e168bf99f2a6886b18bfe498f810e1cac244c4c37b2a54a1ca1
   languageName: node
   linkType: hard
 
@@ -9032,6 +9026,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"reggol@npm:^1.7.0":
+  version: 1.7.0
+  resolution: "reggol@npm:1.7.0"
+  dependencies:
+    cosmokit: "npm:^1.6.2"
+    object-inspect: "npm:^1.13.1"
+    supports-color: "npm:^8.1.1"
+  checksum: 10/26ab709fa0cde5b8e3b8f6d3b877e01de99e6a2e64e544b8ff059edf0aea8a256157e8a0c36b31073488c526cd9345670024491178d1930a6a8a855424b8194c
+  languageName: node
+  linkType: hard
+
 "require-directory@npm:^2.1.1":
   version: 2.1.1
   resolution: "require-directory@npm:2.1.1"
@@ -9372,9 +9377,8 @@ __metadata:
     "@eslint-react/eslint-plugin": "npm:^1.5.27"
     "@fluentui/react-components": "npm:^9.47.5"
     "@satorijs/adapter-satori": "npm:^1.3.0"
-    "@satorijs/core": "npm:^4.1.0"
-    "@satorijs/protocol": "npm:^1.4.1"
-    "@satorijs/satori": "npm:^3.7.0"
+    "@satorijs/core": "npm:^4.1.3"
+    "@satorijs/satori": "npm:^4.1.3"
     "@shikitor/core": "npm:^0.0.9"
     "@shikitor/react": "npm:^0.1.6"
     "@types/node": "npm:~20.9.5"
