@@ -48,7 +48,26 @@ export class IPCManager extends Service {
     this.handlers[event]?.push(handler)
   }
 
+  /**
+   * Send IPC Message to renderer.
+   * 
+   * > notic: do NOT use any objects with function in args.
+   * > because ipc can not send function. it will be lost(to JSON)
+   * @param event 
+   * @param args 
+   */
   send<K extends IPCManager.EventsKeys>(event: K, ...args: Parameters<IPCManager.Events[K]>) {
+    
+    // convert object to json string
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    args = args.map(arg => {
+      if (typeof arg === 'object') {
+        return JSON.stringify(arg)
+      }
+      return arg
+    })
+
     webContents.getAllWebContents().forEach((webContent) => {
       webContent.send(event, ...args)
       this.ctx.logger.debug('IPC send: ', event)
