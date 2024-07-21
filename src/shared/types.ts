@@ -1,5 +1,5 @@
 import { Element, Session } from "@satorijs/core"
-import { Channel, Command, Direction, Guild, GuildMember, GuildRole, List, Login, Message, Order, SendOptions, TwoWayList, User, Upload } from "@satorijs/protocol"
+import { Channel, Command, Direction, Guild, GuildMember, GuildRole, List, Login, Message, Order, SendOptions, TwoWayList, User, Upload, MessageLike } from "@satorijs/protocol"
 
 export enum OS {
   WINDOWS = 'windows',
@@ -86,34 +86,6 @@ export interface SatoriIpcApiFuncs {
 }
 
 export interface IpcEvents extends SatoriIpcApiFuncs {
-  // #region Satori Ipc Events
-  'chat/internal/session': (session: Session) => void
-  'chat/interaction/command': (session: Session) => void
-  'chat/interaction/button': (session: Session) => void
-  'chat/message': (session: Session) => void
-  'chat/message-created': (session: Session) => void
-  'chat/message-deleted': (session: Session) => void
-  'chat/message-updated': (session: Session) => void
-  'chat/message-pinned': (session: Session) => void
-  'chat/message-unpinned': (session: Session) => void
-  'chat/guild-added': (session: Session) => void
-  'chat/guild-removed': (session: Session) => void
-  'chat/guild-updated': (session: Session) => void
-  'chat/guild-member-added': (session: Session) => void
-  'chat/guild-member-removed': (session: Session) => void
-  'chat/guild-member-updated': (session: Session) => void
-  'chat/guild-role-created': (session: Session) => void
-  'chat/guild-role-deleted': (session: Session) => void
-  'chat/guild-role-updated': (session: Session) => void
-  'chat/reaction-added': (session: Session) => void
-  'chat/reaction-removed': (session: Session) => void
-  'chat/login-added': (session: Session) => void
-  'chat/login-removed': (session: Session) => void
-  'chat/login-updated': (session: Session) => void
-  'chat/friend-request': (session: Session) => void
-  'chat/guild-request': (session: Session) => void
-  'chat/guild-member-request': (session: Session) => void
-  'chat/before-send': (session: Session, options: SendOptions) => Promise<void | boolean> | void | boolean
-  'chat/send': (session: Session) => void
-  // #endregion
+  'chat/session': (session: Session) => void
+  'chat/message': (message: MessageLike) => void
 }
