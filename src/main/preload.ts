@@ -9,7 +9,19 @@ contextBridge.exposeInMainWorld('satori', {})
 contextBridge.exposeInMainWorld('ipcManager', {
   send: <K extends IPCManager.EventsKeys>(channel: K, ...args: Parameters<IPCManager.Events[K]>) => ipcRenderer.send(channel, ...args),
   on: <K extends IPCManager.EventsKeys>(channel: K, listener: IPCManager.Handler<K>) => {
-    ipcRenderer.on(channel, (event: IpcRendererEvent, ...args: Parameters<IPCManager.Events[K]>[]) => listener(event, ...args));
+    ipcRenderer.on(channel, (event: IpcRendererEvent, ...args: Parameters<IPCManager.Events[K]>[]) => {
+      // json string to object
+      args = args.map(arg => {
+        if (typeof arg === 'string') {
+          try {
+            return JSON.parse(arg)
+          } catch {
+            return arg
+          }
+        }
+      })
+      listener(event, ...args);
+    });
   },
   off: <K extends IPCManager.EventsKeys>(channel: K, listener: IPCManager.Handler<K>) => {
     ipcRenderer.removeListener(channel, listener);
