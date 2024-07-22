@@ -1,0 +1,34 @@
+@use "../mixins.scss" as *;
+
+.elementer {
+  &-quote {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    border-left: 3px solid var(--colorCompoundBrandStrokeHover);
+    border-radius: 5px;
+    margin-bottom: 1rem;
+    max-width: 95%;
+
+    @include dark {
+      background-color: rgba($color: white, $alpha: 0.05);
+    }
+
+    @include light {
+      background-color: rgba($color: black, $alpha: 0.05);
+    }
+  }
+
+  &-author {
+    display: flex;
+    align-items: center;
+    align-content: center;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    gap: 10px;
+  }
+
+  &-img {
+    max-width: 100%;
+  }
+}
