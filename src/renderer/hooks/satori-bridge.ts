@@ -3,33 +3,39 @@ import { Event } from "@satorijs/protocol"
 
 import { IpcEvents } from "@shared/types"
 
-declare global {
-  interface Window {
-    ipcManager: {
-      send: <K extends keyof IpcEvents>(channel: K, ...args: Parameters<IpcEvents[K]>) => void
-      on: <K extends keyof IpcEvents>(channel: K, listener: IpcEvents[K]) => void
-      off: <K extends keyof IpcEvents>(channel: K, listener: IpcEvents[K]) => void
-    }
-  }
+export interface MessageEvent {
+  messages: Event[]
+  getMessages: () => Event[]
+  subscribe: (callback: () => void) => () => void
 }
 
-const messages: Event[] = []
+type PassEventFunc<F> = F extends (x: any, ...args: infer P) => infer R ? (...args: P) => R : never
+type OmitFirstParameters<T> = T extends (x:any, ...args: infer P) => any ? P : never
 
-const eventSubscribe = (callback: () => void) => {
-  const listener = (session: Event) => {
-    if (messages.some((message) => message.id === session.id)) return
-    messages.push(session)
+const eventSubscriber = <T extends keyof IpcEvents>(event: T, listener: PassEventFunc<IpcEvents[T]>) => (callback: () => void) => {
+  const call: IpcEvents[T] = (_e, ...args: OmitFirstParameters<IpcEvents[T]>) => {
     callback()
+    return listener(...args) as ReturnType<IpcEvents[T]>
   }
 
-  window.ipcManager.on('chat/message', (_e, session) => listener(session))
-
+  window.ipcManager.on(event, call)
   return () => {
-    window.ipcManager.off('chat/message', (_e, session) => listener(session))
+    window.ipcManager.off(event, call)
   }
 }
 
-export const useMessageEventListener = () => {
-  console.log('useMessageEventListener')
-  return useSyncExternalStore(eventSubscribe, () => messages)
+export const messageEvent: MessageEvent = {
+  messages: [],
+  getMessages: () => messageEvent.messages,
+  subscribe: eventSubscriber('chat/message', (message: Event) => {
+    messageEvent.messages.push(message)
+  })
 }
+
+export const useLoginEvent = () => { }
+
+export const useInteractionEvent = () => { }
+
+export const useStatusEvent = () => { }
+
+export const useMessageEvent = () => useSyncExternalStore(messageEvent.subscribe, messageEvent.getMessages)

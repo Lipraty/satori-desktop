@@ -85,7 +85,7 @@ export interface SatoriIpcApiFuncs {
   updateCommands: (commands: Command[]) => Promise<void>
 }
 
-export interface IpcEvents extends SatoriIpcApiFuncs {
+export interface IpcEvents {
   'chat/session': (event, session: Session) => void
   'chat/message': (event, message: Event) => void
 }
