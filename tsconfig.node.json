@@ -11,7 +11,8 @@
       "@main": ["./src/main/index.ts"],
       "@shared/*": ["./src/shared/*"],
       "@main/*": ["./src/main/*"],
-    }
+    },
+    "noImplicitAny": true,
   },
   "include": [
     "src/main/**/*",
