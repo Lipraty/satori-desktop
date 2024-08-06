@@ -57,21 +57,26 @@ export const MessagingView = () => {
 
   useEffect(() => {
     if (messages.length === 0)
-      window.ipcManager.on('chat/message', (_e, message) => {
+      window.ipcManager.on('chat/message', (message) => {
         console.log('chat/message', message)
         if (messages.some((msg) => msg.id === message.id)) return
         handleNewMessage(message)
       })
     return () => {
-      window.ipcManager.off('chat/message', (_e) => { })
+      window.ipcManager.off('chat/message', () => { })
     }
   })
 
   const selectUpdated = (index: number[]) => {
     setSelectedId(index)
   }
-  const useSelecteChange = useCallback((_e, { selectedItems }) => selectUpdated(selectedItems), [])
-  const useFocus = useCallback((event) => {
+  const useSelecteChange = useCallback(
+    (_e: any, {
+      selectedItems
+    }: {
+      selectedItems: (string | number)[]
+    }) => selectUpdated(selectedItems as number[]), [])
+  const useFocus = useCallback((event: any) => {
     // Ignore bubbled up events from the children
     if (event.target !== event.currentTarget) {
       return
@@ -109,9 +114,9 @@ export const MessagingView = () => {
                 onFocus={useFocus}
                 onClick={() => setCurrentContact(contact)}
                 checkmark={null}
-                // style={{
-                //   backgroundColor: selectedId.includes(index) ? tokens.colorNeutralBackground1 : undefined,
-                // }}
+              // style={{
+              //   backgroundColor: selectedId.includes(index) ? tokens.colorNeutralBackground1 : undefined,
+              // }}
               >
                 <ListComponent.Item
                   title={contact.name}
