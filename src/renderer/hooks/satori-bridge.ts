@@ -8,12 +8,8 @@ export interface MessageEvent {
   getMessages: () => Event[]
   subscribe: (callback: () => void) => () => void
 }
-
-type PassEventFunc<F> = F extends (x: any, ...args: infer P) => infer R ? (...args: P) => R : never
-type OmitFirstParameters<T> = T extends (x:any, ...args: infer P) => any ? P : never
-
-const eventSubscriber = <T extends keyof IpcEvents>(event: T, listener: PassEventFunc<IpcEvents[T]>) => (callback: () => void) => {
-  const call: IpcEvents[T] = (_e, ...args: OmitFirstParameters<IpcEvents[T]>) => {
+const eventSubscriber = <T extends keyof IpcEvents>(event: T, listener: IpcEvents[T]) => (callback: () => void) => {
+  const call: IpcEvents[T] = (...args: Parameters<IpcEvents[T]>) => {
     callback()
     return listener(...args) as ReturnType<IpcEvents[T]>
   }
