@@ -23,6 +23,7 @@
   &__line {
     height: 1px;
     margin: 0 -12px;
+    margin-bottom: -12px;
 
     @include dark {
       background-color: rgba($color: white, $alpha: 0.06);
@@ -31,7 +32,5 @@
     @include light {
       background-color: rgba($color: black, $alpha: 0.08);
     }
-
-    margin-bottom: -12px;
   }
 }
