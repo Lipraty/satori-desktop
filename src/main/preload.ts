@@ -14,13 +14,13 @@ contextBridge.exposeInMainWorld('ipcManager', {
       args = args.map(arg => {
         if (typeof arg === 'string') {
           try {
-            return JSON.parse(arg)
+            return JSON.parse(arg);
           } catch {
-            return arg
+            return arg;
           }
         }
       })
-      listener([...args] as Parameters<IPCManager.Handler<K>>);
+      listener(...args as Parameters<IPCManager.Handler<K>>);
     });
   },
   off: <K extends IPCManager.EventsKeys>(channel: K, listener: IPCManager.Handler<K>) => {

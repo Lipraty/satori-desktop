@@ -88,4 +88,5 @@ export interface SatoriIpcApiFuncs {
 export interface IpcEvents {
   'chat/session': (session: Session) => void
   'chat/message': (message: Event) => void
+  'setting/update': (key: string, value: any) => void
 }
