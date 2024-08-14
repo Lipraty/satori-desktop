@@ -2,6 +2,7 @@ import { Avatar, Body1, Card, CardPreview } from "@fluentui/react-components"
 import { VirtualizerScrollViewDynamic } from "@fluentui/react-components/unstable"
 import { memo } from "react"
 import { Event, User } from "@satorijs/protocol"
+import { h } from "@satorijs/core"
 
 import { Elementer } from "@renderer/components/Elementer"
 
@@ -65,17 +66,21 @@ export const MessageChat = memo(({ messages, selfId, platform, contactId }: Mess
               }}>
                 {mergedMessage.user?.name}
               </Body1>
-              {mergedMessage.messages.map((message, index) =>
-                <Card key={index} appearance='filled'>
+              {mergedMessage.messages.map((message, index) => {
+                const { content } = message.message!
+                const elements = content ? h.parse(content) : []
+
+                return (<Card key={index} appearance='filled'>
                   <CardPreview style={{
                     padding: '12px',
                     userSelect: 'text'
                   }}>
                     <div className="elementer-content">{
-                      message.message?.elements ? message.message.elements.map(Elementer) : message.message?.content
+                      elements.map(Elementer)
                     }</div>
                   </CardPreview>
-                </Card>)}
+                </Card>)
+              })}
             </div>
           </div>
         )
