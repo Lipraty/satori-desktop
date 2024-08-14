@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useState } from 'react'
-import { Event } from "@satorijs/protocol"
-import { Avatar, Button, TabList, Tab, TabValue, Input, tokens } from '@fluentui/react-components'
+import { useCallback, useState } from 'react'
+import { Avatar, Button, TabList, Tab, TabValue, Input } from '@fluentui/react-components'
 import { List, ListItem } from '@fluentui/react-list-preview'
 
 import './style.scss'
 
+import { useMessageEvent, Contact } from '@renderer/hooks/satori-bridge'
 import { Icon } from '@renderer/components/Icon'
 import { ViewBox } from '@renderer/components/ViewBox'
 import { List as ListComponent } from '@renderer/components/List'
@@ -14,58 +14,14 @@ import { MessageFiles } from './MessageFiles'
 import { MessagePhotos } from './MessagePhotos'
 import { MessageSender } from './MessageSender'
 
-type Contact = {
-  platform: string,
-  id: string,
-  name: string,
-  lastContent: string,
-  avatar?: string
-}
+
 
 export const MessagingView = () => {
-  const [messages, setMessages] = useState<Event[]>([])
+  const { messages, contact } = useMessageEvent()
   const [selectedTab, setSelectedTab] = useState<TabValue>('chat')
   // const [pinnedContact] = useState<string[]>([])
-  const [contact, setContact] = useState<Contact[]>([])
   const [currentContact, setCurrentContact] = useState<Contact>()
   const [selectedId, setSelectedId] = useState<(number)[]>([0])
-
-  const handleNewMessage = (message: Event) => {
-    setContact((prevContact) => {
-      const id = message.guild?.id || message.channel?.id
-      if (!id) return prevContact
-      const index = prevContact.findIndex((contact) => contact.id === id)
-      const newContact = {
-        platform: message.platform,
-        id,
-        name: message.guild?.name || message.user?.name || 'Unknown',
-        lastContent: `${message.member?.nick ?? message.user?.name ?? 'UnknowName'}: ${message.message?.content}`,
-        avatar: message.guild?.avatar,
-      }
-      if (index === -1) {
-        return [newContact, ...prevContact]
-      } else {
-        // update lastContent and frist of updated contact
-        return [newContact, ...prevContact.slice(0, index), ...prevContact.slice(index + 1)]
-      }
-    })
-    setMessages((prevMessages) => {
-
-      return [...prevMessages, message]
-    })
-  }
-
-  useEffect(() => {
-    if (messages.length === 0)
-      window.ipcManager.on('chat/message', (message) => {
-        console.log('chat/message', message)
-        if (messages.some((msg) => msg.id === message.id)) return
-        handleNewMessage(message)
-      })
-    return () => {
-      window.ipcManager.off('chat/message', () => { })
-    }
-  })
 
   const selectUpdated = (index: number[]) => {
     setSelectedId(index)
