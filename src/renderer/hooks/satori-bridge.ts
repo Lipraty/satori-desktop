@@ -38,9 +38,11 @@ export const messageEvent: MessageEvent = {
   data: { messages: [], contact: [] },
   getData: () => messageEvent.data,
   subscribe: eventSubscriber('chat/message', (message: Event) => {
-    messageEvent.data.messages.push(message)
+    const messages = messageEvent.data.messages
+    let contacts = messageEvent.data.contact
+    messages.push(message)
     // update contact
-    const prevContact = messageEvent.data.contact
+    const prevContact = contacts
     const id = message.guild?.id || message.channel?.id
     if (id) {
       const index = prevContact.findIndex((contact) => contact.id === id)
@@ -53,12 +55,14 @@ export const messageEvent: MessageEvent = {
       }
       if (index === -1) {
         // insert new contact
-        messageEvent.data.contact = [newContact, ...prevContact]
+        contacts = [newContact, ...prevContact]
       } else {
         // update lastContent and frist of updated contact
-        messageEvent.data.contact = [newContact, ...prevContact.slice(0, index), ...prevContact.slice(index + 1)]
+        contacts = [newContact, ...prevContact.slice(0, index), ...prevContact.slice(index + 1)]
       }
     }
+    console.log('message:', message)
+    messageEvent.data = { messages: [...messages], contact: contacts }
   })
 }
 
