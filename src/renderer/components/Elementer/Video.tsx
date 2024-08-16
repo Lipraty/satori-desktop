@@ -1,5 +1,5 @@
 
 
 export const EVideo = ({ src }) => {
-  return <video src={src} controls />
+  return <video className="elementer-video" src={src} controls />
 }

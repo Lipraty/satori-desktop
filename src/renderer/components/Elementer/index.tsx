@@ -29,7 +29,7 @@ export const Elementer = (element: Element) => {
       return <a href={attrs.href}>{attrs.href}</a>
     // source
     case 'img':
-      return <img className="elementer-img" src={attrs.src} alt={attrs.name} width={attrs.width} height={attrs.height}></img>
+      return <img className="elementer-img" src={attrs.src} alt={attrs.name} width={attrs.width / 2} height={attrs.height / 2}></img>
     case 'audio':
       return <EAudio src={attrs.src} />
     case 'video':

@@ -8,7 +8,7 @@
     border-left: 3px solid var(--colorCompoundBrandStrokeHover);
     border-radius: 5px;
     margin-bottom: 1rem;
-    max-width: 95%;
+    max-width: 65%;
 
     @include dark {
       background-color: rgba($color: white, $alpha: 0.05);
@@ -26,9 +26,21 @@
     flex-wrap: nowrap;
     flex-direction: row;
     gap: 10px;
+
+    :nth-child(1){
+      margin-left: 0.5rem;
+    }
   }
 
   &-img {
+    max-width: 60%;
+  }
+
+  &-video {
     max-width: 100%;
+  }
+
+  &-at {
+    color: var(--colorNeutralForeground2BrandHover);
   }
 }

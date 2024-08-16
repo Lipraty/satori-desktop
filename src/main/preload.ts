@@ -24,6 +24,6 @@ contextBridge.exposeInMainWorld('ipcManager', {
     });
   },
   off: <K extends IPCManager.EventsKeys>(channel: K, listener: IPCManager.Handler<K>) => {
-    ipcRenderer.removeListener(channel, listener);
+    ipcRenderer.off(channel, listener);
   }
 })

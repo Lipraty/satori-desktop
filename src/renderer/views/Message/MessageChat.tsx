@@ -51,7 +51,7 @@ export const MessageChat = memo(({ messages, selfId, platform, contactId }: Mess
           }}>
             <Avatar
               className='message-avatar'
-              name={mergedMessage?.nick || mergedMessage.user?.name}
+              name={mergedMessage?.nick ?? mergedMessage.user?.name}
               image={mergedMessage.user?.avatar ? { src: mergedMessage.user?.avatar } : undefined}
               size={40}
               style={{
@@ -64,7 +64,7 @@ export const MessageChat = memo(({ messages, selfId, platform, contactId }: Mess
               <Body1 className='message-content__username' style={{
                 textAlign: selfId === mergedMessage.user?.id ? 'right' : 'left',
               }}>
-                {mergedMessage.user?.name}
+                {mergedMessage?.nick ?? mergedMessage.user?.name ?? mergedMessage.user.id}
               </Body1>
               {mergedMessage.messages.map((message, index) => {
                 const { content } = message.message!
