@@ -4,26 +4,33 @@ import { contextBridge, ipcRenderer, IpcRendererEvent } from "electron"
 
 import type { IPCManager } from "./external/ipcManager";
 
+const parameterFormatter = (args: any[]) => args.map(arg => {
+  if (typeof arg === 'function') {
+    return arg.toString();
+  }
+  if (typeof arg === 'object') {
+    return JSON.stringify(arg);
+  }
+  if (typeof arg === 'string') {
+    try {
+      return JSON.parse(arg);
+    } catch {
+      return arg;
+    }
+  }
+  return arg;
+})
+
 contextBridge.exposeInMainWorld('satori', {})
 
 contextBridge.exposeInMainWorld('ipcManager', {
   send: <K extends IPCManager.EventsKeys>(channel: K, ...args: Parameters<IPCManager.Events[K]>) => ipcRenderer.send(channel, ...args),
   on: <K extends IPCManager.EventsKeys>(channel: K, listener: IPCManager.Handler<K>) => {
-    ipcRenderer.on(channel, (_event: IpcRendererEvent, ...args: Parameters<IPCManager.Events[K]>[]) => {
-      // json string to object
-      args = args.map(arg => {
-        if (typeof arg === 'string') {
-          try {
-            return JSON.parse(arg);
-          } catch {
-            return arg;
-          }
-        }
-      })
-      listener(...args as Parameters<IPCManager.Handler<K>>);
-    });
+    ipcRenderer.on(channel, (_event: IpcRendererEvent, ...args: Parameters<IPCManager.Events[K]>[]) =>
+      listener(...parameterFormatter(args) as Parameters<IPCManager.Handler<K>>));
   },
   off: <K extends IPCManager.EventsKeys>(channel: K, listener: IPCManager.Handler<K>) => {
-    ipcRenderer.off(channel, listener);
+    ipcRenderer.off(channel, (_event: IpcRendererEvent, ...args: Parameters<IPCManager.Events[K]>[]) =>
+      listener(...parameterFormatter(args) as Parameters<IPCManager.Handler<K>>));
   }
 })
