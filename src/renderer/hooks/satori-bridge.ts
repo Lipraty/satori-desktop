@@ -98,34 +98,21 @@ function messageContactFormatter(id: string, message: Event, prevContact?: Conta
   const contact: Contact = prevContact ?? {
     platform: message.platform!,
     id,
-    name: '',
+    name: message.guild?.name ?? message.channel?.name ?? id,
     lastContent: '',
     avatar: message.guild?.avatar,
     type: message.channel!.type!
   }
 
-  console.log(id)
-
-  if (prevContact) {
-    if (message.channel!.type === Channel.Type.DIRECT) {
-      if (!contact.avatar && id.replace(/^private:/, '') !== message.selfId)
-        contact.avatar = message.user!.avatar
-      if (!contact.name)
-        contact.name = message.user!.name ?? message.channel!.name ?? id
+  if (message.channel!.type === Channel.Type.DIRECT) {
+    const pureId = id.replace(/^private:/, '')
+    if (pureId !== message.selfId) {
+      if (!contact.avatar) contact.avatar = message.user!.avatar
+      if (contact.name.length <= 0) contact.name = message.channel!.name ?? pureId
     }
-  } else {
-    if (message.channel!.type === Channel.Type.DIRECT) {
-      contact.name = message.channel!.name ?? message.user!.name ?? id
-      if (id.replace(/^private:/, '') !== message.selfId)
-        contact.avatar = message.user!.avatar
-    }
-    else
-      contact.name = message.channel!.name ?? id
   }
-
   // reset new content
   contact.lastContent = contentTransducer(message.channel!.type!, message)
-
   return contact
 }
 
@@ -135,7 +122,6 @@ export const messageEvent: MessageEvent = {
   subscribe: eventSubscriber('chat/message', (message: Event) => {
     // NOTE: in `message-create` event, the `channel` and `message` and `user` will required
     // so, we can use non-null assertion.
-    console.log('trigger subscribe')
 
     const messages = messageEvent.data.messages
     let contacts = messageEvent.data.contact
