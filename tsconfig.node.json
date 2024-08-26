@@ -16,7 +16,6 @@
   },
   "include": [
     "src/main/**/*",
-    "src/server/**/*",
     "src/shared/**/*",
     "forge.*",
     "vite.*.config.ts",
