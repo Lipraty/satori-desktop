@@ -5,6 +5,7 @@ import { Event, User } from "@satorijs/protocol"
 import { h } from "@satorijs/core"
 
 import { Elementer } from "@renderer/components/Elementer"
+import { } from "@renderer/components/Elementer/external/chronocat" // chronocat handle
 
 export interface MessageChatProps {
   contactId: string
@@ -72,11 +73,11 @@ export const MessageChat = memo(({ messages, selfId, platform, contactId }: Mess
 
                 return (<Card key={index} appearance='filled'>
                   <CardPreview style={{
-                    padding: '12px',
+                    padding: '10px',
                     userSelect: 'text'
                   }}>
                     <div className="elementer-content">{
-                      elements.map(Elementer)
+                      elements.map(Elementer.renderer)
                     }</div>
                   </CardPreview>
                 </Card>)

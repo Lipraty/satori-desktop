@@ -48,13 +48,11 @@ export const MessagingView = () => {
         <Input style={{
           marginBottom: '0.5rem',
         }} placeholder="Search" contentBefore={<Icon name='Search' />} />
-        <div style={{
-          margin: '0 -12px',
-          overflow: 'hidden auto',
-          height: 'calc(100% - 2.5rem)',
-        }}>
+        <div className='contact scrollable'>
           <span style={{
-            padding: '0 1.2rem',
+            margin: '4px 26px',
+            fontSize: '0.77rem',
+            opacity: '0.67',
           }}>MESSAGES</span>
           <List
             className='list'
@@ -91,17 +89,17 @@ export const MessagingView = () => {
       }}>
         {currentContact && <>
           <div className='message-titlebar'>
-            <Avatar name={currentContact?.name} size={28} />
+            <Avatar name={currentContact?.name} size={28} image={{ src: currentContact?.avatar }} />
             <span className='message-titlebar__title'>{currentContact?.name}</span>
-            <TabList size='large' selectedValue={selectedTab} onTabSelect={(_e, d) => { setSelectedTab(d.value) }}>
-              <Tab id='Chat' value='chat'>Chat</Tab>
-              <Tab id='Files' value='files'>Files</Tab>
-              <Tab id='Photos' value='photos'>Photos</Tab>
-            </TabList>
             <div style={{
               flex: '1',
               maxWidth: '100%',
             }} />
+            <TabList size='large' selectedValue={selectedTab} onTabSelect={(_e, d) => { setSelectedTab(d.value) }}>
+              <Tab id='Chat' value='chat'>Chat</Tab>
+              <Tab id='Files' value='files' disabled>Files</Tab>
+              <Tab id='Photos' value='photos' disabled>Photos</Tab>
+            </TabList>
             <Button shape='circular' appearance='transparent' icon={<Icon name='PersonInfo' bundle />} />
           </div>
           <div className='message-context'>
