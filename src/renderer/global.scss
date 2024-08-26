@@ -71,3 +71,35 @@ nav {
     color: white;
   }
 }
+
+.scrollable {
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 6px;
+
+    @include dark {
+      background-color: rgba($color: white, $alpha: 0.33);
+    }
+
+    @include light {
+      background-color: rgba($color: black, $alpha: 0.23);
+    }
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    @include dark {
+      background-color: rgba($color: white, $alpha: 0.5);
+    }
+
+    @include light {
+      background-color: rgba($color: black, $alpha: 0.45);
+    }
+  }
+}
