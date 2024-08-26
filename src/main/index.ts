@@ -3,10 +3,10 @@ export * from './context'
 import * as path from 'node:path'
 
 // Cordis plugin
-import { default as CordisHTTP } from '@cordisjs/plugin-http'
+import { HTTP as CordisHTTP } from '@cordisjs/plugin-http'
 // Satori
-import { default as Satori } from '@satorijs/core'
-import { default as AdapterSatori } from '@satorijs/adapter-satori'
+import { Satori as SSatori } from '@satorijs/core'
+import { SatoriAdapter as AdapterSatori } from '@satorijs/adapter-satori'
 
 import { Context } from './context'
 import { WindowService, isDarkTheme } from './external/windowManager'
@@ -39,7 +39,8 @@ app.plugin<WindowService.Config>(WindowService, {
   },
 })
 app.plugin(DevToolsManager, {})
-app.plugin(Satori)
+console.log(SSatori)
+app.plugin(SSatori)
 app.plugin(CordisHTTP, {})
 app.inject(['satori'], satori => {
   satori.plugin(AdapterSatori, {
