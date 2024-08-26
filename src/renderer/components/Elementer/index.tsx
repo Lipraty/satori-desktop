@@ -5,67 +5,80 @@ import { EAudio } from "./Audio";
 import { EVideo } from "./Video";
 import { EQuote } from "./Quote";
 import { EAuthor } from "./Author";
-// formatter
-import * as chronocat from './external/chronocat'
+import { EImage } from "./Image";
 
 import './style.scss'
 
-const formatters = [
-  chronocat
-]
+export interface Elementer {
+  handles: Record<string, (element: Element) => React.ReactNode | JSX.Element>
+  addHandle: (type: string | string[], handle: (element: Element) => React.ReactNode | JSX.Element) => void
+  renderer: (element: Element) => React.ReactNode | JSX.Element
+}
 
-export const Elementer = (element: Element) => {
-  const { attrs, children, type } = element
-
-  switch (type) {
-    // base element
-    case 'text':
-      return <span className="elementer-text">{attrs.content}</span>
-    case 'at':
-      return <span className="elementer-at">@{attrs.name}</span>
-    case 'sharp':
-      return <span className="elementer-sharp">#{attrs.name}</span>
-    case 'a':
-      return <a href={attrs.href}>{attrs.href}</a>
-    // source
-    case 'img':
-      return <img className="elementer-img" src={attrs.src} alt={attrs.name} width={attrs.width / 2} height={attrs.height / 2}></img>
-    case 'audio':
-      return <EAudio src={attrs.src} />
-    case 'video':
-      return <EVideo src={attrs.src} />
-    // Modifying
-    case 'b':
-    case 'strong':
-    case 'i':
-    case 'em':
-    case 'u':
-    case 'ins':
-    case 's':
-    case 'del':
-    case 'code':
-    case 'sup':
-    case 'sub':
-      return createElement(type, { className: `elementer-${type}` })
-    case 'br':
-      return <br />
-    case 'p':
-      return <p className="elementer-p">{children.map(Elementer)}</p>
-    // metadata
-    case 'quote':
-      return <EQuote>{children.map(Elementer)}</EQuote>
-    case 'author':
-      return <EAuthor id={attrs.id} avatar={attrs.avatar} name={attrs.name} />
-    // interaction
-    default:
-      // if (type.includes(':')) {
-      //   const [namespace, _type] = type.split(':')
-      //   const formatter = formatters.find(formatter => formatter.selfTag === namespace)
-      //   if (formatter) {
-      //     const result = formatter[namespace](_type, attrs, children)
-      //     if (result) return result
-      //   }
-      // }
-      return <span className="elementer-unknown">Unknown element: {type}</span>
+export const Elementer: Elementer = {
+  handles: {},
+  addHandle: (type, handle) => {
+    if (Array.isArray(type)) {
+      type.forEach(t => Elementer.handles[t] = handle)
+    } else {
+      Elementer.handles[type] = handle
+    }
+  },
+  renderer: (element) => {
+    const { type } = element
+    const handle = Elementer.handles[type]
+    if (handle) {
+      return handle(element)
+    }
+    return <span className="elementer-unknown">Unknown element: {element.type}</span>;
   }
 }
+
+Elementer.addHandle('text', (element) => {
+  return <span className="elementer-text">{element.attrs.content}</span>
+})
+
+Elementer.addHandle('at', (element) => {
+  return <span className="elementer-at">@{element.attrs.name}</span>
+})
+
+Elementer.addHandle('sharp', (element) => {
+  return <span className="elementer-sharp">#{element.attrs.name}</span>
+})
+
+Elementer.addHandle('a', (element) => {
+  return <a href={element.attrs.href}>{element.attrs.href}</a>
+})
+
+Elementer.addHandle('img', (element) => {
+  const { src, name, width, height } = element.attrs
+  return <EImage src={src} title={name} width={width} height={height} />
+})
+
+Elementer.addHandle('audio', (element) => {
+  return <EAudio src={element.attrs.src} />
+})
+
+Elementer.addHandle('video', (element) => {
+  return <EVideo src={element.attrs.src} />
+})
+
+Elementer.addHandle(['b', 'strong', 'i', 'em', 'u', 'ins', 's', 'del', 'code', 'sup', 'sub'], (element) => {
+  return createElement(element.type, { className: `elementer-${element.type}` })
+})
+
+Elementer.addHandle('br', () => {
+  return <br />
+})
+
+Elementer.addHandle('p', (element) => {
+  return <p className="elementer-p">{element.children.map(Elementer.renderer)}</p>
+})
+
+Elementer.addHandle('quote', (element) => {
+  return <EQuote>{element.children.map(Elementer.renderer)}</EQuote>
+})
+
+Elementer.addHandle('author', (element) => {
+  return <EAuthor id={element.attrs.id} avatar={element.attrs.avatar} name={element.attrs.name} />
+})
