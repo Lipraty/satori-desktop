@@ -89,7 +89,7 @@ function eventSubscriber<T extends keyof IpcEvents>(event: T, listener: IpcEvent
     }
     window.ipcManager.on<T>(event, call)
     return () => {
-      window.ipcManager.off(event, callback)
+      window.ipcManager.off(event, call)
     }
   }
 }

@@ -29,8 +29,15 @@ contextBridge.exposeInMainWorld('ipcManager', {
     ipcRenderer.on(channel, (_event: IpcRendererEvent, ...args: Parameters<IPCManager.Events[K]>[]) =>
       listener(...parameterFormatter(args) as Parameters<IPCManager.Handler<K>>));
   },
+  // off: <K extends IPCManager.EventsKeys>(channel: K, listener: IPCManager.Handler<K>) => {
+  //   console.log('off', channel)
+  //   ipcRenderer.off(channel, (_event: IpcRendererEvent, ...args: Parameters<IPCManager.Events[K]>[]) =>{
+  //     console.log('off', channel, args)
+  //     listener(...parameterFormatter(args) as Parameters<IPCManager.Handler<K>>)
+  //   });
+  // },
   off: <K extends IPCManager.EventsKeys>(channel: K, listener: IPCManager.Handler<K>) => {
-    ipcRenderer.off(channel, (_event: IpcRendererEvent, ...args: Parameters<IPCManager.Events[K]>[]) =>
-      listener(...parameterFormatter(args) as Parameters<IPCManager.Handler<K>>));
+    console.log('off', channel)
+    ipcRenderer.off(channel, listener);
   }
 })
