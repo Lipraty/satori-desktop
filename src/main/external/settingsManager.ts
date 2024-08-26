@@ -13,7 +13,6 @@ declare module '@main' {
   }
 
   interface Events {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     'settings/changed': (key: keyof Settings, value: any, oldValue?: any) => void
   }
 }
