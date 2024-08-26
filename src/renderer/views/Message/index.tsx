@@ -63,7 +63,7 @@ export const MessagingView = () => {
           >
             {contact.map((contact, index) => (
               <ListItem
-                key={contact.id}
+                key={`contact-${contact.id}list${index}`}
                 value={index}
                 onFocus={useFocus}
                 onClick={() => setCurrentContact(contact)}
@@ -73,6 +73,7 @@ export const MessagingView = () => {
               // }}
               >
                 <ListComponent.Item
+                  as='div'
                   title={contact.name}
                   subtitle={contact.lastContent}
                   avatar={contact.avatar}

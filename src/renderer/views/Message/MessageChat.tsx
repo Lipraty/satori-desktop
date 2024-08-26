@@ -47,7 +47,7 @@ export const MessageChat = memo(({ messages, selfId, platform, contactId }: Mess
         const mergedMessage = mergedMessages[index]
 
         return (
-          <div key={index} className='message' style={{
+          <div key={`message-${index}`} className='message' style={{
             flexDirection: selfId === mergedMessage.user?.id ? 'row-reverse' : 'row',
           }}>
             <Avatar
@@ -71,7 +71,7 @@ export const MessageChat = memo(({ messages, selfId, platform, contactId }: Mess
                 const { content } = message.message!
                 const elements = content ? h.parse(content) : []
 
-                return (<Card key={index} appearance='filled'>
+                return (<Card key={`content-${message.id}`} appearance='filled'>
                   <CardPreview style={{
                     padding: '10px',
                     userSelect: 'text'
