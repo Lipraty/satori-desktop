@@ -87,10 +87,8 @@ function eventSubscriber<T extends keyof IpcEvents>(event: T, listener: IpcEvent
       // eslint-disable-next-line prefer-spread
       return (listener as any).apply(null, args) as ReturnType<IpcEvents[T]>
     }
-    window.ipcManager.on<T>(event, call)
-    return () => {
-      window.ipcManager.off(event, call)
-    }
+    const dispose = window.ipcManager.on<T>(event, call)
+    return () => dispose()
   }
 }
 

@@ -4,7 +4,7 @@ import { contextBridge, ipcRenderer, IpcRendererEvent } from "electron"
 
 import type { IPCManager } from "./external/ipcManager";
 
-const parameterFormatter = (args: any[]) => args.map(arg => {
+const parameterFormatter = <T>(args: any[]) => args.map(arg => {
   if (typeof arg === 'function') {
     return arg.toString();
   }
@@ -19,25 +19,18 @@ const parameterFormatter = (args: any[]) => args.map(arg => {
     }
   }
   return arg;
-})
+}) as T
 
-contextBridge.exposeInMainWorld('satori', {})
+contextBridge.exposeInMainWorld('satori', {});
 
-contextBridge.exposeInMainWorld('ipcManager', {
+const ipcManager = {
   send: <K extends IPCManager.EventsKeys>(channel: K, ...args: Parameters<IPCManager.Events[K]>) => ipcRenderer.send(channel, ...args),
   on: <K extends IPCManager.EventsKeys>(channel: K, listener: IPCManager.Handler<K>) => {
-    ipcRenderer.on(channel, (_event: IpcRendererEvent, ...args: Parameters<IPCManager.Events[K]>[]) =>
-      listener(...parameterFormatter(args) as Parameters<IPCManager.Handler<K>>));
-  },
-  // off: <K extends IPCManager.EventsKeys>(channel: K, listener: IPCManager.Handler<K>) => {
-  //   console.log('off', channel)
-  //   ipcRenderer.off(channel, (_event: IpcRendererEvent, ...args: Parameters<IPCManager.Events[K]>[]) =>{
-  //     console.log('off', channel, args)
-  //     listener(...parameterFormatter(args) as Parameters<IPCManager.Handler<K>>)
-  //   });
-  // },
-  off: <K extends IPCManager.EventsKeys>(channel: K, listener: IPCManager.Handler<K>) => {
-    console.log('off', channel)
-    ipcRenderer.off(channel, listener);
+    const listenerWrapper = (_event: IpcRendererEvent, ...args: Parameters<IPCManager.Handler<K>>) =>
+      listener(...parameterFormatter<Parameters<IPCManager.Handler<K>>>(args));
+    ipcRenderer.on(channel, listenerWrapper);
+    return () => ipcRenderer.removeListener(channel, listenerWrapper);
   }
-})
+}
+
+contextBridge.exposeInMainWorld('ipcManager', ipcManager);
