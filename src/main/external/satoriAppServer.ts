@@ -7,7 +7,7 @@ import { SatoriIpcApiFuncs } from '@shared/types'
 import { } from './windowManager'
 import { } from './ipcManager'
 
-const satoriApi: (keyof SatoriIpcApiFuncs)[] = [
+export const satoriApi = [
   // message
   'createMessage',
   'sendMessage',
@@ -63,9 +63,7 @@ const satoriApi: (keyof SatoriIpcApiFuncs)[] = [
   'updateCommands',
 ]
 
-export interface SatoriBridge extends SatoriIpcApiFuncs { }
-
-export class SatoriBridge {
+export class SatoriAppServer {
   static inject = ['window', 'satori', 'ipc']
 
   constructor(ctx: Context) {

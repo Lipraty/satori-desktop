@@ -14,7 +14,7 @@ import { SettingsManager } from './external/settingsManager'
 import { IPCManager } from './external/ipcManager'
 import { SystemManager } from './external/systemManager'
 import { DevToolsManager } from './external/devToolsManager'
-import { SatoriBridge } from './external/satoriBridge'
+import { SatoriAppServer } from './external/satoriAppServer'
 
 const app = new Context()
 
@@ -48,6 +48,6 @@ app.inject(['satori'], satori => {
     token: '8f69490142b1da3ed0968e8658aa12af49a3774fc5c9ccc65f1b31b0cb152f3b'
   })
 })
-app.plugin(SatoriBridge, {})
+app.plugin(SatoriAppServer, {})
 
 app.start()
