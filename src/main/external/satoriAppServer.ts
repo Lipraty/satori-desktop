@@ -2,6 +2,7 @@ import { } from '@satorijs/adapter-satori'
 import { Session } from '@satorijs/core'
 
 import { Context } from '@main'
+import { SnowflakeService } from '@main/external/snowflakeService'
 import { SatoriIpcApiFuncs } from '@shared/types'
 
 import { } from './windowManager'
@@ -64,11 +65,13 @@ export const satoriApi = [
 ]
 
 export class SatoriAppServer {
-  static inject = ['window', 'satori', 'ipc']
+  static inject = ['window', 'satori', 'ipc', 'snowflake']
 
   constructor(ctx: Context) {
+    ctx.plugin(SnowflakeService, { machineId: 1 })
+
     ctx.on('internal/session', (session: Session) => {
-      if(session.type.includes('message')){
+      if (session.type.includes('message')) {
         ctx.ipc.send('chat/message', session.toJSON())
       }
     })
