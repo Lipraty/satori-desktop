@@ -4,8 +4,8 @@ export interface AppMessage {
   id: string
   platfrom: string
   channel: Channel
-  message_id: string
-  timestamp: string
+  messageId: string
+  timestamp: number
   prev: 0 | 1 | string
   next: 0 | 1 | string
   content: Message | Message[]
