@@ -4,7 +4,7 @@ import * as Cordis from 'cordis'
 
 export interface Events<C extends Context = Context> extends Cordis.Events<C> {}
 
-export interface Context {
+export interface Context extends Cordis.Context {
   [Context.events]: Events<this>
 }
 

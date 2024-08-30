@@ -13,6 +13,10 @@ export namespace SnowflakeService {
   }
 }
 
+export interface SnowflakeService {
+  (): string
+}
+
 export class SnowflakeService extends Service {
   private epoch: number
   private machineId: number
