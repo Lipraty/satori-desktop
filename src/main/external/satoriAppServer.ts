@@ -1,6 +1,7 @@
 import { } from '@satorijs/adapter-satori'
 import { Session } from '@satorijs/core'
 import { Event as SPMessage } from '@satorijs/protocol'
+import { SatoriAdapter as AdapterSatori } from '@satorijs/adapter-satori'
 
 import { Context, Service } from '@main'
 import { SnowflakeService } from '@main/external/snowflakeService'
@@ -72,22 +73,32 @@ export const satoriApi = [
   'updateCommands',
 ]
 
-export namespace SatoriAppServer {}
+export namespace SatoriAppServer { }
 
 export class SatoriAppServer extends Service {
-  static inject = ['window', 'satori', 'ipc', 'snowflake']
+  static inject = ['satori', 'ipc', 'snowflake']
 
   private lastAppMessageId = 0
 
   constructor(ctx: Context) {
     super(ctx, 'sas')
 
-    ctx.plugin(SnowflakeService, { machineId: 1 })
+    
+
+    //TODO Aoto load in network settings
+    ctx.plugin(AdapterSatori, {
+      endpoint: 'http://localhost:5500',
+      token: '8f69490142b1da3ed0968e8658aa12af49a3774fc5c9ccc65f1b31b0cb152f3b'
+    })
     ctx.on('internal/session', (session: Session) => {
       if (session.type.includes('message')) {
         ctx.ipc.send('chat/message', session.toJSON())
       }
     })
+  }
+
+  async start() {
+    console.log('SatoriAppServer init')
   }
 
   async createAppMessage(message: SPMessage) {

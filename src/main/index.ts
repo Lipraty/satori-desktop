@@ -5,8 +5,7 @@ import * as path from 'node:path'
 // Cordis plugin
 import { HTTP as CordisHTTP } from '@cordisjs/plugin-http'
 // Satori
-import { Satori as SSatori } from '@satorijs/core'
-import { SatoriAdapter as AdapterSatori } from '@satorijs/adapter-satori'
+import { Satori } from '@satorijs/core'
 
 import { Context } from './context'
 import { WindowService, isDarkTheme } from './external/windowManager'
@@ -15,6 +14,7 @@ import { IPCManager } from './external/ipcManager'
 import { SystemManager } from './external/systemManager'
 import { DevToolsManager } from './external/devToolsManager'
 import { SatoriAppServer } from './external/satoriAppServer'
+import { SnowflakeService } from './external/snowflakeService'
 
 const app = new Context()
 
@@ -39,15 +39,9 @@ app.plugin<WindowService.Config>(WindowService, {
   },
 })
 app.plugin(DevToolsManager, {})
-console.log(SSatori)
-app.plugin(SSatori)
+app.plugin(Satori)
 app.plugin(CordisHTTP, {})
-app.inject(['satori'], satori => {
-  satori.plugin(AdapterSatori, {
-    endpoint: 'http://localhost:5500',
-    token: '8f69490142b1da3ed0968e8658aa12af49a3774fc5c9ccc65f1b31b0cb152f3b'
-  })
-})
+app.plugin(SnowflakeService, { machineId: 1 })
 app.plugin(SatoriAppServer, {})
 
 app.start()
