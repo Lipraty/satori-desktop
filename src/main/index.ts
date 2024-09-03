@@ -4,6 +4,7 @@ import * as path from 'node:path'
 
 // Cordis plugin
 import { HTTP as CordisHTTP } from '@cordisjs/plugin-http'
+import { Database } from 'minato'
 // Satori
 import { Satori } from '@satorijs/core'
 

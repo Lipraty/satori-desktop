@@ -84,6 +84,10 @@ export class WindowService extends Service {
     })
   }
 
+  createWindow(config: BrowserWindowConstructorOptions) {
+    
+  }
+
   setWindowMaterial(material: 'auto' | 'none' | 'mica' | 'acrylic' | 'tabbed') {
     this.mainWindow.setBackgroundMaterial(material)
   }

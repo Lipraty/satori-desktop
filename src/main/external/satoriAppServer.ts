@@ -1,10 +1,8 @@
-import { } from '@satorijs/adapter-satori'
 import { Session } from '@satorijs/core'
 import { Event as SPMessage } from '@satorijs/protocol'
 import { SatoriAdapter as AdapterSatori } from '@satorijs/adapter-satori'
 
 import { Context, Service } from '@main'
-import { SnowflakeService } from '@main/external/snowflakeService'
 import { SatoriIpcApiFuncs } from '@shared/types'
 
 import { } from './windowManager'
@@ -82,8 +80,6 @@ export class SatoriAppServer extends Service {
 
   constructor(ctx: Context) {
     super(ctx, 'sas')
-
-    
 
     //TODO Aoto load in network settings
     ctx.plugin(AdapterSatori, {

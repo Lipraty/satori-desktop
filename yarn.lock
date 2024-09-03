@@ -9159,6 +9159,7 @@ __metadata:
     react-use: "npm:^17.5.1"
     reggol: "npm:^1.7.0"
     sass: "npm:^1.77.8"
+    schemastery: "npm:^3.14.6"
     swr: "npm:^2.2.5"
     ts-node: "npm:^10.9.2"
     typescript: "npm:^5.5.4"
