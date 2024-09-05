@@ -12,6 +12,7 @@ declare module '@main' {
 
   interface Events {
     'window/ready': (window: BrowserWindow) => void
+    'window/created': (window: BrowserWindow) => void
     'window/all-closed': () => void
   }
 }
@@ -44,15 +45,17 @@ export class WindowService extends Service {
     }
 
     nativeTheme.on('updated', () => {
-      this.mainWindow.setTitleBarOverlay && this.mainWindow.setTitleBarOverlay({
-        symbolColor: isDarkTheme() ? '#ffffff' : '#000000',
-        color: '#00000000',
-        height: 44,
+      BrowserWindow.getAllWindows().forEach(window => {
+        window.setTitleBarOverlay && window.setTitleBarOverlay({
+          symbolColor: isDarkTheme() ? '#ffffff' : '#000000',
+          color: '#00000000',
+          height: 44,
+        })
       })
     })
 
     ctx.app.on('ready', () => {
-      this.mainWindow = new BrowserWindow(config)
+      this.mainWindow = this.createWindow(config)
 
       if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
         this.mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL)
@@ -66,11 +69,8 @@ export class WindowService extends Service {
     })
 
     ctx.app.on('window-all-closed', () => {
-      this.ctx.emit('window/all-closed')
-      if (process.platform !== 'darwin') {
-        this.ctx.scope.dispose()
-        ctx.app.quit()
-      }
+      // mabye the app can running in the background.
+      this.ctx.scope.dispose()
     })
 
     ctx.app.on('activate', () => {
@@ -80,12 +80,16 @@ export class WindowService extends Service {
     })
 
     ctx.on('dispose', () => {
-      this.mainWindow.close()
+      if (BrowserWindow.getAllWindows().length !== 0)
+        BrowserWindow.getAllWindows().forEach(window => window.close())
     })
   }
 
   createWindow(config: BrowserWindowConstructorOptions) {
-    
+    config = { ...this.config, ...config }
+    const window = new BrowserWindow(config)
+    this.ctx.emit('window/created', window)
+    return window
   }
 
   setWindowMaterial(material: 'auto' | 'none' | 'mica' | 'acrylic' | 'tabbed') {
