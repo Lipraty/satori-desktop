@@ -6,6 +6,8 @@
 
 基于 [Satori](https://github.com/satorijs/satori) 协议的跨平台聊天应用。
 
+[English](./README.md) | 简体中文
+
 </div>
 
 > [!NOTE]

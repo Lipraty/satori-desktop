@@ -6,6 +6,8 @@
 
 The universal and cross-platform chat application based on the Satori protocol.
 
+English | [简体中文](./README_CN.md)
+
 </div>
 
 > [!NOTE]
