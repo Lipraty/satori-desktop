@@ -24,6 +24,11 @@ export class NotifierService extends Service {
     super(ctx, 'notifier')
   }
 
+  /*
+  * Show a notification
+  *
+  * @return try remove it from the Action Center.
+  * */
   create(options: NotifierService.Options) {
     const notifier = new Notification({
       title: options.title,
@@ -31,5 +36,6 @@ export class NotifierService extends Service {
     })
     this.ctx.emit('notifier/created', notifier, options)
     notifier.show()
+    return notifier.close
   }
 }
