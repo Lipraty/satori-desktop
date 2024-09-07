@@ -53,7 +53,7 @@ Download the latest release from the [releases page]().
 
 ### Cross chat platforms
 
-The project is developed based on the Satori protocol. Thanks to the excellent design and powerful platform support of the Satori protocol, Satori App Desktop can access multiple chat platforms:
+The project is developed based on the Satori protocol. Benefit from to the excellent design and powerful platform support of the Satori protocol, Satori App Desktop can access multiple chat platforms:
 
 - [x] DingTalk
 - [x] Discord
