@@ -4,12 +4,12 @@
 
 # Satori App Desktop
 
-The universal and cross-platform chat application based on the Satori protocol.
+基于 [Satori](https://github.com/satorijs/satori) 协议的跨平台聊天应用。
 
 </div>
 
 > [!NOTE]
-> This is project under development and not ready for production use. Welcome to contribute to this project.
+> 该项目正在开发中，尚未准备好用于生产。欢迎为该项目做出贡献。
 
 <details>
 
@@ -45,20 +45,20 @@ The universal and cross-platform chat application based on the Satori protocol.
 
 </details>
 
-## Getting Started
+## 开始
 
-Download the latest release from the [releases page]().
+从 [releases page]() 下载最新版本。
 
-## Features
+## 特性
 
-### Cross chat platforms
+### 跨平台聊天
 
-The project is developed based on the Satori protocol. Thanks to the excellent design and powerful platform support of the Satori protocol, Satori App Desktop can access multiple chat platforms:
+项目以 Satori 协议为核心进行开发，得益于 Satori 协议的优秀设计与强大的平台支持，Satori App Desktop 可以实现接入多个聊天平台：
 
-- [x] DingTalk
+- [x] DingTalk (钉钉)
 - [x] Discord
-- [x] KOOK
-- [x] Lark
+- [x] KOOK (开黑啦)
+- [x] Lark (飞书)
 - [x] Line
 - [x] Mail
 - [x] Matrix
@@ -66,13 +66,13 @@ The project is developed based on the Satori protocol. Thanks to the excellent d
 - [x] Slack
 - [x] Telegram
 - [x] WhatsApp
-- [x] WeCom (WeCaht Work)
-- [x] Wechat Official
+- [x] WeCom (企业微信)
+- [x] Wechat Official (微信公众号)
 - [x] Zulip
 
-## Contributing
+## 贡献
 
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
+欢迎为该项目做出贡献。
 
 [![contributors](https://contrib.rocks/image?repo=Lipraty/satori-desktop)](https://github.com/Lipraty/satori-desktop/graphs/contributors)
 
