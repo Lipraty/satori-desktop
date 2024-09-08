@@ -1,7 +1,6 @@
 import { existsSync, readFileSync } from 'node:fs'
 import { writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import { app } from 'electron'
 
 import { Context, Service } from '@main'
 
@@ -37,7 +36,7 @@ export class SettingsManager extends Service {
   constructor(ctx: Context, public config: SettingsManager.Config) {
     super(ctx, 'settings')
 
-    this.settingsFilePath = resolve(app.getPath('userData'), 'settings.json')
+    this.settingsFilePath = resolve(ctx.dataDir, 'settings.json')
 
     this.settings = new Proxy<Settings>({} as Settings, {
       get: (_, key) => {

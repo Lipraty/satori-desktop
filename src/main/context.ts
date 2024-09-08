@@ -1,3 +1,4 @@
+import { resolve } from 'node:path'
 import * as Electron from 'electron'
 
 import * as Cordis from 'cordis'
@@ -11,12 +12,14 @@ export interface Context extends Cordis.Context {
 export class Context extends Cordis.Context {
   app: Electron.App
   appImage: Electron.NativeImage
+  dataDir: string
 
   constructor() {
     super()
 
     this.app = Electron.app
     this.appImage = Electron.nativeImage.createFromPath(`../shared/assets/icon.png`)
+    this.dataDir = resolve(this.app.getPath('userData'))
 
     this.on('dispose', () => {
       if (process.platform !== 'darwin') {
