@@ -68,8 +68,8 @@ The project is developed based on the Satori protocol. Benefit from to the excel
 - [x] Slack
 - [x] Telegram
 - [x] WhatsApp
-- [x] WeCom (WeCaht Work)
-- [x] Wechat Official
+- [x] WeCom (WeChat Work)
+- [x] WeChat Official
 - [x] Zulip
 
 ## Contributing
