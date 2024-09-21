@@ -71,6 +71,7 @@
     }
 
     &__title {
+      display: -webkit-box;
       hyphens: auto;
       font-size: var(--fontSizeBase300);
       font-weight: 600;
@@ -78,8 +79,11 @@
       word-break: normal;
       text-overflow: ellipsis;
       line-height: 1.5rem;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 1;
       padding: 0;
       margin: 0;
+      overflow: hidden;
     }
 
     &__subtitle {
