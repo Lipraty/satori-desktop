@@ -2,7 +2,7 @@ import type { Channel, Message } from '@satorijs/protocol'
 
 export interface AppMessage {
   id: string
-  platfrom: string
+  platform: string
   channel: Channel
   messageId: string
   timestamp: number
