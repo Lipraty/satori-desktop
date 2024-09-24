@@ -1,6 +1,7 @@
 import { Session } from '@satorijs/core'
 import { Event as SPMessage } from '@satorijs/protocol'
 import { SatoriAdapter as AdapterSatori } from '@satorijs/adapter-satori'
+import { } from '@minatojs/driver-sqlite'
 
 import { Context, Service } from '@main'
 import { SatoriIpcApiFuncs } from '@shared/types'
@@ -15,66 +16,11 @@ declare module '@main' {
   }
 }
 
-export const satoriApi = [
-  // message
-  'createMessage',
-  'sendMessage',
-  'sendPrivateMessage',
-  'getMessage',
-  'getMessageList',
-  'getMessageIter',
-  'editMessage',
-  'deleteMessage',
-  // reaction
-  'createReaction',
-  'deleteReaction',
-  'clearReaction',
-  'getReactionList',
-  'getReactionIter',
-  // upload
-  'createUpload',
-  // user
-  'getLogin',
-  'getUser',
-  'handleFriendRequest',
-  'handleGuildMemberRequest',
-  // guild
-  'getGuild',
-  'getGuildList',
-  'getGuildIter',
-  // guild member
-  'getGuildMember',
-  'getGuildMemberList',
-  'getGuildMemberIter',
-  // role
-  'setGuildMemberRole',
-  'unsetGuildMemberRole',
-  'getGuildRoleList',
-  'getGuildRoleIter',
-  'createGuildRole',
-  'updateGuildRole',
-  'deleteGuildRole',
-  // channel
-  'getChannel',
-  'getChannelList',
-  'getChannelIter',
-  'createDirectChannel',
-  'createChannel',
-  'updateChannel',
-  'deleteChannel',
-  'muteChannel',
-  // request
-  'handleFriendRequest',
-  'handleGuildRequest',
-  'handleGuildMemberRequest',
-  // commands
-  'updateCommands',
-]
 
 export namespace SatoriAppServer { }
 
 export class SatoriAppServer extends Service {
-  static inject = ['satori', 'ipc', 'snowflake']
+  static inject = ['satori', 'ipc', 'snowflake', 'database']
 
   private lastAppMessageId = 0
 
@@ -97,19 +43,24 @@ export class SatoriAppServer extends Service {
     console.log('SatoriAppServer init')
   }
 
-  async createAppMessage(message: SPMessage) {
-    const id = this.ctx.snowflake()
+  async createAppMessage(message: SPMessage): Promise<AppMessage | undefined> {
     const messageId = message.message?.id
     if (!messageId) return
-    const appMessage: AppMessage = {
+
+    const id = this.ctx.snowflake()
+    const { platform, timestamp } = message
+    const channel = message.channel!
+    return {
       id,
-      platfrom: message.platform,
-      channel: message.channel!,
+      platform,
+      channel,
       messageId,
-      timestamp: message.timestamp,
+      timestamp,
       next: 0,
       prev: 0,
       content: message.message!,
     }
   }
+
+
 }

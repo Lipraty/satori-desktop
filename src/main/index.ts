@@ -4,7 +4,7 @@ import * as path from 'node:path'
 
 // Cordis plugin
 import { HTTP as CordisHTTP } from '@cordisjs/plugin-http'
-import { Database } from 'minato'
+import { SQLiteDriver as Driver } from '@minatojs/driver-sqlite'
 // Satori
 import { Satori } from '@satorijs/core'
 
@@ -44,5 +44,6 @@ app.plugin(Satori)
 app.plugin(CordisHTTP, {})
 app.plugin(SnowflakeService, { machineId: 1 })
 app.plugin(SatoriAppServer, {})
+app.plugin(Driver, { path: path.join(app.dataDir, 'database.sqlite') })
 
 app.start()
