@@ -1,6 +1,6 @@
 import type { Channel, Message } from '@satorijs/protocol'
-import {} from 'minato'
-import *  as Minato from 'minato'
+import { } from 'minato'
+import * as Minato from 'minato'
 
 import { Context } from './context'
 
@@ -11,11 +11,11 @@ declare module './context' {
   }
 
   namespace Context {
-    interface Database {}
+    interface Database { }
   }
 }
 
-export interface Types extends Minato.Types {}
+export interface Types extends Minato.Types { }
 export interface Tables extends Minato.Tables {
   message: AppMessage
   contact: AppContact
@@ -47,6 +47,13 @@ export interface AppContact {
   cover: Message
 }
 
+export interface AppNetwork {
+  id: string
+  name: string
+  endpoint: string
+  token: string
+}
+
 export default class SatoriAppDatabase {
   constructor(public ctx: Context) {
     ctx.model.extend('message', {
@@ -58,6 +65,14 @@ export default class SatoriAppDatabase {
       prev: 'string',
       next: 'string',
       content: 'object',
+    })
+
+    ctx.model.extend('contact', {
+      id: 'string',
+      structType: 'integer(1)',
+      channelType: 'integer(1)',
+      parent: 'string',
+      cover: 'object',
     })
   }
 }

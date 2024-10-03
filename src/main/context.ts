@@ -2,12 +2,18 @@ import { resolve } from 'node:path'
 import * as Electron from 'electron'
 
 import * as Cordis from 'cordis'
-import * as Minato from 'minato'
+
+import SatoriAppDatabase from './database'
+
 
 export interface Events<C extends Context = Context> extends Cordis.Events<C> { }
 
 export interface Context extends Cordis.Context {
   [Context.events]: Events<this>
+}
+
+export namespace Context {
+  export interface Config {}
 }
 
 export class Context extends Cordis.Context {
@@ -22,9 +28,7 @@ export class Context extends Cordis.Context {
     this.appImage = Electron.nativeImage.createFromPath(`../shared/assets/icon.png`)
     this.dataDir = resolve(this.app.getPath('userData'))
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    this.plugin(Minato.Database)
+    this.plugin(SatoriAppDatabase)
 
     this.on('dispose', () => {
       if (process.platform !== 'darwin') {
