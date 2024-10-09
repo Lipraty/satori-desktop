@@ -3,6 +3,7 @@
   "compilerOptions": {
     "composite": true,
     "moduleResolution": "Bundler",
+    "strictFunctionTypes": false,
     "types": [
       "node",
       "electron-vite/node",
