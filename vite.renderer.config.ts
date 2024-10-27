@@ -27,6 +27,13 @@ export default defineConfig((env) => {
         '@shared': fileURLToPath(new URL("./src/shared", import.meta.url)),
       },
     },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          api: 'modern-compiler',
+        },
+      },
+    },
     clearScreen: false,
   } as UserConfig;
 });
