@@ -10,7 +10,7 @@ import { } from './windowManager'
 import { } from './ipcManager'
 import { AppMessage } from './messageDatabase'
 
-declare module '@main' {
+declare module '@main/context' {
   interface Context {
     sas: SatoriAppServer
   }

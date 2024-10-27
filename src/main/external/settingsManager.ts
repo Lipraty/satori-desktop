@@ -6,7 +6,7 @@ import { Context, Service } from '@main'
 
 import { DEFAULT_SETTINGS } from './defaultSettings'
 
-declare module '@main' {
+declare module '@main/context' {
   interface Context {
     settings: SettingsManager
   }

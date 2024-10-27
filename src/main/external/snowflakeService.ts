@@ -1,6 +1,6 @@
 import { Context, Service } from "@main"
 
-declare module '@main' {
+declare module '@main/context' {
   interface Context {
     snowflake: SnowflakeService
   }

@@ -3,7 +3,7 @@ import { ipcMain, IpcMain, IpcMainEvent, IpcRendererEvent, webContents } from 'e
 import { Context, Service } from '@main'
 import { IpcEvents } from '@shared/types'
 
-declare module '@main' {
+declare module '@main/context' {
   export interface Context {
     ipc: IPCManager
   }

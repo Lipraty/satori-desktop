@@ -3,7 +3,7 @@ import * as path from 'node:path'
 
 import { Context, Service } from '@main'
 
-declare module '@main' {
+declare module '@main/context' {
   interface Context {
     window: WindowService
   }

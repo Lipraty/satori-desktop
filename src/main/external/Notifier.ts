@@ -5,7 +5,7 @@ import { Context, Service } from '@main'
 // declare module '@shared' {
 
 // }
-declare module '@main' {
+declare module '@main/context' {
   interface Events {
     'notifier/created': (n: Notification, o: NotifierService.Options) => void
   }
