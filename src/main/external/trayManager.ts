@@ -1,6 +1,6 @@
 import { Tray, MenuItem, MenuItemConstructorOptions, Menu } from 'electron'
 
-import { Context, Service } from "@main/context"
+import { Context, Service } from "@main"
 
 export namespace TrayManager {
   export interface Config {

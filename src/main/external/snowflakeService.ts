@@ -1,4 +1,4 @@
-import { Context, Service } from "@main/context"
+import { Context, Service } from "@main"
 
 declare module '@main' {
   interface Context {
