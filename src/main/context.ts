@@ -5,7 +5,6 @@ import * as Cordis from 'cordis'
 
 import SatoriAppDatabase from './database'
 
-
 export interface Events<C extends Context = Context> extends Cordis.Events<C> { }
 
 export interface Context extends Cordis.Context {

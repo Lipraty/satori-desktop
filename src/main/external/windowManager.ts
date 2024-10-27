@@ -3,8 +3,6 @@ import * as path from 'node:path'
 
 import { Context, Service } from '@main'
 
-import { } from './settingsManager'
-
 declare module '@main' {
   interface Context {
     window: WindowService
