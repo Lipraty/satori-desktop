@@ -15,7 +15,6 @@ export const App = () => {
   // const [loading, setLoading] = useState<boolean>(true)
   const { setCurrentView, currentView } = useCurrentView()
   const os = getOS()
-  console.log(os)
 
   const koishiTheme: BrandVariants = {
     10: "#030205",
@@ -60,13 +59,14 @@ export const App = () => {
 
   return (
     <>
-      <TitleBar title='Satori App for Desktop' icon="assets/icons/icon.png" os={os}/>
       <FluentProvider theme={darkThemeStatus ? darkTheme : lightTheme} style={{
         display: 'flex',
         height: 'calc(100vh - 44px)',
         width: '100%',
         backgroundColor: 'transparent',
+        paddingTop: '44px',
       }}>
+        <TitleBar title='Satori App for Desktop' icon="assets/icons/icon.png" os={os}/>
         <Sidebar>
           {views.filter(view => !view.append).map((view) => (
             <SidebarItem key={`sidebar-${view.name}`} icon={view.icon as IconNames} label={view.name} name={view.name} />

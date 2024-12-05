@@ -10,9 +10,11 @@ export interface IconProps {
   sized?: '16' | '20' | '24' | '28' | '32' | '48' | 'unsized'
   filled?: boolean
   bundle?: boolean
+  className?: string
+  style?: React.CSSProperties
 }
 
-export const Icon = ({ name, color, sized = 'unsized', filled = false, bundle = false }: IconProps) => {
+export const Icon = ({ className, name, color, style, sized = 'unsized', filled = false, bundle = false }: IconProps) => {
 
   const FilledIconName = `${name}${sized === 'unsized' ? '' : sized}Filled`
   const RegularIconName = `${name}${sized === 'unsized' ? '' : sized}Regular`
@@ -30,8 +32,9 @@ export const Icon = ({ name, color, sized = 'unsized', filled = false, bundle = 
 
     const Bundle = FIcons.bundleIcon(FilledIcon, RegularIcon)
 
-    return <Bundle style={{
+    return <Bundle className={className} style={{
       color,
+      ...style
     }} />
   } else {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -39,8 +42,9 @@ export const Icon = ({ name, color, sized = 'unsized', filled = false, bundle = 
     // eslint-disable-next-line import/namespace
     const IconByFIcon: FIcons.FluentIcon = (FIcons)[filled ? FilledIconName : RegularIconName as IconNames]
 
-    return <IconByFIcon style={{
+    return <IconByFIcon className={className} style={{
       color,
+      ...style
     }} />
   }
 }

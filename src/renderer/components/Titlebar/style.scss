@@ -4,9 +4,14 @@ header {
   flex-wrap: nowrap;
   justify-content: flex-start;
   -webkit-app-region: drag;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
 }
 
 .title-bar {
+  
   height: 44px;
   flex: 1;
   display: flex;
@@ -33,6 +38,13 @@ header {
   &__windowsbox {
     height: 100%;
     width: 136px;
+  }
+
+  &__themer {
+    position: absolute;
+    right: 144px;
+    top: 0;
+    transform: translateY(50%);
   }
 }
 
