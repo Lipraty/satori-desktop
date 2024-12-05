@@ -8,11 +8,14 @@ import { Sidebar } from "@renderer/components/Sidebar"
 import { IconNames } from "@renderer/components/Icon"
 
 import { views } from "./views"
+import { getOS } from "./utils"
 
 export const App = () => {
   const darkThemeStatus = useThemeListener()
   // const [loading, setLoading] = useState<boolean>(true)
   const { setCurrentView, currentView } = useCurrentView()
+  const os = getOS()
+  console.log(os)
 
   const koishiTheme: BrandVariants = {
     10: "#030205",
@@ -57,7 +60,7 @@ export const App = () => {
 
   return (
     <>
-      <TitleBar title='Satori App for Desktop' icon="assets/icons/icon.png" />
+      <TitleBar title='Satori App for Desktop' icon="assets/icons/icon.png" os={os}/>
       <FluentProvider theme={darkThemeStatus ? darkTheme : lightTheme} style={{
         display: 'flex',
         height: 'calc(100vh - 44px)',
