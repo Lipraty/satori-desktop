@@ -4,7 +4,7 @@ import { List } from '@renderer/components/List'
 import { ViewBox } from '@renderer/components/ViewBox'
 
 export const ContactView = () => <>
-  <ViewBox fixed width="220px" rightRadius>
+  <ViewBox rightRadius title='My Persons'>
     <List line="one" style={{
       margin: '0 -12px',
     }}>
@@ -18,8 +18,5 @@ export const ContactView = () => <>
         />
       </List.Item>
     </List>
-  </ViewBox>
-  <ViewBox>
-    Contact
   </ViewBox>
 </>

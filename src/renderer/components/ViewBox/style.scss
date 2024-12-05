@@ -5,6 +5,9 @@
   border-top-left-radius: var(--borderRadiusLarge);
   transition: background-color 250ms cubic-bezier(1, 0, 1, 1);
   overflow: hidden;
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: column;
 
   @include dark {
     color: white;
@@ -19,12 +22,53 @@
   }
 
   &__context {
-    height: 100%;
     width: 100%;
     display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: column;
     padding: 12px;
     overflow: hidden;
     overflow-y: auto;
     box-sizing: border-box;
+    flex: 1 1 100%;
+  }
+
+  &__title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    height: 62px;
+    padding: 0px 14px 0px 14px;
+    border-bottom: var(--colorNeutralStencil1Alpha) 1px solid;
+
+    &-prepend {
+      max-height: 100%;
+      overflow: hidden;
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      flex-wrap: nowrap;
+      flex-direction: row;
+    }
+
+    &-append {
+      flex: 1 1 auto;
+      overflow: hidden;
+      max-height: 100%;
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      flex-wrap: nowrap;
+      flex-direction: row;
+    }
+
+    &-content {
+      font-size: 24px;
+      font-weight: bold;
+      margin: 0;
+    }
   }
 }

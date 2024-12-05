@@ -8,9 +8,12 @@ interface ViewBoxProps {
   rightRadius?: boolean
   style?: React.CSSProperties
   transparent?: boolean
+  title?: string
+  titlePrepend?: React.ReactNode
+  titleAppend?: React.ReactNode
 }
 
-export const ViewBox = ({ col, fixed, width, children, style = {}, rightRadius = false, transparent = false }: PropsWithChildren<ViewBoxProps>) => {
+export const ViewBox = ({ col, fixed, width, children, title, titlePrepend, titleAppend, style = {}, rightRadius = false, transparent = false }: PropsWithChildren<ViewBoxProps>) => {
   let colStyle = {}
 
   if (!fixed) {
@@ -36,6 +39,17 @@ export const ViewBox = ({ col, fixed, width, children, style = {}, rightRadius =
       backgroundColor: transparent ? 'transparent' : '',
       border: transparent ? 'none' : '',
     })}>
+      {
+        title && <div className="main-view__title">
+          <div className="main-view__title-prepend">
+            {titlePrepend}
+          </div>
+          <h2 className="main-view__title-content">{title}</h2>
+          <div className="main-view__title-append">
+            {titleAppend}
+          </div>
+        </div>
+      }
       <div className="main-view__context" style={style}>{children}</div>
     </div>
   )

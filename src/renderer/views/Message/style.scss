@@ -7,18 +7,35 @@
   width: 100%;
   align-items: flex-end;
 
-  &-contact-title {
+  &-contact {
+    width: 100%;
+    height: calc(100% - 2.5rem);
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
     flex-wrap: nowrap;
-    flex-direction: row;
+    flex-direction: column;
 
-    h2 {
-      font-size: 24px;
-      font-weight: 700;
-      margin: 0;
-      margin: 16px 0;
+    &__title {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: nowrap;
+      flex-direction: row;
+
+      h2 {
+        font-size: 24px;
+        font-weight: 700;
+        margin: 0;
+        margin: 16px 0;
+      }
+    }
+
+    &__subheader {
+      margin-left: 12px;
+      font-size: 12px;
+      opacity: 0.5;
     }
   }
 
@@ -161,9 +178,14 @@
             }
           }
 
-          &-container, &-output, &-placeholder, &-input {
+          &-container,
+          &-output,
+          &-placeholder,
+          &-input {
             background-color: transparent;
-            .shiki, .shiki * {
+
+            .shiki,
+            .shiki * {
               background-color: transparent !important;
             }
           }

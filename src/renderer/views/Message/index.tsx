@@ -2,8 +2,6 @@ import { useCallback, useState } from 'react'
 import { Avatar, Button, TabList, Tab, TabValue, Input } from '@fluentui/react-components'
 import { List, ListItem } from '@fluentui/react-list-preview'
 
-import './style.scss'
-
 import { useMessageEvent, Contact } from '@renderer/hooks/satori-bridge'
 import { useCurrentView } from '@renderer/hooks/view-manager'
 import { Icon } from '@renderer/components/Icon'
@@ -15,7 +13,7 @@ import { MessageFiles } from './MessageFiles'
 import { MessagePhotos } from './MessagePhotos'
 import { MessageSender } from './MessageSender'
 
-
+import './style.scss'
 
 export const MessagingView = () => {
   const { setCurrentView } = useCurrentView()
@@ -47,51 +45,49 @@ export const MessagingView = () => {
       <ViewBox fixed width="260px" rightRadius style={{
         flexDirection: 'column',
       }}>
-        <div className='message-contact-title'>
+        <div className='message-contact__title'>
           <h2>All Chats</h2>
           <Button shape='circular' appearance='transparent' icon={<Icon name='ChatAdd' bundle sized='24' />} />
         </div>
-        <div className='contact scrollable'>
+        <div className='message-contact scrollable'>
           {
-            contact.length > 0 ? <span style={{
-              margin: '4px 26px',
-              fontSize: '0.77rem',
-              opacity: '0.67',
-            }}>Messages</span>
+            contact.length === 0 ? <Button style={{
+              width: '100%',
+              marginTop: '22px',
+            }} onClick={() => { setCurrentView('Network') }}>Check Network</Button>
               :
-              <Button style={{
-                margin: '4px 14px',
-                width: 'calc(100% - 28px)',
-              }} onClick={() => { setCurrentView('Network') }}>Check Network</Button>
+              <>
+                <span className='message-contact__subheader'>Messages</span>
+                <List
+                  className='list'
+                  selectionMode='single'
+                  navigationMode="composite"
+                  selectedItems={selectedId}
+                  onSelectionChange={useSelecteChange}
+                >
+                  {contact.map((contact, index) => (
+                    <ListItem
+                      key={`contact-${contact.id}list${index}`}
+                      value={index}
+                      onFocus={useFocus}
+                      onClick={() => setCurrentContact(contact)}
+                      checkmark={null}
+                    // style={{
+                    //   backgroundColor: selectedId.includes(index) ? tokens.colorNeutralBackground1 : undefined,
+                    // }}
+                    >
+                      <ListComponent.Item
+                        as='div'
+                        title={contact.name}
+                        subtitle={contact.lastContent}
+                        avatar={contact.avatar}
+                        selected={currentContact?.id === contact.id}
+                      />
+                    </ListItem>
+                  ))}
+                </List>
+              </>
           }
-          <List
-            className='list'
-            selectionMode='single'
-            navigationMode="composite"
-            selectedItems={selectedId}
-            onSelectionChange={useSelecteChange}
-          >
-            {contact.map((contact, index) => (
-              <ListItem
-                key={`contact-${contact.id}list${index}`}
-                value={index}
-                onFocus={useFocus}
-                onClick={() => setCurrentContact(contact)}
-                checkmark={null}
-              // style={{
-              //   backgroundColor: selectedId.includes(index) ? tokens.colorNeutralBackground1 : undefined,
-              // }}
-              >
-                <ListComponent.Item
-                  as='div'
-                  title={contact.name}
-                  subtitle={contact.lastContent}
-                  avatar={contact.avatar}
-                  selected={currentContact?.id === contact.id}
-                />
-              </ListItem>
-            ))}
-          </List>
         </div>
       </ViewBox>
       <>{
@@ -133,7 +129,7 @@ export const MessagingView = () => {
             alignItems: 'center',
           }}>
             <span className='message-tooltip'>
-              {contact.length === 0 ? 'No contacts. Pleace check your network settings.' : 'Select a contact to start chatting.'}
+              {contact.length === 0 ? `No contacts. Pleace check your network settings.` : 'Select a contact to start chatting.'}
             </span>
           </ViewBox>
       }</>
