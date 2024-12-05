@@ -5,6 +5,7 @@ import { List, ListItem } from '@fluentui/react-list-preview'
 import './style.scss'
 
 import { useMessageEvent, Contact } from '@renderer/hooks/satori-bridge'
+import { useCurrentView } from '@renderer/hooks/view-manager'
 import { Icon } from '@renderer/components/Icon'
 import { ViewBox } from '@renderer/components/ViewBox'
 import { List as ListComponent } from '@renderer/components/List'
@@ -17,6 +18,7 @@ import { MessageSender } from './MessageSender'
 
 
 export const MessagingView = () => {
+  const { setCurrentView } = useCurrentView()
   const { messages, contact } = useMessageEvent()
   const [selectedTab, setSelectedTab] = useState<TabValue>('chat')
   // const [pinnedContact] = useState<string[]>([])
@@ -45,15 +47,23 @@ export const MessagingView = () => {
       <ViewBox fixed width="260px" rightRadius style={{
         flexDirection: 'column',
       }}>
-        <Input style={{
-          marginBottom: '0.5rem',
-        }} placeholder="Search" contentBefore={<Icon name='Search' />} />
+        <div className='message-contact-title'>
+          <h2>All Chats</h2>
+          <Button shape='circular' appearance='transparent' icon={<Icon name='ChatAdd' bundle sized='24' />} />
+        </div>
         <div className='contact scrollable'>
-          <span style={{
-            margin: '4px 26px',
-            fontSize: '0.77rem',
-            opacity: '0.67',
-          }}>MESSAGES</span>
+          {
+            contact.length > 0 ? <span style={{
+              margin: '4px 26px',
+              fontSize: '0.77rem',
+              opacity: '0.67',
+            }}>Messages</span>
+              :
+              <Button style={{
+                margin: '4px 14px',
+                width: 'calc(100% - 28px)',
+              }} onClick={() => { setCurrentView('Network') }}>Check Network</Button>
+          }
           <List
             className='list'
             selectionMode='single'
@@ -84,35 +94,49 @@ export const MessagingView = () => {
           </List>
         </div>
       </ViewBox>
-      <ViewBox transparent style={{
-        flexDirection: 'column',
-        padding: '0',
-      }}>
-        {currentContact && <>
-          <div className='message-titlebar'>
-            <Avatar name={currentContact?.name} size={28} image={{ src: currentContact?.avatar }} />
-            <span className='message-titlebar__title'>{currentContact?.name}</span>
-            <div style={{
-              flex: '1',
-              maxWidth: '100%',
-            }} />
-            <TabList size='large' selectedValue={selectedTab} onTabSelect={(_e, d) => { setSelectedTab(d.value) }}>
-              <Tab id='Chat' value='chat'>Chat</Tab>
-              <Tab id='Files' value='files' disabled>Files</Tab>
-              <Tab id='Photos' value='photos' disabled>Photos</Tab>
-            </TabList>
-            <Button shape='circular' appearance='transparent' icon={<Icon name='PersonInfo' bundle />} />
-          </div>
-          <div className='message-context'>
-            {selectedTab === 'chat' && <>
-              <MessageChat messages={messages} selfId={messages[0]?.selfId} platform={currentContact.platform} contactId={currentContact.id} />
-              <MessageSender />
+      <>{
+        currentContact
+          ? <ViewBox transparent style={{
+            flexDirection: 'column',
+            padding: '0',
+          }}>
+            {currentContact && <>
+              <div className='message-titlebar'>
+                <Avatar name={currentContact?.name} size={28} image={{ src: currentContact?.avatar }} />
+                <span className='message-titlebar__title'>{currentContact?.name}</span>
+                <div style={{
+                  flex: '1',
+                  maxWidth: '100%',
+                }} />
+                <TabList size='large' selectedValue={selectedTab} onTabSelect={(_e, d) => { setSelectedTab(d.value) }}>
+                  <Tab id='Chat' value='chat'>Chat</Tab>
+                  <Tab id='Files' value='files' disabled>Files</Tab>
+                  <Tab id='Photos' value='photos' disabled>Photos</Tab>
+                </TabList>
+                <Button shape='circular' appearance='transparent' icon={<Icon name='PersonInfo' bundle />} />
+              </div>
+              <div className='message-context'>
+                {selectedTab === 'chat' && <>
+                  <MessageChat messages={messages} selfId={messages[0]?.selfId} platform={currentContact.platform} contactId={currentContact.id} />
+                  <MessageSender />
+                </>}
+                {selectedTab === 'files' && <MessageFiles />}
+                {selectedTab === 'photos' && <MessagePhotos />}
+              </div>
             </>}
-            {selectedTab === 'files' && <MessageFiles />}
-            {selectedTab === 'photos' && <MessagePhotos />}
-          </div>
-        </>}
-      </ViewBox>
+          </ViewBox>
+          : <ViewBox style={{
+            flexDirection: 'column',
+            padding: '0',
+            width: '100%',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+            <span className='message-tooltip'>
+              {contact.length === 0 ? 'No contacts. Pleace check your network settings.' : 'Select a contact to start chatting.'}
+            </span>
+          </ViewBox>
+      }</>
     </>
   )
 }

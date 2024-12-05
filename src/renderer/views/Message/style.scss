@@ -7,6 +7,26 @@
   width: 100%;
   align-items: flex-end;
 
+  &-contact-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+    flex-direction: row;
+
+    h2 {
+      font-size: 24px;
+      font-weight: 700;
+      margin: 0;
+      margin: 16px 0;
+    }
+  }
+
+  &-tooltip {
+    font-size: large;
+    opacity: 0.32;
+  }
+
   &-titlebar {
     display: flex;
     justify-content: space-between;
