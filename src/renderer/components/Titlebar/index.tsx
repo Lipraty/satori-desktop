@@ -31,26 +31,12 @@ export const TitleBar = ({
           justifyContent: 'center',
         } : {}
       }>
-        {icon && <img className='title-bar__icon' height={28} width={28} src={icon} />}
+        {icon && <img className='title-bar__icon' height={28} width={28} src={icon} style={
+          os === OS.MAC ? {
+            marginRight: 10,
+          } : {}
+        }/>}
         <span className='title-bar__title'>{title}</span>
-        <div style={{ flex: 1 }}></div>
-      </div>
-      {/* <div className='navigation'></div> */}
-      <div style={{
-        flex: 1,
-        minWidth: '137px',
-        paddingRight: '137px',
-        display: 'flex',
-        flexDirection: 'row-reverse',
-        flexWrap: 'nowrap',
-        alignItems: 'center',
-      }}>
-        {/* <Switch
-        label={'11'}
-        labelPosition='before'
-        checked={theme}
-        onChange={onThemeChange}
-        /> */}
       </div>
     </header>
   );
