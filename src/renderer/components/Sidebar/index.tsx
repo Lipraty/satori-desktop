@@ -31,9 +31,8 @@ Sidebar.Item = ({
       <div className="sidebar-item__indicator" style={{
         backgroundColor: tokens.colorNeutralForeground2BrandSelected
       }}></div>
-
       {children ?? <>
-        {icon && <Icon name={icon as IconNames} filled={active} color={active && tokens.colorNeutralForeground2BrandSelected} />}
+        {icon && <Icon name={icon as IconNames} filled={active} color={active ? tokens.colorNeutralForeground2BrandSelected : undefined} />}
         {!active && <span className="sidebar-item__label">{label}</span>}
       </>}
     </div >

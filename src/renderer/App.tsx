@@ -46,16 +46,15 @@ export const App = () => {
   // darkTheme.colorBrandForeground1 = koishiTheme[110];
   // darkTheme.colorBrandForeground2 = koishiTheme[120];
 
-  const SidebarItem = useCallback(
-    ({ icon, label, name }: { icon: IconNames, label: string, name: string }) =>
-      <Sidebar.Item icon={icon}
-        label={label}
-        active={currentView === name}
-        onClick={() => {
-          setCurrentView(name)
-        }}
-      />
-    , [currentView])
+  const SidebarItem = ({ icon, label, name }: { icon: IconNames, label: string, name: string }) =>
+    <Sidebar.Item icon={icon}
+      label={label}
+      active={currentView === name}
+      onClick={() => {
+        setCurrentView(name)
+      }}
+      key={name}
+    />
 
   return (
     <>
@@ -66,14 +65,13 @@ export const App = () => {
         backgroundColor: 'transparent',
         paddingTop: '44px',
       }}>
-        <TitleBar title='Satori App for Desktop' icon="assets/icons/icon.png" os={os}/>
+        <TitleBar title='Satori App for Desktop' icon="assets/icons/icon.png" os={os} />
         <Sidebar>
-          {views.filter(view => !view.append).map((view) => (
-            <SidebarItem key={`sidebar-${view.name}`} icon={view.icon as IconNames} label={view.name} name={view.name} />
-          ))}
+          {views.filter(view => !view.append).map((view) =>
+            SidebarItem({ icon: view.icon as IconNames, label: view.name, name: view.name }))}
           <Sidebar.Divider />
           {views.filter(view => view.append).map((view) => (
-            <SidebarItem key={`sidebar-${view.name}`} icon={view.icon as IconNames} label={view.name} name={view.name} />
+            SidebarItem({ icon: view.icon as IconNames, label: view.name, name: view.name })
           ))}
           <Sidebar.Item>
             <Avatar name="Satori" badge={{
