@@ -1,4 +1,4 @@
-import { createElement, useCallback } from "react"
+import { createElement, createElement, memo, useCallback } from "react"
 import { Avatar, BrandVariants, createDarkTheme, createLightTheme, FluentProvider, Theme } from "@fluentui/react-components"
 
 import { useThemeListener } from "@renderer/hooks/use-theme-listener"
@@ -65,7 +65,7 @@ export const App = () => {
         backgroundColor: 'transparent',
         paddingTop: '44px',
       }}>
-        <TitleBar title='Satori App for Desktop' icon="assets/icons/icon.png" os={os} />
+        <TitleBar title='Satori App for Desktop' icon="assets/icons/icon.png" os={os}  />
         <Sidebar>
           {views.filter(view => !view.append).map((view) =>
             SidebarItem({ icon: view.icon as IconNames, label: view.name, name: view.name }))}

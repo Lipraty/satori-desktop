@@ -16,6 +16,8 @@
     height: 58px;
     width: 64px;
     border-radius: 4px;
+    background-color: transparent;
+    transition: all 0.2s ease-in-out;
 
     * {
       transition: all 0.2s ease-in-out;
@@ -33,6 +35,7 @@
     }
 
     &-active {
+      position: relative;
       @include dark {
         background-color: #454545 !important;
       }
@@ -48,6 +51,18 @@
       .sidebar-item__label {
         transform: translateY(-4px);
       }
+    }
+
+    &-active::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 0;
+      height: 1.5rem;
+      width: 4px;
+      border-radius: 0 4px 4px 0;
+      background: var(--colorNeutralForeground2BrandSelected);
+      transform: translateY(-50%);
     }
 
     &__label {

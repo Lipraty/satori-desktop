@@ -1,6 +1,6 @@
 import './style.scss'
 import { tokens } from '@fluentui/react-components'
-import { MouseEventHandler, ReactElement, ReactNode } from 'react'
+import { memo, MouseEventHandler, ReactElement, ReactNode } from 'react'
 
 import { Icon, IconNames } from '@renderer/components/Icon'
 
@@ -22,7 +22,7 @@ export interface SidebarItemProps {
   onClick?: MouseEventHandler<HTMLDivElement>
 }
 
-Sidebar.Item = ({
+Sidebar.Item = memo(({
   icon, label, active, children, onClick
 }: SidebarItemProps) => {
 
@@ -37,7 +37,7 @@ Sidebar.Item = ({
       </>}
     </div >
   )
-}
+})
 
 Sidebar.Divider = () => {
   return <div className="sidebar-item" style={{

@@ -34,7 +34,7 @@ export const ViewBox = ({ col, fixed, width, children, title, titlePrepend, titl
   }
 
   return (
-    <div className="main-view" style={Object.assign(colStyle, {
+    <section className="main-view" style={Object.assign(colStyle, {
       borderTopRightRadius: rightRadius ? 'var(--borderRadiusLarge)' : '0',
       backgroundColor: transparent ? 'transparent' : '',
       border: transparent ? 'none' : '',
@@ -51,6 +51,6 @@ export const ViewBox = ({ col, fixed, width, children, title, titlePrepend, titl
         </div>
       }
       <div className="main-view__context" style={style}>{children}</div>
-    </div>
+    </section>
   )
 }
