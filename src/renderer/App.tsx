@@ -1,4 +1,4 @@
-import { createElement, createElement, memo, useCallback } from "react"
+import { createElement } from "react"
 import { Avatar, BrandVariants, createDarkTheme, createLightTheme, FluentProvider, Theme } from "@fluentui/react-components"
 
 import { useThemeListener } from "@renderer/hooks/use-theme-listener"
