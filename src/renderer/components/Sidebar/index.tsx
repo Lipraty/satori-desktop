@@ -33,7 +33,7 @@ Sidebar.Item = memo(({
       }}></div>
       {children ?? <>
         {icon && <Icon name={icon as IconNames} filled={active} color={active ? tokens.colorNeutralForeground2BrandSelected : undefined} />}
-        {!active && <span className="sidebar-item__label">{label}</span>}
+        <span className="sidebar-item__label">{label}</span>
       </>}
     </div >
   )
