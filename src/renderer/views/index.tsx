@@ -1,4 +1,4 @@
-import { ReactElement } from "react"
+import { ComponentType } from "react"
 
 import { MessagingView } from "./Message"
 import { ContactView } from "./Contact"
@@ -10,7 +10,7 @@ export interface View {
   name: string
   sidebar?: boolean
   append?: boolean
-  component: ReactElement
+  component: ComponentType
 }
 
 export const views: View[] = [
@@ -18,25 +18,25 @@ export const views: View[] = [
     icon: 'Chat',
     name: 'Chat',
     sidebar: true,
-    component: <MessagingView />
+    component: MessagingView
   },
   {
     icon: 'Person',
     name: 'Person',
     sidebar: true,
-    component: <ContactView />
+    component: ContactView
   },
   {
     name: 'Network',
     icon: 'PlugConnectedSettings',
     sidebar: true,
-    component: <NetworksView />
+    component: NetworksView
   },
   {
     icon: 'Settings',
     name: 'Settings',
     sidebar: true,
     append: true,
-    component: <SettingsView />
+    component: SettingsView
   }
 ]

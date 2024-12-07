@@ -28,9 +28,10 @@ Sidebar.Item = ({
 
   return (
     <div onClick={onClick} className={`sidebar-item ${active ? 'sidebar-item-active' : ''}`} style={active ? {} : {}}>
-      {active && <div className="sidebar-item__indicator" style={{
+      <div className="sidebar-item__indicator" style={{
         backgroundColor: tokens.colorNeutralForeground2BrandSelected
-      }}></div>}
+      }}></div>
+
       {children ?? <>
         {icon && <Icon name={icon as IconNames} filled={active} color={active && tokens.colorNeutralForeground2BrandSelected} />}
         {!active && <span className="sidebar-item__label">{label}</span>}

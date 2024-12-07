@@ -1,4 +1,4 @@
-import { useCallback } from "react"
+import { createElement, useCallback } from "react"
 import { Avatar, BrandVariants, createDarkTheme, createLightTheme, FluentProvider, Theme } from "@fluentui/react-components"
 
 import { useThemeListener } from "@renderer/hooks/use-theme-listener"
@@ -84,7 +84,7 @@ export const App = () => {
           </Sidebar.Item>
         </Sidebar>
         <main>
-          {views.find((view) => view.name === currentView && view.component)?.component}
+          {createElement(views.find((view) => view.name === currentView && view.component)!.component)}
         </main>
       </FluentProvider>
     </>
