@@ -1,4 +1,4 @@
-import { useCallback } from "react"
+import { createElement, memo, useCallback } from "react"
 import { Avatar, BrandVariants, createDarkTheme, createLightTheme, FluentProvider, Theme } from "@fluentui/react-components"
 
 import { useThemeListener } from "@renderer/hooks/use-theme-listener"
@@ -46,16 +46,25 @@ export const App = () => {
   // darkTheme.colorBrandForeground1 = koishiTheme[110];
   // darkTheme.colorBrandForeground2 = koishiTheme[120];
 
-  const SidebarItem = useCallback(
-    ({ icon, label, name }: { icon: IconNames, label: string, name: string }) =>
-      <Sidebar.Item icon={icon}
-        label={label}
-        active={currentView === name}
-        onClick={() => {
-          setCurrentView(name)
-        }}
-      />
-    , [currentView])
+  const SidebarItem = memo(({ icon, label, name }: { icon: IconNames, label: string, name: string }) => {
+    const handleClick = useCallback(() => {
+      setCurrentView(name);
+    }, [name]);
+
+    console.log(`Rendering SidebarItem: ${label}`);
+
+    return (<Sidebar.Item
+      icon={icon}
+      label={label}
+      active={currentView === name}
+      onClick={handleClick}
+    />
+    )
+  }
+  );
+
+  const prependViews = views.filter(view => !view.append);
+  const appendViews = views.filter(view => view.append);
 
   return (
     <>
@@ -66,13 +75,13 @@ export const App = () => {
         backgroundColor: 'transparent',
         paddingTop: '44px',
       }}>
-        <TitleBar title='Satori App for Desktop' icon="assets/icons/icon.png" os={os}/>
+        <TitleBar title='Satori App for Desktop' icon="assets/icons/icon.png" os={os} />
         <Sidebar>
-          {views.filter(view => !view.append).map((view) => (
+          {prependViews.map((view) => (
             <SidebarItem key={`sidebar-${view.name}`} icon={view.icon as IconNames} label={view.name} name={view.name} />
           ))}
           <Sidebar.Divider />
-          {views.filter(view => view.append).map((view) => (
+          {appendViews.map((view) => (
             <SidebarItem key={`sidebar-${view.name}`} icon={view.icon as IconNames} label={view.name} name={view.name} />
           ))}
           <Sidebar.Item>
@@ -84,7 +93,7 @@ export const App = () => {
           </Sidebar.Item>
         </Sidebar>
         <main>
-          {views.find((view) => view.name === currentView && view.component)?.component}
+          {createElement(views.find(view => view.name === currentView)!.component, {})}
         </main>
       </FluentProvider>
     </>
