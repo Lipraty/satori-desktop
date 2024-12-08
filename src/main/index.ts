@@ -25,7 +25,9 @@ app.plugin<IPCManager.Config>(IPCManager, {})
 app.plugin<SystemManager.Config>(SystemManager, {})
 app.plugin<WindowService.Config>(WindowService, {
   width: 1076,
+  minWidth: 1076,
   height: 653,
+  minHeight: 653,
   titleBarStyle: 'hidden',
   maximizable: false, // https://github.com/electron/electron/issues/42393
   titleBarOverlay: {
@@ -38,6 +40,7 @@ app.plugin<WindowService.Config>(WindowService, {
   webPreferences: {
     preload: path.join(__dirname, 'preload.js'),
   },
+  
 })
 app.plugin(DevToolsManager, {})
 app.plugin(Satori)
