@@ -39,6 +39,8 @@
   }
 
   &-header {
+    padding: 12px;
+    margin: -12px -12px -10px -12px;
     width: 100%;
     display: flex;
     justify-content: flex-start;
@@ -46,6 +48,7 @@
     flex-wrap: nowrap;
     flex-direction: row;
     gap: 6px;
+    border-bottom: 1px solid var(--colorNeutralStencil2Alpha);
 
     &__title {
       height: 1.5rem;
@@ -57,11 +60,11 @@
   }
 
   &-content {
+    padding: 12px 12px 0;
     display: flex;
     align-items: flex-start;
     justify-content: flex-start;
     flex-direction: column;
-    padding: 0 16px;
     gap: 12px;
   }
 
