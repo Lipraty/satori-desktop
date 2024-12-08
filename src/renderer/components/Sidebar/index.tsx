@@ -40,8 +40,9 @@ Sidebar.Item = memo(({
 })
 
 Sidebar.Divider = () => {
-  return <div className="sidebar-item" style={{
+  return <div style={{
     flex: 1,
-    backgroundColor: 'transparent'
+    backgroundColor: 'transparent',
+    cursor: 'default !important',
   }} />
 }

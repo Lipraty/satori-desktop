@@ -45,6 +45,8 @@
     }
 
     &:hover {
+      cursor: pointer;
+      
       @include dark {
         background-color: rgba($color: white, $alpha: 0.05);
       }
