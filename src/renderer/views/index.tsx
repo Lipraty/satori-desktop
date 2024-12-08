@@ -15,7 +15,7 @@ export interface View {
 
 export const views: View[] = [
   {
-    icon: 'Chat',
+    icon: 'ChatSparkle',
     name: 'Chat',
     sidebar: true,
     component: MessagingView
