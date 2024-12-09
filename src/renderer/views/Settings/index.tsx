@@ -5,7 +5,7 @@ import { ViewBox } from '@renderer/components/ViewBox'
 import { SettingsAbout } from './About'
 
 export const SettingsView = () => <>
-  <ViewBox title='Settings'>
+  <ViewBox title='Settings' transparent>
     <SettingsAbout />
   </ViewBox>
 </>

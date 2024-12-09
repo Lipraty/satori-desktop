@@ -28,11 +28,11 @@
       position: relative;
 
       @include dark {
-        background-color: #45454546;
+        background-color: #45454546 !important;
       }
 
       @include light {
-        background-color: white;
+        background-color: white !important;
       }
 
       svg {
