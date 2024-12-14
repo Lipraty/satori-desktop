@@ -4,8 +4,12 @@
   "version": "0.0.1",
   "description": "Satori App for Desktop",
   "main": ".vite/build/index.js",
+  "bin": {
+    "electron-filter": "./script/cli.js"
+  },
   "scripts": {
-    "start": "electron-forge start",
+    "dev": "electron-filter electron-forge start",
+    "trace": "electron --trace-warnings .",
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",

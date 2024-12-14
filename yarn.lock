@@ -9784,6 +9784,8 @@ __metadata:
     typescript: "npm:^5.7.2"
     vite: "npm:^5.4.9"
     zustand: "npm:^5.0.2"
+  bin:
+    electron-filter: ./script/cli.js
   languageName: unknown
   linkType: soft
 
