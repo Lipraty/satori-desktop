@@ -10,11 +10,11 @@ import { Satori } from '@satorijs/core'
 
 import { Context } from './context'
 import { WindowService, isDarkTheme } from './external/windowManager'
-import { SettingsManager } from './external/settingsManager'
+import { SettingsManager } from './settings'
 import { IPCManager } from './external/ipcManager'
 import { SystemManager } from './external/systemManager'
 import { DevToolsManager } from './external/devToolsManager'
-import { SatoriAppServer } from './external/satoriAppServer'
+// import { SatoriAppServer } from './external/satoriAppServer'
 import { SnowflakeService } from './external/snowflakeService'
 
 const app = new Context()
@@ -46,7 +46,7 @@ app.plugin(DevToolsManager, {})
 app.plugin(Satori)
 app.plugin(CordisHTTP, {})
 app.plugin(SnowflakeService, { machineId: 1 })
-app.plugin(SatoriAppServer, {})
-app.plugin(Driver, { path: path.join(app.dataDir, 'database.sqlite') })
+// app.plugin(SatoriAppServer, {})
+app.plugin(Driver, { path: path.join(app.dataDir, 'database.db') })
 
 app.start()

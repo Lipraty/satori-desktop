@@ -4,22 +4,25 @@ import { contextBridge, ipcRenderer, IpcRendererEvent } from "electron"
 
 import type { IPCManager } from "./external/ipcManager";
 
-const parameterFormatter = <T>(args: any[]) => args.map(arg => {
-  if (typeof arg === 'function') {
-    return arg.toString();
-  }
-  if (typeof arg === 'object') {
-    return JSON.stringify(arg);
-  }
-  if (typeof arg === 'string') {
-    try {
-      return JSON.parse(arg);
-    } catch {
-      return arg;
+const parameterFormatter = <T>(args: any[]) => {
+  if (!args) return [] as T;
+  return args.map(arg => {
+    if (typeof arg === 'function') {
+      return arg.toString();
     }
-  }
-  return arg;
-}) as T
+    if (typeof arg === 'object' && arg !== null) {
+      return JSON.stringify(arg);
+    }
+    if (typeof arg === 'string') {
+      try {
+        return JSON.parse(arg);
+      } catch {
+        return arg;
+      }
+    }
+    return arg;
+  }) as T;
+}
 
 contextBridge.exposeInMainWorld('satori', {});
 

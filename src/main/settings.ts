@@ -4,8 +4,6 @@ import { resolve } from 'node:path'
 
 import { Context, Service } from '@main'
 
-import { DEFAULT_SETTINGS } from './defaultSettings'
-
 declare module '@main/context' {
   interface Context {
     settings: SettingsManager
@@ -20,7 +18,7 @@ export type ThemeKey = 'light' | 'dark' | 'system'
 type DefSettings = typeof DEFAULT_SETTINGS
 export type Settings = {
   [K in keyof DefSettings]: DefSettings[K]
-}
+} & Record<string, any>
 
 export namespace SettingsManager {
   export interface Config {}
@@ -81,5 +79,26 @@ export class SettingsManager extends Service {
       writeFile(this.settingsFilePath, JSON.stringify(this.settingsObj ?? this.getDefaultSettings(), null, 2), 'utf-8')
       this.saveTimer = undefined
     }, 0)
+  }
+}
+
+const DEFAULT_SETTINGS = {
+  system: {
+    theme: 'system',
+  },
+  window: {
+    width: 1076,
+    minWidth: 1076,
+    height: 653,
+    minHeight: 653,
+    titleBarStyle: 'hidden',
+    maximizable: false,
+    titleBarOverlay: {
+      symbolColor: '#ffffff',
+      color: '#00000000',
+      height: 44,
+    },
+    backgroundMaterial: 'mica',
+    backgroundColor: '#00000000',
   }
 }
