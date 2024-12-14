@@ -99,7 +99,7 @@ export const NetworksView = () => {
 
   return (<>
     <ViewBox title='Networks' titleAppend={
-      <Button shape='circular' appearance='transparent' icon={<Icon name='PlugConnectedAdd' />} />
+      <Button shape='circular' appearance='transparent' icon={<Icon name='PlugConnectedAdd' bundle/>} />
     }>
       {
         networks.length > 0
@@ -119,7 +119,7 @@ export const NetworksView = () => {
                         />
                       </Tooltip>
                       <Subtitle2 className='networks-header__title'>{data.title}</Subtitle2>
-                      <Button appearance='transparent' icon={<Icon name={data.connect ? 'Stop' : 'Play'} />} />
+                      <Button appearance='transparent' icon={<Icon bundle name={data.connect ? 'Stop' : 'Play'} />} />
                     </div>
                   } />
                   <CardPreview>
@@ -132,7 +132,7 @@ export const NetworksView = () => {
                   <CardFooter>
                     <div className='networks-footer'>
                       {data.status === 1 ? <div data-center><Icon name='CaretUp' sized='20' />{data.up} <Icon name='CaretDown' sized='20' /> {data.down}</div> : <div />}
-                      <Button appearance='transparent' icon={<Icon name='Settings' />} />
+                      <Button appearance='transparent' icon={<Icon bundle name='Settings' />} />
                     </div>
                   </CardFooter>
                 </Card>)
