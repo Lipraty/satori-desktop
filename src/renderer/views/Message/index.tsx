@@ -42,13 +42,15 @@ export const MessagingView = () => {
 
   return (
     <>
-      <ViewBox fixed width="260px" rightRadius style={{
-        flexDirection: 'column',
-      }}>
-        <div className='message-contact__title'>
-          <h2>All Chats</h2>
-          <Button shape='circular' appearance='transparent' icon={<Icon name='ChatAdd' bundle sized='24' />} />
-        </div>
+      <ViewBox fixed width="260px" rightRadius title='All Chats' titleStyle={false}
+        titleAppend={
+          <>
+            <Button shape='circular' appearance='transparent' icon={<Icon name='ChatAdd' bundle sized='24' />} />
+          </>
+        }
+        style={{
+          flexDirection: 'column',
+        }}>
         <div className='message-contact scrollable'>
           {
             contact.length === 0 ? <Button style={{
