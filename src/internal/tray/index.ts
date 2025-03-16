@@ -13,7 +13,13 @@ export const name = 'tray'
 export const inject = ['app']
 
 export async function apply(ctx: Context) {
-  const tray = new Tray(nativeImage.createFromPath('../../public/assets/icons/icon.png').resize({ width: 24, height: 24 }))
+  const trayIcon = nativeImage.createFromPath(
+    process.platform === 'darwin'
+      ? 'src/internal/tray/assets/macos/trayTemplate.png'
+      // from other platforms, use the windows's tray icon
+      : 'src/internal/tray/assets/windows/tray.png'
+  )
+  const tray = new Tray(trayIcon)
 
   const contextMenu = Menu.buildFromTemplate([
     { label: 'Item1', type: 'radio' },
