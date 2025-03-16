@@ -44,10 +44,10 @@ export class Loader {
         const module = await modules[path]()
         // 
         // @ts-ignore
-        if (module['default']['default']) this.plugins.push(module['default']['default'])
+        if (module?.default?.default) this.plugins.push(module?.default?.default)
         // @ts-ignore
-        else if (module['default']) this.plugins.push(module['default'])
-        else if (module['apply']) this.plugins.push(module)
+        else if (module?.default) this.plugins.push(module?.default)
+        else if (module?.apply) this.plugins.push(module)
         else {
           const name = path.split('/').pop()?.replace('.ts', '') ?? 'Unknown'
           this.ctx.logger.error(`incorrect plugin: ${name}. expected a default export or an apply function`)
