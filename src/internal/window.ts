@@ -12,6 +12,7 @@ export class WindowService extends Service {
   static readonly inject = ['app']
   static readonly name = 'window'
   static Config: Schema<WindowService.Config> = Schema.object({
+    title: Schema.string().default('Satori App for Desktop'),
     theme: Schema.union(['dark', 'light', 'system']).default('system'),
     width: Schema.number().step(1).default(1076),
     height: Schema.number().step(1).default(653),
@@ -39,6 +40,8 @@ export class WindowService extends Service {
       minWidth: 1076,
       height: this.config.height,
       minHeight: 653,
+      title: 'Satori App for Desktop',
+      icon: path.join(__dirname, '../assets/icon.png'),
       titleBarStyle: 'hidden',
       maximizable: false, // https://github.com/electron/electron/issues/42393
       titleBarOverlay: {
@@ -69,6 +72,7 @@ export class WindowService extends Service {
 
 export namespace WindowService {
   export interface Config {
+    title: string
     theme: 'dark' | 'light' | 'system'
     width: number
     height: number
