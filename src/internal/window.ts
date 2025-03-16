@@ -1,4 +1,4 @@
-import { Context, Service } from 'cordis'
+import { Context, Schema, Service } from 'cordis'
 import { BrowserWindow, nativeTheme } from 'electron'
 import path from 'node:path'
 
@@ -11,6 +11,12 @@ declare module 'cordis' {
 export class WindowService extends Service {
   static readonly inject = ['app']
   static readonly name = 'window'
+  static Config: Schema<WindowService.Config> = Schema.object({
+    theme: Schema.union(['dark', 'light', 'system']).default('system'),
+    width: Schema.number().step(1).default(1076),
+    height: Schema.number().step(1).default(653),
+  })
+
   root: BrowserWindow | null = null
 
   constructor(ctx: Context, public config: WindowService.Config) {
@@ -41,6 +47,7 @@ export class WindowService extends Service {
         height: 44,
       },
       backgroundMaterial: 'mica',
+      vibrancy: 'titlebar',
       backgroundColor: '#00000000',
       webPreferences: {
         preload: path.join(__dirname, 'preload.js'),
