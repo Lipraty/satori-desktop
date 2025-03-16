@@ -39,11 +39,6 @@
 - [Cordis](https://github.com/cordiverse/cordis): Meta-Framework for Modern Applications.
 - [Satori](https://github.com/satorijs/satori): THe universal messager protocol.
 - [Electron](https://www.electronjs.org/): Open-source framework developed and maintained by GitHub.
-- [React](https://reactjs.org/): A JavaScript library for building user interfaces.
-  - [Foxact](https://foxact.skk.moe/): React component library that is React Hooks/Utils done right.
-  - [Zustand](https://zustand-demo.pmnd.rs/): A small, fast and scaleable bearbones state-management solution.
-  - [SWR](https://swr.vercel.app/): React Hooks library for data fetching.
-- [Shikitor](https://github.com/NWYLZW/shikitor): A simple and lightweight code editor for the web based on shiki.
 
 </details>
 

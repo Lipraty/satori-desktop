@@ -1,35 +1,17 @@
 import type { Channel, Message } from '@satorijs/protocol'
-import { } from 'minato'
-import * as Minato from 'minato'
 
 import { Context } from './context'
 
-declare module './context' {
-  interface Context {
-    [Minato.Types]: Types,
-    [Minato.Tables]: Tables
-  }
-
-  namespace Context {
-    interface Database { }
-  }
-}
-
-export interface Types extends Minato.Types { }
-export interface Tables extends Minato.Tables {
-  message: AppMessage
-  contact: AppContact
-}
-
 export interface AppMessage {
-  id: string
+  id: string // slowflake id
+  system: boolean
   platform: string
   channel: Channel
   messageId: string
   timestamp: number
   prev: 0 | 1 | string
   next: 0 | 1 | string
-  content: Message | Message[]
+  content: Message[]
 }
 
 export enum AppContactStructType {
@@ -47,17 +29,11 @@ export interface AppContact {
   cover: Message
 }
 
-export interface AppNetwork {
-  id: string
-  name: string
-  endpoint: string
-  token: string
-}
-
 export default class SatoriAppDatabase {
   constructor(public ctx: Context) {
     ctx.model.extend('message', {
       id: 'string',
+      system: 'boolean',
       platform: 'string',
       channel: 'object',
       messageId: 'string',

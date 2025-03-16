@@ -5,7 +5,7 @@
  * 2. Start the app database
  * 3. Read the settings
  * 4. Start the app external server
- * 5. Create the app window
+ * 5. ~~Create the app window~~ (better of windowManager service)
  * 6. Load the plugins
  * 
  * HMR?
@@ -32,10 +32,12 @@ export const inject = ['settings']
 export async function apply(ctx: Context) {
   ctx.settings.readSettings()
 
+  
+
   const configs: Settings = ctx.settings.settings
   const plugins: Plugin[] = [
     ...(await loadBasePlugins()),
-    ...(await loadExternalServices(ctx.config.externalsDir))
+    ...(await loadExternalPlugins(ctx.config.externalsDir))
   ].sort((a, b) => {
     return priority.indexOf(a.name!) - priority.indexOf(b.name!)
   })
@@ -54,34 +56,46 @@ async function loadBasePlugins() {
   ]
 }
 
-async function loadExternalServices(externalsDir: string) {
+// async function loadExternalServices(externalsDir: string) {
+//   const plugins: Plugin[] = []
+//   const _externals = await readdir(externalsDir)
+
+//   for (const external of _externals) {
+//     const externalPath = resolve(externalsDir, external)
+//     const externalStat = await stat(externalPath)
+
+//     if (externalStat.isFile() && scriptExtension.includes(externalPath.split('.').pop()!)) {
+//       const plguin = await import(externalPath) as Plugin
+//       plugins.push(plguin)
+//     }
+
+//     if (externalStat.isDirectory()) {
+//       const externalWithDir = await readdir(externalPath)
+//       const externalIndexScriptPath = externalWithDir.find((file) => {
+//         if (file.startsWith('index') && scriptExtension.includes(file.split('.').pop()!)) {
+//           return file
+//         }
+//         return false
+//       })
+//       if (externalIndexScriptPath) {
+//         const plguin = await import(resolve(externalPath, externalIndexScriptPath)) as Plugin
+//         plugins.push(plguin)
+//       } else {
+//         continue
+//       }
+//     }
+//   }
+
+//   return plugins
+// }
+
+async function loadExternalPlugins(externalsDir: string) {
   const plugins: Plugin[] = []
-  const _externals = await readdir(externalsDir)
+  const modules = import.meta.glob(externalsDir + '/**/*.{js,ts,mjs,cjs}')
 
-  for (const external of _externals) {
-    const externalPath = resolve(externalsDir, external)
-    const externalStat = await stat(externalPath)
-
-    if (externalStat.isFile() && scriptExtension.includes(externalPath.split('.').pop()!)) {
-      const plguin = await import(externalPath) as Plugin
-      plugins.push(plguin)
-    }
-
-    if (externalStat.isDirectory()) {
-      const externalWithDir = await readdir(externalPath)
-      const externalIndexScriptPath = externalWithDir.find((file) => {
-        if (file.startsWith('index') && scriptExtension.includes(file.split('.').pop()!)) {
-          return file
-        }
-        return false
-      })
-      if (externalIndexScriptPath) {
-        const plguin = await import(resolve(externalPath, externalIndexScriptPath)) as Plugin
-        plugins.push(plguin)
-      } else {
-        continue
-      }
-    }
+  for (const path in modules) {
+    const module = await modules[path]()
+    plugins.push(module as Plugin)
   }
 
   return plugins

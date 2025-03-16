@@ -2,7 +2,7 @@
 // https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
 import { contextBridge, ipcRenderer, IpcRendererEvent } from "electron"
 
-import type { IPCManager } from "./external/ipcManager";
+import type { IPCManager } from "./main/external/ipcManager";
 
 const parameterFormatter = <T>(args: any[]) => {
   if (!args) return [] as T;

@@ -8,7 +8,7 @@ export interface AppMessage {
   timestamp: number
   prev: 0 | 1 | string
   next: 0 | 1 | string
-  content: Message | Message[]
+  content: Message[]
 }
 
 export enum AppContactStructType {

@@ -1,3 +1,4 @@
+import { AppNetwork } from "@main/network"
 import { Element, Session } from "@satorijs/core"
 import { Channel, Command, Direction, Guild, GuildMember, GuildRole, List, Login, Message, Order, SendOptions, TwoWayList, User, Upload, Event } from "@satorijs/protocol"
 
@@ -89,4 +90,5 @@ export interface IpcEvents {
   'chat/session': (session: Session) => void
   'chat/message': (message: Event) => void
   'setting/update': (key: string, value: any) => void
+  'network/list': () => AppNetwork[]
 }

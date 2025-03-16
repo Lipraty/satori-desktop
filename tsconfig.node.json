@@ -8,16 +8,13 @@
       "node",
       "electron-vite/node",
     ],
-    "paths": {
-      "@main": ["./src/main/index.ts"],
-      "@shared/*": ["./src/shared/*"],
-      "@main/*": ["./src/main/*"],
-    },
+    "paths": {},
     "noImplicitAny": true,
   },
   "include": [
-    "src/main/**/*",
-    "src/shared/**/*",
+    "src/main.ts",
+    "src/loader.ts",
+    "src/internal/**/*",
     "forge.*",
     "vite.*.config.ts",
   ]

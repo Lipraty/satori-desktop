@@ -4,6 +4,8 @@ import type { AddressInfo } from 'node:net';
 import type { ConfigEnv, Plugin, UserConfig } from 'vite';
 
 import pkg from './package.json';
+import path from 'node:path';
+import { readdirSync, statSync, existsSync } from 'node:fs';
 
 export const builtins = ['electron', ...builtinModules.map((m) => [m, `node:${m}`]).flat()];
 
@@ -52,7 +54,7 @@ export function getBuildDefine(env: ConfigEnv<'build'>) {
       [VITE_NAME]: JSON.stringify(name),
     };
     return { ...acc, ...def };
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }, {} as Record<string, any>);
 
   return define;
@@ -93,4 +95,35 @@ export function pluginHotRestart(command: 'reload' | 'restart'): Plugin {
       }
     },
   };
+}
+
+export function pluginProdPluginGenerator(): Plugin {
+  return {
+    name: 'vite-plugin-prod-plugin-generator',
+    generateBundle() {
+      const pluginDir = path.resolve(__dirname, 'src/internal')
+      const plugins: string[] = []
+
+      readdirSync(pluginDir).forEach((plugin) => {
+        const fullPath = path.join(pluginDir, plugin)
+        if (
+          (statSync(fullPath).isDirectory() && existsSync(path.join(fullPath, 'index.ts')))
+          || (['.js', '.cjs', '.mjs', '.ts'].includes(path.extname(fullPath)))
+        ) {
+          const relPath = path.relative(
+            path.resolve(__dirname, '../src'),
+            fullPath
+          ).replace(/\.ts$/, '.js')
+
+          plugins.push(`import('${relPath}').then(m => m.default)`)
+        }
+      })
+
+      this.emitFile({
+        type: 'asset',
+        fileName: 'prod-plugins.js',
+        source: `export default [${plugins.join(',')}]`
+      })
+    }
+  }
 }
