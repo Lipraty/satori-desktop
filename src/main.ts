@@ -1,26 +1,21 @@
 import { Context } from 'cordis'
-import { app, App } from 'electron'
+import { app, App, nativeImage } from 'electron'
 import stared from 'electron-squirrel-startup'
 import { resolve } from 'node:path'
 import fs from 'node:fs'
 
 import Loader from './loader'
+import pakcage from '../package.json'
 
 declare module 'cordis' {
   interface Context {
-    app: App
-    appConfig: ApplactionConfig
-    appDataDir: string
+    app: ElectronApp
+    package: typeof pakcage
   }
 }
 
-interface ApplactionConfig {
-  window: {
-    theme: 'dark' | 'light' | 'system'
-    width: number
-    height: number
-  }
-  [key: string]: unknown
+export interface ElectronApp extends App {
+  nativeImage: typeof nativeImage
 }
 
 let isQuiting = false
@@ -47,6 +42,10 @@ if (!fs.existsSync(configPath)) {
 // Create the Cordis context
 const ctx = new Context()
 ctx.set('app', app)
+ctx.provide('$package', pakcage, true)
+
+// provide to the context.app
+Object.defineProperty(ctx.app, 'nativeImage', nativeImage)
 
 ctx.plugin(Loader)
 

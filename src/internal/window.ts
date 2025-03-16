@@ -41,7 +41,7 @@ export class WindowService extends Service {
       height: this.config.height,
       minHeight: 653,
       title: 'Satori App for Desktop',
-      icon: path.join(__dirname, '../assets/icon.png'),
+      icon: path.join(__dirname, '../../public/assets/icons/icon.png'),
       titleBarStyle: 'hidden',
       maximizable: false, // https://github.com/electron/electron/issues/42393
       titleBarOverlay: {
