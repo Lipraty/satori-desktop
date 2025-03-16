@@ -1,5 +1,3 @@
-import { fileURLToPath } from 'node:url';
-
 import type { ConfigEnv, UserConfig } from 'vite';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react'
@@ -22,10 +20,6 @@ export default defineConfig((env) => {
     plugins: [pluginExposeRenderer(name), react()],
     resolve: {
       preserveSymlinks: true,
-      alias: {
-        '@renderer': fileURLToPath(new URL("./src/renderer", import.meta.url)),
-        '@shared': fileURLToPath(new URL("./src/shared", import.meta.url)),
-      },
     },
     css: {
       preprocessorOptions: {
