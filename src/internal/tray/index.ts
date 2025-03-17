@@ -15,9 +15,9 @@ export const inject = ['app']
 export async function apply(ctx: Context) {
   const trayIcon = nativeImage.createFromPath(
     process.platform === 'darwin'
-      ? 'src/internal/tray/assets/macos/trayTemplate.png'
+      ? 'src/assets/tray/trayTemplate.png'
       // from other platforms, use the windows's tray icon
-      : 'src/internal/tray/assets/windows/tray.png'
+      : 'src/assets/tray/tray.png'
   )
   const tray = new Tray(trayIcon)
 
