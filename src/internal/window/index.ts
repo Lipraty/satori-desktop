@@ -1,5 +1,5 @@
 import { Context, Schema, Service } from 'cordis'
-import { BrowserWindow, nativeTheme } from 'electron'
+import { BrowserWindow, BrowserWindowConstructorOptions, nativeTheme } from 'electron'
 import path from 'node:path'
 
 declare module 'cordis' {
@@ -18,7 +18,9 @@ export class WindowService extends Service {
     height: Schema.number().step(1).default(653),
   })
 
-  root: BrowserWindow | null = null
+  private createdWindows: Map<string, BrowserWindow> = new Map()
+
+  mainWindow: BrowserWindow | null = null
 
   constructor(ctx: Context, public config: WindowService.Config) {
     super(ctx, 'window')
@@ -33,17 +35,44 @@ export class WindowService extends Service {
     return this.config.theme === 'dark' || (this.config.theme === 'system' && nativeTheme.shouldUseDarkColors)
   }
 
+  get getAllWindows() {
+    return this.createdWindows.entries().map(([, window]) => window).toArray()
+  }
+
   async start() {
     await this.ctx.app.whenReady()
-    this.root = new BrowserWindow({
-      width: this.config.width,
+    this.mainWindow ??= this.createWindow('$main', {
       minWidth: 1076,
-      height: this.config.height,
       minHeight: 653,
       title: 'Satori App for Desktop',
       icon: path.join(__dirname, '../../public/assets/icons/icon.png'),
-      titleBarStyle: 'hidden',
-      maximizable: false, // https://github.com/electron/electron/issues/42393
+      // titleBarStyle: 'hidden',
+      webPreferences: {
+        preload: path.join(__dirname, 'preload.js'),
+      },
+    })
+    if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
+      this.mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL)
+    }
+    else {
+      this.mainWindow.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`))
+    }
+
+    if (process.env.NODE_ENV === 'development') {
+      this.ctx.logger.info('devloper mode enabled')
+      this.mainWindow.webContents.openDevTools()
+    }
+  }
+
+  async stop() {
+    this.createdWindows.forEach((window) => window.destroy())
+    this.mainWindow?.destroy()
+  }
+
+  createWindow(name: string, option?: BrowserWindowConstructorOptions): BrowserWindow {
+    option = Object.assign({
+      width: this.config.width,
+      height: this.config.height,
       titleBarOverlay: {
         symbolColor: this.isDarkTheme ? '#ffffff' : '#000000',
         color: '#00000000',
@@ -52,21 +81,17 @@ export class WindowService extends Service {
       backgroundMaterial: 'mica',
       vibrancy: 'titlebar',
       backgroundColor: '#00000000',
-      webPreferences: {
-        preload: path.join(__dirname, 'preload.js'),
-      },
-    })
-    if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
-      this.root.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL)
+    }, option ?? {})
+    if (name === '$main') {
+      return new BrowserWindow(option)
     }
-    else {
-      this.root.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`))
+    this.ctx.logger.info('created window %c', name)
+    if (this.createdWindows.has(name)) {
+      return this.createdWindows.get(name) as BrowserWindow
     }
-
-    if (process.env.NODE_ENV === 'development') {
-      this.ctx.logger.info('devloper mode enabled')
-      this.root.webContents.openDevTools()
-    }
+    const window = new BrowserWindow(option)
+    this.createdWindows.set(name, window)
+    return window
   }
 }
 
