@@ -37,7 +37,7 @@ export class Loader {
     if (import.meta.env.DEV) {
       const modules = import.meta.glob<Plugin>([
         './internal/*.ts',
-        './internal/**/*.ts',
+        './internal/**/index.ts',
       ])
 
       for (const path in modules) {
