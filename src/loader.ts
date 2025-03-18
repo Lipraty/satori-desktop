@@ -5,7 +5,7 @@ import { existsSync } from 'node:fs'
 import { Dict } from 'cosmokit'
 
 /**
- * In production, the plugins are builded from the `PROD_PLUGINS` variable.
+ * In production, the plugins are builded to the `PROD_PLUGINS` variable.
  */
 declare const PROD_PLUGINS: Promise<Loader.Plugin[]>
 
