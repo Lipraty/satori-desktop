@@ -10,7 +10,7 @@ import pakcage from '../package.json'
 declare module 'cordis' {
   interface Context {
     app: ElectronApp
-    package: typeof pakcage
+    $package: typeof pakcage
   }
 }
 
