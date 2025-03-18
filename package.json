@@ -70,6 +70,7 @@
     "@shikitor/core": "^0.0.9",
     "@shikitor/react": "^0.1.6",
     "@vitejs/plugin-react": "^4.3.4",
+    "chokidar": "^4.0.3",
     "cordis": "^3.18.1",
     "cosmokit": "^1.7.3",
     "electron-squirrel-startup": "^1.0.1",
