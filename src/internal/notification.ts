@@ -22,8 +22,6 @@ declare module 'cordis' {
 }
 
 export class NotificationService extends Service {
-  static name = 'notification'
-
   constructor(ctx: Context) {
     super(ctx, 'notification')
   }

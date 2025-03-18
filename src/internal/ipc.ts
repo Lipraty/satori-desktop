@@ -8,8 +8,6 @@ declare module 'cordis' {
 }
 
 export class IpcService extends Service {
-  static readonly name = 'ipc'
-
   private listeners = new Map<keyof IpcService.Channels, IpcService.Listener[]>()
 
   constructor(ctx: Context) {
