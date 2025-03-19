@@ -40,10 +40,6 @@ export class Loader {
     for (const { name, plugin, validate, schema } of this.plugins) {
       if (schema) this.config[name] = this.generateConfig(schema, this.config[name])
       try {
-        console.log({
-          name,
-          config: this.config[name],
-        })
         if (validate && validate(this.config[name]) || !validate)
           await this.processPlugin(name, plugin, this.config[name])
       } catch (error) {
