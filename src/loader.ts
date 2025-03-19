@@ -27,7 +27,7 @@ export class Loader {
   private configSuspend = false
 
   scope: Map<string, ForkScope> = new Map()
-  config: Record<string, any> = {}
+  config: Dict = {}
 
   constructor(private ctx: Context) {
     this.configPath = resolve(resolve(ctx.app.getPath('userData')), 'config.json')
@@ -35,13 +35,17 @@ export class Loader {
   }
 
   async start() {
-    this.plugins = await this.loadPlugins()
     this.config = await this.readConfig()
-    for (const { name, plugin, validate } of this.plugins) {
-      const config = this.config[name]
+    this.plugins = await this.loadPlugins()
+    for (const { name, plugin, validate, schema } of this.plugins) {
+      if (schema) this.config[name] = this.generateConfig(schema, this.config[name])
       try {
-        if (validate && validate(config) || !validate)
-          await this.processPlugin(name, plugin, config)
+        console.log({
+          name,
+          config: this.config[name],
+        })
+        if (validate && validate(this.config[name]) || !validate)
+          await this.processPlugin(name, plugin, this.config[name])
       } catch (error) {
         this.ctx.logger.error('failed to load plugin %c: %c', name, error)
         continue
@@ -109,25 +113,82 @@ export class Loader {
     return result
   }
 
-  private generateConfig(namespace: string, schema: Loader.SchemaRaw) {
-    this.config[namespace] = {}
+  private generateConfig(schema: Loader.SchemaRaw, config: Dict) {
+    const isNestedType = (type: string) =>
+      ['object', 'intersect', 'tuple', 'dict', 'array'].includes(type)
+
+    const mergeObject = (s: Loader.SchemaRaw, c: Dict) => {
+      const merged = { ...c };
+      Object.entries(s.children || {}).forEach(([key, child]: [string, Loader.SchemaRaw]) => {
+        const existingValue = merged[key];
+        if (existingValue !== undefined && !isNestedType(child.type)) return
+        if (child.meta?.default !== undefined) {
+          if (existingValue === undefined) {
+            merged[key] = getDefaultValue(child)
+          } else if (isNestedType(child.type)) {
+            merged[key] = this.generateConfig(child, existingValue).bind(this)
+          }
+        } else if (isNestedType(child.type)) {
+          merged[key] = this.generateConfig(child, existingValue || {}).bind(this)
+        }
+      })
+      return merged
+    }
+
+    const mergeIntersect = (s: Loader.SchemaRaw, c: Dict) => (s.children as Loader.SchemaRaw[])
+      .filter((child: Loader.SchemaRaw) => child.type === 'object')
+      .reduce((acc, child) => mergeObject(child, acc), { ...c })
+
+    const getDefaultValue = (child: Loader.SchemaRaw) => {
+      if (child.type === 'object') {
+        return mergeObject(child, {})
+      }
+      if (child.type === 'intersect') {
+        return mergeIntersect(child, {})
+      }
+      return child.meta?.default;
+    };
+
+    if (schema.type === 'object') {
+      return mergeObject(schema, config)
+    }
+    if (schema.type === 'intersect') {
+      return mergeIntersect(schema, config)
+    }
+
+    return config
   }
 
   private async readConfig() {
     if (existsSync(this.configPath)) {
       const data = JSON.parse(await readFile(this.configPath, 'utf8')) as typeof this.config
       this.ctx.emit('config/update', data)
-      return new Proxy(data, {
-        get() { },
-        set() {
-          return true
-        },
-      })
+      return this.configHandler(data)
     } else {
       this.ctx.logger('config').debug('config file not found, creating a new one')
       await this.writeConfig()
       return {}
     }
+  }
+
+  private debounceConfigTimer: NodeJS.Timeout | null = null
+
+  private configHandler(config: Dict) {
+    const handler = {
+      get: (target: Dict, key: string) => {
+        if (typeof target[key] === 'object' && target[key] !== null) {
+          return this.configHandler(target[key])
+        }
+        return target[key]
+      },
+      set: (target: Dict, key: string, value: any) => {
+        target[key] = value
+        if (this.debounceConfigTimer) clearTimeout(this.debounceConfigTimer)
+        this.debounceConfigTimer = setTimeout(this.writeConfig.bind(this), 500)
+        return true
+      }
+    }
+    return new Proxy(config, handler)
   }
 
   private async writeConfig() {
