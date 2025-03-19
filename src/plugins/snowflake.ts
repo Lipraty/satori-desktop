@@ -1,6 +1,6 @@
-import { Context, Service } from "@main"
+import { Context, Schema, Service } from "cordis"
 
-declare module '@main/context' {
+declare module 'cordis' {
   interface Context {
     snowflake: SnowflakeService
   }
@@ -18,6 +18,11 @@ export interface SnowflakeService {
 }
 
 export class SnowflakeService extends Service {
+  static readonly Config: Schema<SnowflakeService.Config> = Schema.object({
+    machineId: Schema.number().default(0),
+    epoch: Schema.number(),
+  })
+
   private epoch: number
   private machineId: number
   private sequence: number
