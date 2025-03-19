@@ -58,7 +58,7 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@cordisjs/plugin-http": "^1.0.0",
+    "@cordisjs/plugin-http": "^0.6.3",
     "@emotion/react": "^11.14.0",
     "@fluentui/react-components": "^9.60.1",
     "@fluentui/react-list-preview": "^0.4.4",
