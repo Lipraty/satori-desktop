@@ -37,20 +37,74 @@ export class Loader {
   async start() {
     this.config = await this.readConfig()
     this.plugins = await this.loadPlugins()
-    for (const { name, plugin, validate, schema } of this.plugins) {
-      if (schema) this.config[name] = this.generateConfig(schema, this.config[name])
+    for (const { name, plugin, validate, schema, internal } of this.plugins) {
+      // Non-internal plugin names may have '~' to indicate a closed
+      const closed = internal ? false : Object.keys(this.config).some(key => key.startsWith(`~${name}`)) || !this.config[name]
+      if (schema) {
+        if (closed) {
+          this.config[`~${name}`] = this.generateConfig(schema, this.config[`~${name}`] || {})
+          continue
+        } else {
+          this.config[name] = this.generateConfig(schema, this.config[name])
+        }
+      }
       try {
-        if (validate && validate(this.config[name]) || !validate)
-          await this.processPlugin(name, plugin, this.config[name])
-      } catch (error) {
-        this.ctx.logger.error('failed to load plugin %c: %c', name, error)
+        const fork = this.applyPlugin(name, plugin, validate, this.config[name])
+        this.scope.set(name, fork)
+      } catch (_) {
+        this.ctx.logger.error(`failed to apply plugin: %c`, name)
         continue
       }
     }
   }
 
+  applyPlugin(name: string, plugin: CordisPlugin, validate?: Schema, config?: Dict): ForkScope<Context> {
+    if (validate && validate(config) || !validate) {
+      this.ctx.logger.info('apply plugin %c', name)
+      return this.ctx.plugin(plugin, config)
+    } else {
+      throw new Error('Invalid config')
+    }
+  }
+
+  stopPlugin(name: string) {
+    const scope = this.scope.get(name)
+    if (scope) {
+      this.ctx.logger.info('stop plugin %c', name)
+      scope.dispose()
+      this.scope.delete(name)
+    }
+  }
+
   private async loadPlugins() {
     if (import.meta.env.DEV) {
+      const loader = async (modules: Record<string, () => Promise<CordisPlugin>>, isInternal: boolean) => {
+        const plugins: Loader.Plugin[] = []
+        for (const path in modules) {
+          const module = await modules[path]()
+          const exports: CordisPlugin[] = []
+          // @ts-ignore
+          if (typeof module?.default === 'function') exports.push(module.default)
+          else if (typeof module?.apply === 'function') {
+            exports.push(module)
+          } else if (typeof module === 'object') {
+            for (const key in module) {
+              const exported = (module as any)[key] as CordisPlugin
+              // @ts-ignore
+              if (typeof exported?.default === 'function') exports.push(exported.default)
+              if (typeof exported?.apply === 'function') exports.push(exported)
+            }
+          }
+          for (const plugin of exports) {
+            const name = (plugin.name || plugin.constructor.name).replace(/Service$/, '').toLowerCase()
+            const validate = plugin.Config && plugin.Config instanceof Schema ? plugin.Config : undefined
+            const schema = validate ? this.reverseSchema(validate) : undefined
+            plugins.push({ name, schema, validate, internal: isInternal, plugin })
+          }
+        }
+        return plugins
+      }
+
       const internal = import.meta.glob<CordisPlugin>([
         './internal/*.ts',
         './internal/**/index.ts',
@@ -59,33 +113,12 @@ export class Loader {
         './plugins/*.ts',
         './plugins/**/index.ts',
       ])
-      const modules = { ...internal, ...external }
-      const plugins: CordisPlugin[] = []
-      for (const path in modules) {
-        const module = await modules[path]()
-        // @ts-ignore
-        if (module?.default) plugins.push(module.default)
-        // @ts-ignore
-        else if (typeof module?.apply === 'function') plugins.push(module)
-        else Object.values(module)
-          .filter((plugin) => typeof plugin === 'function')
-          .forEach(plugin => plugins.push(plugin as CordisPlugin))
-      }
-      return plugins.map(plugin => {
-        const name = (plugin.name || plugin.constructor.name).replace(/Service$/, '').toLowerCase()
-        const validate = plugin.Config && plugin.Config instanceof Schema ? plugin.Config : undefined
-        const schema = validate ? this.reverseSchema(validate) : undefined
-        return { name, schema, validate, plugin }
-      })
+
+      return await Promise.all([loader(internal, true), loader(external, false)])
+        .then(([internal, external]) => [...internal, ...external])
     } else {
       return (await PROD_PLUGINS)
     }
-  }
-
-  private async processPlugin(name: string, plugin: CordisPlugin, config?: Dict) {
-    this.ctx.logger.info(`apply plugin: %c`, name)
-    const fork = this.ctx.plugin(plugin, config)
-    this.scope.set(name, fork)
   }
 
   private reverseSchema(schema: Schema) {
@@ -200,6 +233,7 @@ export namespace Loader {
     name: string
     schema?: SchemaRaw
     validate?: Schema
+    internal: boolean
     plugin: CordisPlugin
   }
   export type SchemaRaw = {
