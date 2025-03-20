@@ -121,7 +121,10 @@ export class Loader {
       return await Promise.all([loader(internal, true), loader(external, false)])
         .then(([internal, external]) => [...internal, ...external])
     } else {
-      return (await PROD_PLUGINS)
+      // In production, the plugins are builded to the `plugins.js` file.
+      // @ts-ignore
+      const plugins = await import('../plugins.js').then(m => m.default)
+      return plugins
     }
   }
 
