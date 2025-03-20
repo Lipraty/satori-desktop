@@ -47,6 +47,10 @@ export class Loader {
         } else {
           this.config[name] = this.generateConfig(schema, this.config[name])
         }
+      } else if (closed) {
+        this.config[`~${name}`] = this.config[name] || {}
+        await this.writeConfig()
+        continue
       }
       try {
         const fork = this.applyPlugin(name, plugin, validate, this.config[name])
