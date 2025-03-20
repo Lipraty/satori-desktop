@@ -1,7 +1,7 @@
 import { Context } from 'cordis'
 import { app, App, nativeImage } from 'electron'
 import stared from 'electron-squirrel-startup'
-import Satori from '@satorijs/core'
+import satori from '@satorijs/core'
 
 import Loader from './loader'
 import pakcage from '../package.json'
@@ -29,7 +29,8 @@ if (stared) {
 const ctx = new Context()
 ctx.set('app', app)
 ctx.provide('$package', pakcage, true)
-ctx.provide('satori', Satori)
+ctx.provide('satori', satori, true)
+ctx.provide('bots', [], true)
 
 // provide to the context.app
 Object.defineProperty(ctx.app, 'nativeImage', nativeImage)
