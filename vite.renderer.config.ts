@@ -22,7 +22,7 @@ export default defineConfig((env) => {
     resolve: {
       preserveSymlinks: true,
       alias: {
-        '@preload': fileURLToPath(new URL('./src/internal/window/preload', import.meta.url)),
+        '@shared': fileURLToPath(new URL('./src/shared', import.meta.url)),
       }
     },
     css: {
