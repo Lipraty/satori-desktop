@@ -1,7 +1,7 @@
 import { Context } from 'cordis'
 import { app, App, nativeImage } from 'electron'
 import stared from 'electron-squirrel-startup'
-import satori from '@satorijs/core'
+import { Satori } from '@satorijs/core'
 
 import Loader from './loader'
 import pakcage from '../package.json'
@@ -29,12 +29,13 @@ if (stared) {
 const ctx = new Context()
 ctx.set('app', app)
 ctx.provide('$package', pakcage, true)
-ctx.provide('satori', satori, true)
+ctx.provide('satori', undefined, true)
 ctx.provide('bots', [], true)
 
 // provide to the context.app
 Object.defineProperty(ctx.app, 'nativeImage', nativeImage)
 
+ctx.plugin(Satori)
 ctx.plugin(Loader)
 
 // Lifecycle of Cordis
