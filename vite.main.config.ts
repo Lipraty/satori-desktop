@@ -27,6 +27,7 @@ export default defineConfig((env) => {
       mainFields: ['module', 'jsnext:main', 'jsnext'],
       alias: {
         '@shared': fileURLToPath(new URL('./src/shared', import.meta.url)),
+        '@internal': fileURLToPath(new URL('./src/internal', import.meta.url)),
       },
     },
   };

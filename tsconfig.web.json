@@ -5,6 +5,7 @@
     "src/shared/**/*",
     "src/shared/*",
     "src/shared/exposed.d.ts",
+    "src/shared/ipc.d.ts",
     "src/internal/window/preload.ts",
     "src/internal/window/preload.d.ts",
   ],

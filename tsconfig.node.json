@@ -4,6 +4,7 @@
     "composite": true,
     "moduleResolution": "Bundler",
     "strictFunctionTypes": false,
+    "noImplicitAny": true,
     "typeRoots": [
       "./node_modules/@types",
       "./node_modules",
@@ -14,15 +15,20 @@
       "electron-vite/node",
     ],
     "paths": {
-      "@shared/*": ["./src/shared/*"]
+      "@shared/*": ["./src/shared/*"],
+      "@internal/*": ["./src/internal/*"],
     },
-    "noImplicitAny": true,
   },
   "include": [
     "src/main.ts",
     "src/loader.ts",
+    "src/internal/*",
     "src/internal/**/*",
+    "src/plugins/*",
+    "src/plugins/**/*",
     "forge.*",
-    "vite.*.config.ts", "src/shared/exposed.d.ts",
+    "vite.*.config.ts",
+    "src/shared/exposed.d.ts",
+    "src/shared/ipc.d.ts",
   ]
 }
