@@ -1,5 +1,6 @@
 import { Context, Service } from 'cordis'
-import { BrowserWindow, ipcMain, IpcMainEvent, webContents } from 'electron'
+import { BrowserWindow, ipcMain, webContents } from 'electron'
+import { IpcListener, IpcEventKeys } from '@shared/ipc'
 
 declare module 'cordis' {
   interface Context {
@@ -8,7 +9,7 @@ declare module 'cordis' {
 }
 
 export class IpcService extends Service {
-  private listeners = new Map<keyof IpcService.Channels, IpcService.Listener[]>()
+  private listeners = new Map<IpcEventKeys, IpcListener<IpcEventKeys>[]>()
 
   constructor(ctx: Context) {
     super(ctx, 'ipc')
@@ -17,7 +18,7 @@ export class IpcService extends Service {
   async stop() {
     this.listeners.forEach((listeners, channel) => {
       ipcMain.removeAllListeners(channel as string)
-      listeners.forEach(listener => ipcMain.off(channel as string, listener))
+      listeners.forEach(listener => ipcMain.off(channel as string, listener as any))
     })
   }
 
@@ -26,15 +27,15 @@ export class IpcService extends Service {
    * @param channel message namespace
    * @param listener callback
    */
-  addListener<K extends keyof IpcService.Channels>(channel: K, listener: IpcService.Listener) {
-    ipcMain.on(channel as string, listener)
+  addListener<K extends IpcEventKeys>(channel: K, listener: IpcListener<K>) {
+    ipcMain.on(channel as string, listener as any)
     this.listeners.set(channel, [...(this.listeners.get(channel) ?? []), listener])
   }
 
   /**
    * @todo
    */
-  //handler<K extends keyof IpcService.Channels>(channel: K, handler: IpcService.Listener) { }
+  //handler<K extends IpcEventKeys>(channel: K, handler: IpcListener) { }
 
   /**
    * Send a IPC message to the renderer process.
@@ -42,7 +43,7 @@ export class IpcService extends Service {
    * @param channel message namespace
    * @param args message payload
    */
-  send(window: BrowserWindow, channel: keyof IpcService.Channels, ...args: any[]) {
+  send<K extends IpcEventKeys>(window: BrowserWindow, channel: K, ...args: Parameters<IpcListener<K>>) {
     window.webContents.send(channel as string, ...args)
   }
 
@@ -51,16 +52,11 @@ export class IpcService extends Service {
    * @param channel message namespace
    * @param args message payload
    */
-  sendAll(channel: keyof IpcService.Channels, ...args: any[]) {
+  sendAll<K extends IpcEventKeys>(channel: K, ...args: Parameters<IpcListener<K>>) {
     webContents.getAllWebContents().forEach(content => {
       content.send(channel as string, ...args)
     })
   }
-}
-
-export namespace IpcService {
-  export interface Channels extends Record<string, Listener> { }
-  export type Listener = (event: IpcMainEvent, ...args: any[]) => void
 }
 
 export default IpcService
