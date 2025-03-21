@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "paths": {
-      "@*": ["./src/*"]
+      "@shared/*": ["./src/shared/*"]
     },
   },
   "files": [],

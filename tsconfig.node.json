@@ -4,11 +4,18 @@
     "composite": true,
     "moduleResolution": "Bundler",
     "strictFunctionTypes": false,
+    "typeRoots": [
+      "./node_modules/@types",
+      "./node_modules",
+      "./src/shared"
+    ],
     "types": [
       "node",
       "electron-vite/node",
     ],
-    "paths": {},
+    "paths": {
+      "@shared/*": ["./src/shared/*"]
+    },
     "noImplicitAny": true,
   },
   "include": [
@@ -16,6 +23,6 @@
     "src/loader.ts",
     "src/internal/**/*",
     "forge.*",
-    "vite.*.config.ts",
+    "vite.*.config.ts", "src/shared/exposed.d.ts",
   ]
 }

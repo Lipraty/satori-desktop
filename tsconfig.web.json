@@ -1,9 +1,12 @@
 {
   "extends": "@electron-toolkit/tsconfig/tsconfig.web.json",
   "include": [
-    "src/renderer/**/*",
+    "src/client/**/*",
     "src/shared/**/*",
-    "src/main/preload.d.ts"
+    "src/shared/*",
+    "src/shared/exposed.d.ts",
+    "src/internal/window/preload.ts",
+    "src/internal/window/preload.d.ts",
   ],
   "compilerOptions": {
     "composite": true,
@@ -11,7 +14,16 @@
     "moduleResolution": "Bundler",
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    "isolatedModules": false,
+    "isolatedModules": true,
+    "noImplicitAny": true,
+    "paths": {
+      "@shared/*": ["./src/shared/*"]
+    },
+    "typeRoots": [
+      "./node_modules/@types",
+      "./node_modules",
+      "./src/shared"
+    ],
     "types": [
       "vite/client",
     ],
@@ -19,9 +31,5 @@
       "DOM",
       "ESNext"
     ],
-    "paths": {
-      "@*": ["./src/*"],
-    },
-    "noImplicitAny": true,
   }
 }

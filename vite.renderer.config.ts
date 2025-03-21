@@ -3,6 +3,7 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
 import { pluginExposeRenderer } from './vite.base.config';
+import { fileURLToPath } from 'node:url';
 
 // https://vitejs.dev/config
 export default defineConfig((env) => {
@@ -20,6 +21,9 @@ export default defineConfig((env) => {
     plugins: [pluginExposeRenderer(name), vue()],
     resolve: {
       preserveSymlinks: true,
+      alias: {
+        '@preload': fileURLToPath(new URL('./src/internal/window/preload', import.meta.url)),
+      }
     },
     css: {
       preprocessorOptions: {
