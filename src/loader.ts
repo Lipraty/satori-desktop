@@ -1,4 +1,4 @@
-import { Context, Plugin as CordisPlugin, ForkScope, Schema } from 'cordis'
+import { Context, Plugin as CordisPlugin, ForkScope, Schema, Inject } from 'cordis'
 import { resolve } from 'node:path'
 import { readFile, writeFile } from 'node:fs/promises'
 import { existsSync } from 'node:fs'
@@ -37,7 +37,8 @@ export class Loader {
   async start() {
     this.config = await this.readConfig()
     this.plugins = await this.loadPlugins()
-    for (const { name, plugin, validate, schema, internal } of this.plugins) {
+    for (const plugin of this.plugins) {
+      const { name, schema, internal } = plugin
       // Non-internal plugin names may have '~' to indicate a closed
       const closed = internal ? false : Object.keys(this.config).some(key => key.startsWith(`~${name}`)) || !this.config[name]
       if (schema) {
@@ -53,21 +54,28 @@ export class Loader {
         continue
       }
       try {
-        const fork = this.applyPlugin(name, plugin, validate, this.config[name])
+        const fork = this.applyPlugin(name, plugin, this.config[name], true)
         this.scope.set(name, fork)
       } catch (_) {
-        this.ctx.logger.error(`failed to apply plugin: %c`, name)
+        this.ctx.logger.error(`failed to apply plugin %c`, name, _)
         continue
       }
     }
   }
 
-  applyPlugin(name: string, plugin: CordisPlugin, validate?: Schema, config?: Dict): ForkScope<Context> {
+  applyPlugin(name: string, plugin: Loader.Plugin, config?: Dict, start: boolean = false): ForkScope<Context> {
+    const { validate, plugin: _plugin, inject } = plugin
+    if (!start && inject) {
+      const requires = Object.entries(inject).map(([key, meta]) => meta.required ? key : undefined).filter(k => k !== undefined)
+      if (requires.some(k => !this.scope.has(k))) {
+        throw new Error(`: missing required dependencies: ${requires.join(', ')}`)
+      }
+    }
     if (validate && validate(config) || !validate) {
       this.ctx.logger.info('apply plugin %c', name)
-      return this.ctx.plugin(plugin, config)
+      return this.ctx.plugin(_plugin, config)
     } else {
-      throw new Error('Invalid config')
+      throw new Error('')
     }
   }
 
@@ -103,7 +111,12 @@ export class Loader {
             const name = (plugin.name || plugin.constructor.name).replace(/Service$/, '').toLowerCase()
             const validate = plugin.Config && plugin.Config instanceof Schema ? plugin.Config : undefined
             const schema = validate ? this.reverseSchema(validate) : undefined
-            plugins.push({ name, schema, validate, internal: isInternal, plugin })
+            const inject = plugin.inject
+              ? Array.isArray(plugin.inject)
+                ? Object.fromEntries(plugin.inject.map(k => [k, { required: true }])) as Dict<Inject.Meta>
+                : plugin.inject
+              : undefined
+            plugins.push({ name, schema, validate, internal: isInternal, plugin, inject })
           }
         }
         return plugins
@@ -239,6 +252,7 @@ export namespace Loader {
   export interface Plugin {
     name: string
     schema?: SchemaRaw
+    inject?: Dict<Inject.Meta>
     validate?: Schema
     internal: boolean
     plugin: CordisPlugin
