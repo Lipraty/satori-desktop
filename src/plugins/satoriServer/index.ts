@@ -38,7 +38,7 @@ declare module '@shared/ipc' {
 
 export const name = 'satori-server'
 
-export const inject = ['satori', 'ipc', 'snowflake']
+export const inject = ['satori', 'ipc', 'snowflake', 'database']
 
 export async function apply(ctx: Context) {
   const contact = new SatoriAppContact(ctx.model)
