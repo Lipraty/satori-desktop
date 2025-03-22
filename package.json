@@ -60,24 +60,24 @@
   "dependencies": {
     "@cordisjs/plugin-http": "^0.6.3",
     "@emotion/react": "^11.14.0",
-    "@fluentui/react-components": "^9.60.1",
-    "@fluentui/react-list-preview": "^0.4.4",
     "@minatojs/driver-sqlite": "^4.6.0",
     "@satorijs/adapter-discord": "^4.5.10",
     "@satorijs/adapter-satori": "^1.5.1",
     "@satorijs/core": "^4.5.0",
     "@satorijs/satori": "^4.2.5",
     "@shikitor/core": "^0.0.9",
-    "@shikitor/react": "^0.1.6",
     "@vitejs/plugin-react": "^4.3.4",
+    "@vueuse/core": "^13.0.0",
     "chokidar": "^4.0.3",
     "cordis": "^3.18.1",
     "cosmokit": "^1.7.3",
     "electron-squirrel-startup": "^1.0.1",
     "minato": "^3.6.1",
+    "pinia": "^3.0.1",
     "reggol": "^2.1.0",
     "schemastery": "^3.16.1",
-    "vue": "^3.5.13"
+    "vue": "^3.5.13",
+    "vue-router": "4"
   },
   "packageManager": "yarn@4.4.0"
 }
