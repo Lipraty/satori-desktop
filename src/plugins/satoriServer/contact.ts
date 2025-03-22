@@ -1,5 +1,5 @@
 import { Database } from '@internal/database'
-import { Event } from './types'
+import { Event } from '@shared/protocol'
 
 declare module '@internal/database' {
   interface Tables {
