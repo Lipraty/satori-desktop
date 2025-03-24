@@ -1,17 +1,24 @@
-import { Event, Message, Channel } from '@satorijs/protocol'
+import { Event, Message, Channel, User } from '@satorijs/protocol'
 
 export type SessionFunction = (event: Event) => void
 
-export interface AppMessage {
+export interface MessageDatabase {
   id: string
   system: boolean
   platform: string
+  sender: User
   channel?: Channel
   messageId: string
   timestamp: number
-  prev: 0 | 1 | string
-  next: 0 | 1 | string
-  content: Message[]
+  prev: string | null
+  next: string | null
+  content: Message
+  deleted: boolean
+  reactions: Record<string, number>
+  pinned?: boolean
+  createdAt: number
+  updatedAt: number
+  version: number
 }
 
 export enum AppContactStructType {
