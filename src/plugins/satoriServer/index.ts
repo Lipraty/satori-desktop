@@ -4,7 +4,7 @@ import { } from '@internal/ipc'
 import { } from '@internal/database'
 import { IpcEventKeys, IpcHandlerKeys } from "@shared/ipc"
 import { SatoriAppContact, Contact } from "./contact"
-import { SessionFunction } from "./types"
+import { Conversation, ConversationFlags, SessionFunction } from "./types"
 import {
   Event,
   SendOptions,
@@ -27,6 +27,7 @@ import {
 
 declare module '@shared/ipc' {
   interface IpcEvents {
+    // satori native events. see: https://satori.js.org/zh-CN/protocol/events.html
     'satori:contact-updated': (event: Event, contact: Contact) => void
     'satori:login-added': SessionFunction
     'satori:login-removed': SessionFunction
@@ -52,8 +53,11 @@ declare module '@shared/ipc' {
     'satori:guild-member-request': SessionFunction
     'satori:before-send': SessionFunction
     'satori:send': SessionFunction
+    // extended from satori app for desktop.
+    'satori:conversation-updated': SessionFunction
   }
   interface IpcHandlers {
+    // satori native handlers. see: https://satori.js.org/zh-CN/protocol/
     'satori:create.message'(channelId: string, content: Element.Fragment, referrer?: any, options?: SendOptions): Promise<Message[]>
     'satori:send.message'(channelId: string, content: Element.Fragment, referrer?: any, options?: SendOptions): Promise<string[]>
     'satori:send.private.message'(userId: string, content: Element.Fragment, guildId?: string, options?: SendOptions): Promise<string[]>
@@ -92,6 +96,29 @@ declare module '@shared/ipc' {
     'satori:handle.friend.request'(messageId: string, approve: boolean, comment?: string): Promise<void>
     'satori:handle.guild.request'(messageId: string, approve: boolean, comment?: string): Promise<void>
     'satori:handle.guild.member.request'(messageId: string, approve: boolean, comment?: string): Promise<void>
+    // extended from satori app for desktop.
+    /**
+     * get conversation list
+     * @param next next cursor
+     */
+    'satori:get.conversation.list'(next?: string): Promise<List<Conversation>>
+    /**
+     * set the conversation flag
+     * @param conversationId conversation id
+     * @param flag mute or pinned
+     */
+    'satori:set.conversation.flag'(conversationId: string, flag: ConversationFlags): Promise<void>
+    /**
+     * set the conversation draft content
+     * @param conversationId conversation id
+     * @param draft draft content
+     */
+    'satori:set.conversation.draft'(conversationId: string, draft: string): Promise<void>
+    /**
+     * empty the unread count while read the conversation
+     * @param conversationId conversation id
+     */
+    'satori:set.conversation.read'(conversationId: string): Promise<void>
   }
 }
 
@@ -163,4 +190,10 @@ export async function apply(ctx: Context) {
       return (bot[method as keyof Methods] as Function).apply(bot, args.slice(1))
     })
   })
+}
+
+const contactCache = new Map<string, Contact>()
+
+export async function contact(ctx: Context) {
+  ctx.on('message-created',  async (session) => {})
 }
