@@ -4,14 +4,10 @@ import { readFile, writeFile } from 'node:fs/promises'
 import { existsSync } from 'node:fs'
 import { Dict } from 'cosmokit'
 
-/**
- * In production, the plugins are builded to the `PROD_PLUGINS` variable.
- */
-declare const PROD_PLUGINS: Promise<Loader.Plugin[]>
-
 declare module 'cordis' {
   interface Context {
     appDataDir: string
+    $loader: Loader
   }
   interface Events {
     'config/update': (config: Dict) => void
@@ -22,14 +18,23 @@ export class Loader {
   static readonly name = 'loader'
   static readonly inject = ['app']
 
+  private readonly internalConfig = {
+    window: {
+      theme: 'system',
+      title: 'Satori App for Desktop',
+      width: 1076,
+      height: 653,
+    }
+  }
   private plugins: Loader.Plugin[] = []
   private configPath: string = ''
   private configSuspend = false
 
-  scope: Map<string, ForkScope> = new Map()
+  scope: Map<string, ForkScope | undefined> = new Map()
   config: Dict = {}
 
   constructor(private ctx: Context) {
+    ctx.provide('$loader', this, true)
     this.configPath = resolve(resolve(ctx.app.getPath('userData')), 'config.json')
     ctx.on('ready', this.start.bind(this))
   }
@@ -37,7 +42,22 @@ export class Loader {
   async start() {
     this.config = await this.readConfig()
     this.plugins = await this.loadPlugins()
-    for (const plugin of this.plugins) {
+    const internal = this.plugins.filter(plugin => plugin.internal)
+    internal.forEach(plugin => {
+      try {
+        const fork = this.ctx.plugin(plugin.plugin, this.config[plugin.name])
+        this.scope.set(plugin.name, fork)
+        this.ctx.logger.info('apply internal %c', plugin.name)
+      } catch (error) {
+        this.ctx.logger.error('failed to apply internal %c: ', plugin.name, error)
+      }
+    })
+    // loaded from app start
+    this.scope.set('app', undefined)
+    this.scope.set('satori', undefined)
+    this.scope.set('bots', undefined)
+    const external = this.plugins.filter(plugin => !plugin.internal)
+    for (const plugin of external) {
       const { name, schema, internal } = plugin
       // Non-internal plugin names may have '~' to indicate a closed
       const closed = internal ? false : Object.keys(this.config).some(key => key.startsWith(`~${name}`)) || !this.config[name]
@@ -63,12 +83,18 @@ export class Loader {
     }
   }
 
+  private getRequiredPlugins(inject: Dict<Inject.Meta>) {
+    return Object.entries(inject).map(([key, meta]) => meta.required ? key : undefined).filter(k => k !== undefined)
+  }
+
   applyPlugin(name: string, plugin: Loader.Plugin, config?: Dict, start: boolean = false): ForkScope<Context> {
     const { validate, plugin: _plugin, inject } = plugin
-    if (!start && inject) {
-      const requires = Object.entries(inject).map(([key, meta]) => meta.required ? key : undefined).filter(k => k !== undefined)
-      if (requires.some(k => !this.scope.has(k))) {
-        throw new Error(`: missing required dependencies: ${requires.join(', ')}`)
+    if (inject) {
+      const requires = this.getRequiredPlugins(inject)
+      if (
+        requires.some(k => !this.scope.has(k))
+      ) {
+        throw `required dependencies: [${requires.join(', ')}]`
       }
     }
     if (validate && validate(config) || !validate) {
@@ -86,6 +112,60 @@ export class Loader {
       scope.dispose()
       this.scope.delete(name)
     }
+  }
+
+  private sortByDeps(plugins: Loader.Plugin[]) {
+    const graph: Map<string, string[]> = new Map()
+    const inDegree: Map<string, number> = new Map()
+    const nameToPlugin: Map<string, Loader.Plugin> = new Map()
+    for (const plugin of plugins) {
+      const name = plugin.internal ? `$${plugin.name}` : plugin.name
+      graph.set(name, [])
+      inDegree.set(name, 0)
+      nameToPlugin.set(name, plugin)
+    }
+    for (const plugin of plugins) {
+      const name = plugin.internal ? `$${plugin.name}` : plugin.name
+      if (plugin.inject) {
+        const requiredDeps = this.getRequiredPlugins(plugin.inject)
+        for (const dep of requiredDeps) {
+          const depName = nameToPlugin.has(dep) ? dep : `$${dep}`
+          if (graph.has(depName)) {
+            graph.get(depName)!.push(name)
+            inDegree.set(name, (inDegree.get(name) || 0) + 1)
+          }
+        }
+      }
+    }
+    const queue: string[] = []
+    const sorted: Loader.Plugin[] = []
+    for (const [name, degree] of inDegree.entries()) {
+      if (degree === 0) {
+        queue.push(name)
+      }
+    }
+    while (queue.length > 0) {
+      const current = queue.shift()!
+      const plugin = nameToPlugin.get(current)!
+      sorted.push(plugin)
+      for (const neighbor of graph.get(current) || []) {
+        inDegree.set(neighbor, inDegree.get(neighbor)! - 1)
+        if (inDegree.get(neighbor) === 0) {
+          queue.push(neighbor)
+        }
+      }
+    }
+    if (sorted.length !== plugins.length) {
+      this.ctx.logger.warn('circular dependency detected, loading plugins in order of declaration')
+      const sortedNames = new Set(sorted.map(p => p.internal ? `$${p.name}` : p.name))
+      for (const plugin of plugins) {
+        const name = plugin.internal ? `$${plugin.name}` : plugin.name
+        if (!sortedNames.has(name)) {
+          sorted.push(plugin)
+        }
+      }
+    }
+    return sorted
   }
 
   private async loadPlugins() {
@@ -126,19 +206,23 @@ export class Loader {
         './internal/*.ts',
         './internal/**/index.ts',
       ])
-      const external = import.meta.glob<CordisPlugin>([
+      const plugins = import.meta.glob<CordisPlugin>([
         './plugins/*.ts',
         './plugins/**/index.ts',
       ])
 
-      return await Promise.all([loader(internal, true), loader(external, false)])
-        .then(([internal, external]) => [...internal, ...external])
+      return await Promise.all([loader(internal, true), loader(plugins, false)])
+        .then(([internal, plugins]) => [...internal, ...plugins])
     } else {
       // In production, the plugins are builded to the `plugins.js` file.
       // @ts-ignore
       const plugins = await import('../plugins.js').then(m => m.default)
       return plugins
     }
+  }
+
+  private async loadExternal(): Promise<Loader.Plugin[]> {
+    return []
   }
 
   private reverseSchema(schema: Schema) {

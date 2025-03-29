@@ -19,6 +19,8 @@ import {
   PartialWithPick,
   List,
   Element,
+  Conversation,
+  ConversationFlags,
 } from '@shared/protocol'
 
 declare module '@shared/exposed' {
@@ -84,6 +86,11 @@ export interface SatoriMethods {
   handleFriendRequest(messageId: string, approve: boolean, comment?: string): Promise<void>
   handleGuildRequest(messageId: string, approve: boolean, comment?: string): Promise<void>
   handleGuildMemberRequest(messageId: string, approve: boolean, comment?: string): Promise<void>
+  // extended from satori app for desktop.
+  getConversationList(next?: string): Promise<List<Conversation>>
+  setConversationFlag(conversationId: string, flag: ConversationFlags): Promise<void>
+  setConversationDraft(conversationId: string, draft: string): Promise<void>
+  readingConversation(conversationId: string): Promise<void>
 }
 
 createBridge('native', {

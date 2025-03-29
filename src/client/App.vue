@@ -6,9 +6,9 @@
 
 <script setup lang="ts">
 console.log(window.native.platform)
-window.satori.onMessage((message) => {
-  console.log('message', message);
-});
+window.satori.addListener('satori:message-created', (message) => {
+  console.log('satori:message-created', message)
+})
 </script>
 
 <style scoped>

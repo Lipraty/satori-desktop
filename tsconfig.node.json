@@ -29,6 +29,6 @@
     "forge.*",
     "vite.*.config.ts",
     "src/shared/exposed.d.ts",
-    "src/shared/ipc.d.ts",
+    "src/shared/ipc.d.ts", "src/internal/database.ts",
   ]
 }

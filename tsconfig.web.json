@@ -10,7 +10,7 @@
     "src/shared/ipc.d.ts",
     "src/shared/protocol.d.ts",
     "src/internal/window/preload.ts",
-    "src/internal/window/preload.d.ts",
+    "src/internal/window/preload.d.ts", "src/internal/database.ts",
   ],
   "compilerOptions": {
     "composite": true,

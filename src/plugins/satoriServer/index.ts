@@ -3,10 +3,9 @@ import { } from '@satorijs/adapter-satori'
 import { } from '@internal/ipc'
 import { } from '@internal/database'
 import { IpcEventKeys, IpcHandlerKeys } from "@shared/ipc"
-import { SatoriAppContact, Contact } from "./contact"
+import { SatoriAppContact } from "./conversation"
 import { Conversation, ConversationFlags, SessionFunction } from "./types"
 import {
-  Event,
   SendOptions,
   Message,
   Direction,
@@ -21,14 +20,12 @@ import {
   PartialWithPick,
   List,
   Element,
-  Method,
   Methods,
 } from '@shared/protocol'
 
 declare module '@shared/ipc' {
   interface IpcEvents {
     // satori native events. see: https://satori.js.org/zh-CN/protocol/events.html
-    'satori:contact-updated': (event: Event, contact: Contact) => void
     'satori:login-added': SessionFunction
     'satori:login-removed': SessionFunction
     'satori:login-updated': SessionFunction
@@ -118,7 +115,7 @@ declare module '@shared/ipc' {
      * empty the unread count while read the conversation
      * @param conversationId conversation id
      */
-    'satori:set.conversation.read'(conversationId: string): Promise<void>
+    'satori:set.conversation.reading'(conversationId: string): Promise<void>
   }
 }
 
@@ -166,18 +163,16 @@ const satoriHandlerMapping: HandleMappingKeys[] = [
 
 export const name = 'satori-server'
 
-export const inject = ['satori', 'ipc', 'snowflake', 'database']
+export const inject = ['satori', 'ipc', 'database']
 
-export async function apply(ctx: Context) {
-  const contact = new SatoriAppContact(ctx.model)
+export function apply(ctx: Context) {
+  // ctx.plugin(SatoriAppContact)
+  console.log('satori server plugin loaded')
 
-  ctx.on('internal/session', async ({ type, event, timestamp }) => {
+  ctx.on('internal/session', ({ type, event, timestamp }) => {
+    ctx.logger.info('session:', type)
     if (type === 'internal') return
     ctx.ipc.sendAll(`satori:${type}` as IpcEventKeys, event)
-    if (type === 'message-created') {
-      const newContact = await contact.updateContact(event)
-      ctx.ipc.sendAll('satori:contact-updated', event, newContact)
-    }
   })
 
   satoriHandlerMapping.forEach(key => {
@@ -190,10 +185,4 @@ export async function apply(ctx: Context) {
       return (bot[method as keyof Methods] as Function).apply(bot, args.slice(1))
     })
   })
-}
-
-const contactCache = new Map<string, Contact>()
-
-export async function contact(ctx: Context) {
-  ctx.on('message-created',  async (session) => {})
 }

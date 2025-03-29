@@ -1,11 +1,11 @@
 import { Context } from 'cordis'
-import * as Minato from 'minato'
-//@see https://stackoverflow.com/questions/59906323/typescript-skiplibcheck-still-checking-node-modules-libs
-const minato = require('minato')
+import * as minato from 'minato'
 
 declare module 'cordis' {
   interface Context {
+    // @ts-ignore
     [minato.Types]: Types
+    // @ts-ignore
     [minato.Tables]: Tables
     [Context.Database]: Context.Database<this>
   }
@@ -14,14 +14,16 @@ declare module 'cordis' {
   }
 }
 
-export interface Tables extends Minato.Tables { }
-
-export interface Types extends Minato.Types { }
-
-export class Database<S extends Tables = Tables, T extends Types = Types, C extends Context = Context> extends Minato.Database<S, T, C> {
-  constructor(ctx: C) {
-    super(ctx)
-  }
+export interface Tables extends minato.Tables { 
+  foo: { id: string, name: string }
 }
 
-export default Database
+export interface Types extends minato.Types { }
+
+interface AppDatabase extends minato.Database<Tables, Types, Context> {}
+
+class AppDatabase {
+  constructor(ctx: Context) {}
+}
+
+export default AppDatabase
