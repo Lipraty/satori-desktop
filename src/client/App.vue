@@ -5,9 +5,10 @@
 </template>
 
 <script setup lang="ts">
-console.log(window.native.platform)
-window.satori.addListener('satori:message-created', (message) => {
-  console.log('satori:message-created', message)
+import { useContext } from './context'
+const ctx = useContext()
+ctx.on('message', (session) => {
+  console.log('message', session)
 })
 </script>
 
