@@ -1,4 +1,4 @@
-import { Context, Events } from 'cordis'
+import { Context, Events } from '@/context'
 
 declare module '@shared/ipc' {
   interface IpcEvents {
@@ -8,12 +8,11 @@ declare module '@shared/ipc' {
 
 export const name = 'event-bridge'
 
-export const inject = ['ipc']
+export const inject = ['ipc', 'window']
 
 export function apply(ctx: Context) {
   ctx.on('internal/event', (type, name, args) => {
     if (type === 'emit' && !name.startsWith('internal')) {
-      console.log('eventBridge:', name)
       ctx.ipc.sendAll('internal:event', name as keyof Events<Context>, args)
     }
   })
