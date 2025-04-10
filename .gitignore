@@ -90,6 +90,7 @@ typings/
 
 # Electron-Forge
 out/
+dist/
 
 # Yarn v2
 .yarn/*
@@ -101,3 +102,5 @@ out/
 
 # Yarn Integrity file
 install-state.gz
+
+.legacy

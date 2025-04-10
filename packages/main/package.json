@@ -1,0 +1,13 @@
+{
+  "name": "@satoriapp/main",
+  "version": "0.0.1",
+  "description": "SAPP:Main",
+  "main": ".vite/build/main.js",
+  "license": "AGPL-3.0-only",
+  "dependencies": {
+    "@satoriapp/core": "workspace:*",
+    "@satorijs/adapter-satori": "^1.5.1",
+    "@satorijs/core": "^4.5.0",
+    "electron-squirrel-startup": "^1.0.1"
+  }
+}

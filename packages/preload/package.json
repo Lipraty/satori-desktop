@@ -1,0 +1,7 @@
+{
+  "name": "@satoriapp/preload",
+  "version": "0.0.1",
+  "description": "SAPP:Renderer Preload",
+  "main": ".vite/build/preload.js",
+  "license": "AGPL-3.0-only"
+}

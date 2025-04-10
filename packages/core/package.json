@@ -1,0 +1,19 @@
+{
+  "name": "@satoriapp/core",
+  "version": "0.0.1",
+  "description": "SAPP:Context Core",
+  "license": "AGPL-3.0-only",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@satorijs/protocol": "^1.6.0",
+    "cordis": "3.18.1",
+    "cosmokit": "1.8.0"
+  }
+}

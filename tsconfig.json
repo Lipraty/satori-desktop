@@ -1,16 +1,18 @@
 {
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
+    "baseUrl": ".",
     "paths": {
-      "@shared/*": ["./src/shared/*"]
-    },
-  },
-  "files": [],
-  "references": [
-    {
-      "path": "./tsconfig.node.json"
-    },
-    {
-      "path": "./tsconfig.web.json"
+      "@satoriapp/core": ["packages/core/src"],
+      "@satoriapp/main": ["packages/main/src"],
+      "@satoriapp/renderer": ["packages/renderer/src"],
+      "@satoriapp/preload": ["packages/preload/src"],
+
+      // It is common practice that monorepo has a `packages` directory.
+      // Even if you don't use it, do not delete this line,
+      // as it bypasses a bug in tsconfig-path/register.
+      // See: https://github.com/dividab/tsconfig-paths/issues/209
+      "*": ["packages/*/src"],
     }
-  ]
+  }
 }
