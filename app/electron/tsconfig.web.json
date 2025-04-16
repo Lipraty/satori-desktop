@@ -1,0 +1,23 @@
+{
+  "extends": "@electron-toolkit/tsconfig/tsconfig.web.json",
+  "include": [
+    "src/renderer.ts",
+    "vite.*.config.ts",
+    "forge.*.config.ts",
+  ],
+  "compilerOptions": {
+    "composite": true,
+    "moduleResolution": "Bundler",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "noImplicitAny": true,
+    "types": [
+      "vite/client",
+    ],
+    "lib": [
+      "DOM",
+      "ESNext"
+    ],
+  }
+}

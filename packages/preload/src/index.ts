@@ -3,7 +3,7 @@
 
 import { ipcRenderer } from 'electron/renderer'
 import { createBridge } from './utils'
-import type { Context, Events, GetEvents } from '@satoriapp/core'
+import type { Context, Events, GetEvents } from 'cordis'
 export * from './utils'
 
 // Step 1: Expland the api type.

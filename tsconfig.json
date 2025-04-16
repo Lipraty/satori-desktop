@@ -3,16 +3,32 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
+      "satoriapp": ["app/electron/src"],
       "@satoriapp/core": ["packages/core/src"],
       "@satoriapp/main": ["packages/main/src"],
       "@satoriapp/renderer": ["packages/renderer/src"],
       "@satoriapp/preload": ["packages/preload/src"],
+      "@satoriapp/*": ["packages/*/src"],
+
+      // plugins
+      "@satoriapp/plugin-*": ["plugins/*/src"],
 
       // It is common practice that monorepo has a `packages` directory.
       // Even if you don't use it, do not delete this line,
       // as it bypasses a bug in tsconfig-path/register.
       // See: https://github.com/dividab/tsconfig-paths/issues/209
       "*": ["packages/*/src"],
-    }
-  }
+    },
+    "types": [
+      "node",
+      "electron-vite/node"
+    ],
+  },
+  "include": [
+    "packages",
+    "plugins",
+    "types",
+    "app/electron/forge.config.ts",
+    "app/electron/vite.base.config.ts", "app/electron/forge.env.d.ts",
+  ]
 }

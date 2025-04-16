@@ -1,24 +1,16 @@
 {
-  "extends": "@electron-toolkit/tsconfig/tsconfig.web.json",
-  "include": [
-    "src",
-  ],
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "rootDir": "src",
-    "target": "esnext",
-    "composite": true,
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "isolatedModules": true,
-    "noImplicitAny": true,
-    "skipLibCheck": true,
     "types": [
       "vite/client",
     ],
     "lib": [
       "DOM",
       "ESNext"
-    ],
-  }
+    ]
+  },
+  "include": [
+    "src",
+  ],
 }

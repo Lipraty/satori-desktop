@@ -1,23 +1,25 @@
 {
   "name": "@satoriapp/renderer",
   "version": "0.0.1",
-  "description": "SAPP:Renderer",
   "license": "AGPL-3.0-only",
-  "main": ".vite/build/renderer.js",
+  "main": ".vite/build/renderer/index.js",
   "exports": {
     ".": {
-      "types": "./src/index.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.cjs"
+      "types": "./src/index.ts"
     },
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@satoriapp/core": "workspace:*",
-    "electron-squirrel-startup": "^1.0.1",
-    "vue": "3.5.13"
+    "@vueuse/core": "^13.1.0",
+    "cordis": "^3.18.1",
+    "pinia": "^3.0.2",
+    "vue": "3.5.13",
+    "vue-i18n": "^11.1.3",
+    "vue-router": "^4.5.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "5.2.3"
+    "@vitejs/plugin-vue": "5.2.3",
+    "sass-embedded": "^1.85.1",
+    "vite": "^6.2.2"
   }
 }

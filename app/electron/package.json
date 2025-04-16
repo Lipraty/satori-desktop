@@ -1,0 +1,52 @@
+{
+  "name": "satori-desktop",
+  "productName": "satori-desktop",
+  "version": "0.0.1",
+  "description": "Satori App for Desktop",
+  "main": ".vite/build/main/index.js",
+  "author": {
+    "name": "Lipraty",
+    "email": "i@lonay.me"
+  },
+  "contributors": [
+    {
+      "name": "MaikoTan",
+      "email": "maiko.tan.coding@gmail.com"
+    }
+  ],
+  "license": "AGPL-3.0-only",
+  "scripts": {
+    "dev": "electron-filter electron-forge start",
+    "trace": "electron --trace-warnings .",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "publish": "electron-forge publish",
+    "lint": "eslint --ext .ts,.tsx .",
+    "format": "prettier --check . "
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^7.7.0",
+    "@electron-forge/maker-deb": "^7.7.0",
+    "@electron-forge/maker-rpm": "^7.7.0",
+    "@electron-forge/maker-squirrel": "^7.7.0",
+    "@electron-forge/maker-zip": "^7.7.0",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.7.0",
+    "@electron-forge/plugin-fuses": "^7.7.0",
+    "@electron-forge/plugin-vite": "^7.7.0",
+    "@electron-toolkit/tsconfig": "^1.0.1",
+    "@electron/fuses": "^1.8.0",
+    "@types/node": "^22.13.10",
+    "electron": "^35.0.1",
+    "electron-extension-installer": "^1.2.0",
+    "electron-vite": "^3.0.0",
+    "ts-node": "^10.9.2"
+  },
+  "dependencies": {
+    "@satoriapp/loader": "workspace:*",
+    "@satoriapp/main": "workspace:*",
+    "@satoriapp/preload": "workspace:*",
+    "@satoriapp/renderer": "workspace:*",
+    "@satorijs/core": "^4.5.0"
+  },
+  "packageManager": "yarn@4.4.0"
+}

@@ -1,15 +1,15 @@
 {
   "name": "@satoriapp/preload",
   "version": "0.0.1",
-  "description": "SAPP:Renderer Preload",
   "main": ".vite/build/preload.js",
-  "license": "AGPL-3.0-only",
   "exports": {
     ".": {
-      "types": "./src/index.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.cjs"
+      "types": "./src/index.ts"
     },
     "./package.json": "./package.json"
+  },
+  "license": "AGPL-3.0-only",
+  "devDependencies": {
+    "cordis": "^3.18.1"
   }
 }

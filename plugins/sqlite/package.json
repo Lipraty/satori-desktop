@@ -1,5 +1,5 @@
 {
-  "name": "@satoriapp/loader",
+  "name": "@satoriapp/plugin-sqlite",
   "version": "0.0.1",
   "description": "SAPP:Loader",
   "license": "AGPL-3.0-only",
@@ -11,7 +11,17 @@
     },
     "./package.json": "./package.json"
   },
+  "sapp": {
+    "service": {
+      "implements": [
+        "database"
+      ]
+    }
+  },
+  "dependencies": {
+    "@minatojs/driver-sqlite": "4.6.0"
+  },
   "peerDependencies": {
-    "@satoriapp/main": "workspace:*"
+    "@satoriapp/core": "workspace:*"
   }
 }

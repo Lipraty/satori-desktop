@@ -8,3 +8,5 @@ window.native.cordisEventBridge((name, args) => {
 })
 
 root.start()
+
+export { useContext } from './context'
