@@ -1,20 +1,33 @@
 {
   "@satoriapp/plugin-satori-server": {
-    "service": {
-      "required": [
-        "database",
-        "satori"
-      ],
-      "implements": [
-        "satori-server"
-      ]
+    "path": "/plugins/satori-server",
+    "meta": {
+      "service": {
+        "required": [
+          "database",
+          "satori"
+        ],
+        "implements": [
+          "satori-server"
+        ]
+      }
+    },
+    "deps": {
+      "@satoriapp/main": "workspace:*"
     }
   },
   "@satoriapp/plugin-sqlite": {
-    "service": {
-      "implements": [
-        "database"
-      ]
+    "path": "/plugins/sqlite",
+    "meta": {
+      "service": {
+        "implements": [
+          "database"
+        ]
+      }
+    },
+    "deps": {
+      "@minatojs/driver-sqlite": "^4.6.0",
+      "@satoriapp/core": "workspace:*"
     }
   }
 }

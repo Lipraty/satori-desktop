@@ -1,14 +1,17 @@
-import { Context } from 'yakumo'
+import { Context, PackageJson } from 'yakumo'
 import * as vite from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { resolve } from 'node:path'
 import { existsSync } from 'node:fs'
 import { writeFile } from 'node:fs/promises'
+import { builtinModules } from 'node:module'
 
 export const inject = ['yakumo']
 
+export const builtins = ['electron', ...builtinModules.map((m) => [m, `node:${m}`]).flat()];
+
 export function apply(ctx: Context) {
-  ctx.register('start', async () => {
+  ctx.register('bundle', async () => {
     const paths = ctx.yakumo.locate(ctx.yakumo.argv._)
     const packages = paths.filter(path => path.startsWith('/packages'))
     const plugins = paths.filter(path => path.startsWith('/plugins'))
@@ -24,7 +27,11 @@ export function apply(ctx: Context) {
         ...meta.peerDependencies,
         ...meta.optionalDependencies,
       }
-      manifest[meta.name] = meta['sapp'] || {}
+      manifest[meta.name] = {
+        path,
+        meta: meta['sapp'] || {},
+        deps
+      }
 
       let config: vite.UserConfig = {}
       if (existsSync(resolve(root, 'client')) && deps['@satoriapp/client']) {
@@ -34,7 +41,7 @@ export function apply(ctx: Context) {
       }
 
       try {
-        await build(root, config)
+        await build(root, config, deps)
       } catch (error) {
         ctx.logger('PluginBuilder').error('build ', meta.name, ' failed %s', error)
         continue
@@ -57,24 +64,38 @@ export function apply(ctx: Context) {
       let config: vite.UserConfig = {}
 
       if (meta.name === '@satoriapp/renderer') {
+        console.log('build renderer')
         config = {
           plugins: [vue()],
           build: {
+            minify: true,
+            emptyOutDir: true,
+            commonjsOptions: {
+              strictRequires: true,
+            },
             rollupOptions: {
+              makeAbsoluteExternalsRelative: true,
+              external: [
+                ...builtins,
+                ...Object.keys(deps),
+              ],
               output: {
-                format: 'cjs',
-                inlineDynamicImports: true,
-                entryFileNames: '[name].js',
-                chunkFileNames: '[name].js',
-                assetFileNames: '[name].[ext]',
+                format: 'iife',
               }
             }
-          }
+          },
+          css: {
+            preprocessorOptions: {
+              scss: {
+                api: 'modern-compiler',
+              },
+            },
+          },
         }
       }
 
       try {
-        await build(root, config)
+        await build(root, config, deps)
       } catch (error) {
         ctx.logger('PackageBuilder').error('build ', meta.name, ' failed %s', error)
         continue
@@ -83,7 +104,7 @@ export function apply(ctx: Context) {
   })
 }
 
-export async function build(root: string, config: vite.UserConfig) {
+export async function build(root: string, config: vite.UserConfig, deps: { [x: string]: string; }) {
   return await vite.build(vite.mergeConfig({
     root,
     build: {
@@ -96,7 +117,8 @@ export async function build(root: string, config: vite.UserConfig) {
       emptyOutDir: true,
       rollupOptions: {
         external: [
-          'electron'
+          ...builtins,
+          ...Object.keys(deps)
         ]
       }
     }

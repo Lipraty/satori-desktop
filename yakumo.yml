@@ -5,8 +5,8 @@
     - app/electron
     pipeline:
       dev:
+        - bundle
         - tsc
-        - start
 - name: yakumo-tsc
 - id: n9e3do
   name: '@satoriapp/yakumo'

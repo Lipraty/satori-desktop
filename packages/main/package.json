@@ -1,7 +1,7 @@
 {
   "name": "@satoriapp/main",
   "version": "0.0.1",
-  "main": ".lib/index.mjs",
+  "main": ".lib/index.js",
   "typings": "lib/index.d.ts",
   "description": "Satori App main process module",
   "exports": {

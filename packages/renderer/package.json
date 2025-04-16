@@ -2,7 +2,7 @@
   "name": "@satoriapp/renderer",
   "version": "0.0.1",
   "license": "AGPL-3.0-only",
-  "main": ".lib/index.mjs",
+  "main": ".lib/index.js",
   "typings": "lib/index.d.ts",
   "description": "Satori App renderer module",
   "exports": {

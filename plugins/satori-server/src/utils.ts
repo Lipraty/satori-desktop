@@ -23,3 +23,5 @@ declare module '@satoriapp/main' {
     POINT = 3,
   }
 }
+
+export {}

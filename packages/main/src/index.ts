@@ -26,7 +26,7 @@ export class Context extends cordis.Context {
       return this.windows.get(name)
     }
     const window = new electron.BrowserWindow(options)
-    this.emit('main/window-created', name, window)
+    // this.emit('main/window-created', name, window)
     this.windows.set(name, window)
     window.on('close', () => {
       this.windows.delete(name)

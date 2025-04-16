@@ -1517,7 +1517,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@satoriapp/loader@workspace:^, @satoriapp/loader@workspace:packages/loader":
+"@satoriapp/loader@workspace:*, @satoriapp/loader@workspace:packages/loader":
   version: 0.0.0-use.local
   resolution: "@satoriapp/loader@workspace:packages/loader"
   dependencies:
@@ -1527,7 +1527,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@satoriapp/main@workspace:*, @satoriapp/main@workspace:^, @satoriapp/main@workspace:packages/main":
+"@satoriapp/main@workspace:*, @satoriapp/main@workspace:packages/main":
   version: 0.0.0-use.local
   resolution: "@satoriapp/main@workspace:packages/main"
   dependencies:
@@ -1560,7 +1560,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@satoriapp/preload@workspace:^, @satoriapp/preload@workspace:packages/preload":
+"@satoriapp/preload@workspace:*, @satoriapp/preload@workspace:packages/preload":
   version: 0.0.0-use.local
   resolution: "@satoriapp/preload@workspace:packages/preload"
   dependencies:
@@ -1571,7 +1571,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@satoriapp/renderer@workspace:^, @satoriapp/renderer@workspace:packages/renderer":
+"@satoriapp/renderer@workspace:*, @satoriapp/renderer@workspace:packages/renderer":
   version: 0.0.0-use.local
   resolution: "@satoriapp/renderer@workspace:packages/renderer"
   dependencies:
@@ -7578,9 +7578,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"satori-desktop@workspace:app/electron":
+"satoriapp@workspace:app/electron":
   version: 0.0.0-use.local
-  resolution: "satori-desktop@workspace:app/electron"
+  resolution: "satoriapp@workspace:app/electron"
   dependencies:
     "@electron-forge/cli": "npm:^7.8.0"
     "@electron-forge/maker-deb": "npm:^7.8.0"
@@ -7592,10 +7592,10 @@ __metadata:
     "@electron-forge/plugin-vite": "npm:^7.8.0"
     "@electron-toolkit/tsconfig": "npm:^1.0.1"
     "@electron/fuses": "npm:^1.8.0"
-    "@satoriapp/loader": "workspace:^"
-    "@satoriapp/main": "workspace:^"
-    "@satoriapp/preload": "workspace:^"
-    "@satoriapp/renderer": "workspace:^"
+    "@satoriapp/loader": "workspace:*"
+    "@satoriapp/main": "workspace:*"
+    "@satoriapp/preload": "workspace:*"
+    "@satoriapp/renderer": "workspace:*"
     "@satorijs/core": "npm:^4.5.0"
     "@types/electron-squirrel-startup": "npm:^1.0.1"
     "@types/node": "npm:^22.14.1"
@@ -7606,6 +7606,8 @@ __metadata:
     ts-node: "npm:^10.9.2"
     typescript: "npm:^5.8.3"
     vite: "npm:^6.3.0"
+  bin:
+    electron-filter: ../../script/cli.js
   languageName: unknown
   linkType: soft
 

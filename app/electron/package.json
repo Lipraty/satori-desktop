@@ -1,9 +1,9 @@
 {
-  "name": "satori-desktop",
-  "productName": "satori-desktop",
+  "name": "satoriapp",
+  "productName": "satoriapp",
   "version": "0.0.1",
   "description": "Satori App for Desktop",
-  "main": ".vite/build/main/index.js",
+  "main": ".vite/build/main.js",
   "author": {
     "name": "Lipraty",
     "email": "i@lonay.me"
@@ -15,6 +15,9 @@
     }
   ],
   "license": "AGPL-3.0-only",
+  "bin": {
+    "electron-filter": "../../script/cli.js"
+  },
   "scripts": {
     "dev": "electron-filter electron-forge start",
     "trace": "electron --trace-warnings .",
@@ -45,10 +48,10 @@
     "vite": "^6.3.0"
   },
   "dependencies": {
-    "@satoriapp/loader": "workspace:^",
-    "@satoriapp/main": "workspace:^",
-    "@satoriapp/preload": "workspace:^",
-    "@satoriapp/renderer": "workspace:^",
+    "@satoriapp/loader": "workspace:*",
+    "@satoriapp/main": "workspace:*",
+    "@satoriapp/preload": "workspace:*",
+    "@satoriapp/renderer": "workspace:*",
     "@satorijs/core": "^4.5.0",
     "electron-squirrel-startup": "^1.0.1"
   },

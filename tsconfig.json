@@ -4,6 +4,7 @@
     "baseUrl": ".",
     "paths": {
       "satoriapp": ["app/electron/src"],
+
       "@satoriapp/core": ["packages/core/src"],
       "@satoriapp/main": ["packages/main/src"],
       "@satoriapp/renderer": ["packages/renderer/src"],

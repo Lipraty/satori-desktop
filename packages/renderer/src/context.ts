@@ -1,8 +1,6 @@
 import * as cordis from 'cordis'
-import { App, createApp, inject, InjectionKey, markRaw, onScopeDispose } from 'vue'
+import { App, createApp, defineComponent, h, inject, InjectionKey, markRaw, onScopeDispose } from 'vue'
 import { webUtils } from 'electron'
-
-import Root from './client/App.vue'
 
 const rootContext = Symbol('context') as InjectionKey<Context>
 
@@ -18,7 +16,13 @@ export class Context extends cordis.Context {
 
   constructor() {
     super()
-    this.app = createApp(Root)
+    this.app = createApp(defineComponent({
+      setup() {
+        return () => {
+          h('div', null, 'foo')
+        }
+      }
+    }))
     this.app.provide(rootContext, this)
     this.on('ready', () => {
       this.app.mount('#app')
