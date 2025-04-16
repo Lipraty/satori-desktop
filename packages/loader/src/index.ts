@@ -5,9 +5,11 @@
  * 2. Production - Directly imports pre-built bundles without performing any dynamic loading operations.
  * 3. External Plugin - Functions as a centralized loader for externally developed plugins residing in application-defined directories.
  */
-import { APP_NAME, APP_VERSION, Context, Dict, emptyObject, ForkScope, Inject, Schema } from '@satoriapp/main'
+import { APP_NAME, APP_VERSION, Context, Dict, emptyObject, ForkScope, Inject, Schema, Plugin } from '@satoriapp/main'
 import { resolve } from 'node:path'
 import { readFile, writeFile } from 'node:fs/promises'
+
+import manifest from './plugins.manifest.json'
 
 declare module 'cordis' {
   interface Context {
@@ -54,24 +56,24 @@ class Loader {
 
   async init(init: boolean) {
     let _plugins: Record<string, () => Promise<Plugin>> = {}
-    if (import.meta?.env?.DEV) {
-      const _plugins = import.meta.glob([
-        'plugins/**/index.ts',
-      ]) as Record<string, () => Promise<Plugin>>
-    } else {
-      // Directly imports pre-built bundles.
-      // @ts-ignore
-      _plugins = await import('../plugins.js')
-    }
-    if (emptyObject(_plugins)) {
-      this.ctx.logger.error('fatal: unable to internal plugins')
-      this.ctx.app.quit()
-      return
-    }
-    for (const [path, module] of Object.entries(_plugins)) {
-      const plugin = unwrapExport(module)
+    // if (import.meta?.env?.DEV) {
+    //   const _plugins = import.meta.glob([
+    //     'plugins/**/index.ts',
+    //   ]) as Record<string, () => Promise<Plugin>>
+    // } else {
+    //   // Directly imports pre-built bundles.
+    //   // @ts-ignore
+    //   _plugins = await import('../plugins.js')
+    // }
+    // if (emptyObject(_plugins)) {
+    //   this.ctx.logger.error('fatal: unable to internal plugins')
+    //   this.ctx.app.quit()
+    //   return
+    // }
+    // for (const [path, module] of Object.entries(_plugins)) {
+    //   const plugin = unwrapExport(module)
       
-    }
+    // }
   }
 
   private _handleConfig(config: Dict) {

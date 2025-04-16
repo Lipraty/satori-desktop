@@ -1,5 +1,4 @@
-import { } from 'electron'
-import * as electron from 'electron/main'
+import * as electron from 'electron'
 import * as cordis from 'cordis'
 import * as Package from '../package.json'
 
@@ -37,6 +36,8 @@ export class Context extends cordis.Context {
 }
 
 export namespace Context { }
+
+export abstract class Service<C extends Context = Context> extends cordis.Service<C> { }
 
 export function emptyObject(obj: any) {
   for (const key in obj) {

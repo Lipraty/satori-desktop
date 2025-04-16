@@ -1,13 +1,15 @@
 {
   "name": "@satoriapp/plugin-sqlite",
   "version": "0.0.1",
-  "description": "SAPP:Loader",
-  "license": "AGPL-3.0-only",
+  "description": "SQLite plugin for Satori App",
+  "license": "MIT",
+  "main": ".lib/index.mjs",
+  "typings": "lib/index.d.ts",
   "exports": {
     ".": {
       "types": "./src/index.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.cjs"
+      "require": "./lib/index.js",
+      "import": "./lib/index.mjs"
     },
     "./package.json": "./package.json"
   },
@@ -19,7 +21,7 @@
     }
   },
   "dependencies": {
-    "@minatojs/driver-sqlite": "4.6.0"
+    "@minatojs/driver-sqlite": "^4.6.0"
   },
   "peerDependencies": {
     "@satoriapp/core": "workspace:*"

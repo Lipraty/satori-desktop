@@ -1,0 +1,26 @@
+{
+  "files": [],
+  "references": [
+    {
+      "path": "./packages/main"
+    },
+    {
+      "path": "./plugins/sqlite"
+    },
+    {
+      "path": "./plugins/satori-server"
+    },
+    {
+      "path": "./packages/yakumo"
+    },
+    {
+      "path": "./packages/renderer"
+    },
+    {
+      "path": "./packages/preload"
+    },
+    {
+      "path": "./packages/loader"
+    }
+  ]
+}

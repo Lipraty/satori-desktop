@@ -1,6 +1,6 @@
-import * as core from '@satoriapp/core'
+import * as cordis from 'cordis'
 import { App, createApp, inject, InjectionKey, markRaw, onScopeDispose } from 'vue'
-import { webUtils } from 'electron/renderer'
+import { webUtils } from 'electron'
 
 import Root from './client/App.vue'
 
@@ -13,7 +13,7 @@ export function useContext() {
   return fork.ctx
 }
 
-export class Context extends core.Context {
+export class Context extends cordis.Context {
   app: App
 
   constructor() {
@@ -30,4 +30,4 @@ export class Context extends core.Context {
   }
 }
 
-markRaw(core.Context.prototype)
+markRaw(cordis.Context.prototype)

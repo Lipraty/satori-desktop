@@ -1,15 +1,10 @@
 {
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "target": "es2022",
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "declaration": true,
-    "composite": true,
-    "incremental": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
+    "rootDir": "src",
+    "outDir": "lib",
   },
   "include": [
-    "src"
-  ]
+    "src",
+  ],
 }

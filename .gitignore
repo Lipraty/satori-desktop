@@ -92,6 +92,8 @@ typings/
 out/
 dist/
 
+lib/
+
 # Yarn v2
 .yarn/*
 !.yarn/patches

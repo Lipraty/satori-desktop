@@ -2,8 +2,10 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "rootDir": "src",
+    "outDir": "lib"
   },
   "include": [
     "src",
+    "src/plugins.manifest.json",
   ],
 }

@@ -1,0 +1,20 @@
+{
+  "@satoriapp/plugin-satori-server": {
+    "service": {
+      "required": [
+        "database",
+        "satori"
+      ],
+      "implements": [
+        "satori-server"
+      ]
+    }
+  },
+  "@satoriapp/plugin-sqlite": {
+    "service": {
+      "implements": [
+        "database"
+      ]
+    }
+  }
+}

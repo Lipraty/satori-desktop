@@ -1,5 +1,5 @@
 import { } from 'electron'
-import { contextBridge } from 'electron/renderer'
+import { contextBridge } from 'electron'
 
 declare global {
   interface Window extends Exposed { }

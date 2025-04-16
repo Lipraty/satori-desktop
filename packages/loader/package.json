@@ -3,13 +3,17 @@
   "version": "0.0.1",
   "description": "SAPP:Loader",
   "license": "AGPL-3.0-only",
+  "main": ".lib/index.mjs",
   "exports": {
     ".": {
       "types": "./src/index.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.cjs"
+      "require": "./lib/index.js",
+      "import": "./lib/index.mjs"
     },
     "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@satoriapp/main": "workspace:*"
   },
   "peerDependencies": {
     "@satoriapp/main": "workspace:*"

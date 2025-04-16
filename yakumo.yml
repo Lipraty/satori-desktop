@@ -1,0 +1,14 @@
+- id: lt46hu
+  name: yakumo
+  config:
+    exclude:
+    - app/electron
+    pipeline:
+      dev:
+        - tsc
+        - start
+- name: yakumo-tsc
+- id: n9e3do
+  name: '@satoriapp/yakumo'
+- id: wdpibk
+  name: yakumo/run

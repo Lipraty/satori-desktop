@@ -19,16 +19,10 @@
       // See: https://github.com/dividab/tsconfig-paths/issues/209
       "*": ["packages/*/src"],
     },
-    "types": [
-      "node",
-      "electron-vite/node"
-    ],
   },
   "include": [
+    "app",
     "packages",
     "plugins",
-    "types",
-    "app/electron/forge.config.ts",
-    "app/electron/vite.base.config.ts", "app/electron/forge.env.d.ts",
   ]
 }

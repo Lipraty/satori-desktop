@@ -1,6 +1,7 @@
-import { Context, Service } from '@satoriapp/core'
+import { Context, Service } from '@satoriapp/main'
+import { } from './utils'
 
-declare module '@satoriapp/core' {
+declare module '@satoriapp/main' {
   interface Events {
 
   }

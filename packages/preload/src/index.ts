@@ -1,7 +1,7 @@
 // See the Electron documentation for details on how to use preload scripts:
 // https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
 
-import { ipcRenderer } from 'electron/renderer'
+import { ipcRenderer } from 'electron'
 import { createBridge } from './utils'
 import type { Context, Events, GetEvents } from 'cordis'
 export * from './utils'

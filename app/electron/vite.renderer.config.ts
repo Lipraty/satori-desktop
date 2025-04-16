@@ -1,6 +1,5 @@
 import type { ConfigEnv, UserConfig } from 'vite'
 import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
 
 import { pluginExposeRenderer } from './vite.base.config';
 import { fileURLToPath } from 'node:url';
@@ -18,7 +17,7 @@ export default defineConfig((env) => {
     build: {
       outDir: `.vite/renderer/${name}`,
     },
-    plugins: [pluginExposeRenderer(name), vue()],
+    plugins: [pluginExposeRenderer(name)],
     resolve: {
       preserveSymlinks: true,
       alias: {

@@ -1,4 +1,4 @@
-declare module '@satoriapp/core' {
+declare module '@satoriapp/main' {
   interface Message {
     uid: string
     /**
