@@ -14,8 +14,10 @@ if (started) {
 const app = new Context()
 app.provide('satori', undefined, true)
 app.provide('bots', [], true)
-app.plugin(Loader)
-app.plugin(Satori)
+// @ts-ignore
+app.plugin(Loader?.default || Loader)
+// @ts-ignore
+app.plugin(Satori?.default || Satori)
 
 app.on('dispose', () => {
   isQuitting = true
