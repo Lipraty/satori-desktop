@@ -2,7 +2,6 @@ import type { ConfigEnv, UserConfig } from 'vite'
 import { defineConfig } from 'vite'
 
 import { pluginExposeRenderer } from './vite.base.config';
-import { fileURLToPath } from 'node:url';
 
 // https://vitejs.dev/config
 export default defineConfig((env) => {
@@ -20,9 +19,6 @@ export default defineConfig((env) => {
     plugins: [pluginExposeRenderer(name)],
     resolve: {
       preserveSymlinks: true,
-      alias: {
-        '@shared': fileURLToPath(new URL('./src/shared', import.meta.url)),
-      }
     },
     css: {
       preprocessorOptions: {
