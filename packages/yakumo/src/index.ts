@@ -6,6 +6,7 @@ import { builtinModules } from 'node:module'
 import MainConfig from './configs/main'
 import PreloadConfig from './configs/preload'
 import RendererConfig from './configs/renderer'
+import LoaderConfig from './configs/loader'
 import DefaultConfig from './configs/default'
 
 export const inject = ['yakumo']
@@ -65,6 +66,8 @@ export function apply(ctx: Context) {
         config = PreloadConfig
       } else if (meta.name === '@satoriapp/main') {
         config = MainConfig
+      } else if (meta.name === '@satoriapp/loader') {
+        config = LoaderConfig
       } else {
         config = DefaultConfig
       }

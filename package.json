@@ -26,7 +26,7 @@
     "electron-filter": "./script/cli.js"
   },
   "scripts": {
-    "dev": "yakumo dev && yarn workspace satoriapp electron-forge start",
+    "dev": "yakumo dev && yarn workspace satoriapp electron-filter electron-forge start",
     "build:ykm": "yarn workspace @satoriapp/yakumo vite build --config vite.config.ts",
     "trace": "electron --trace-warnings .",
     "package": "electron-forge package",
