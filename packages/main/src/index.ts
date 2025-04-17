@@ -1,24 +1,29 @@
 import * as electron from 'electron'
 import * as cordis from 'cordis'
-import * as Package from '../package.json'
 
 export interface Events<C extends Context = Context> extends cordis.Events<C> { }
 
 export interface Context extends cordis.Context {
   [Context.events]: Events<Context>
+  $env: Record<string, any>
 }
 
 export class Context extends cordis.Context { 
   app: electron.App
 
-  constructor(config = {}) {
+  constructor(config?: Context.Config) {
     super(config)
     this.app = electron.app
+    this.provide('$env', config?.env ?? {}, true)
     this.plugin(WindowService)
   }
 }
 
-export namespace Context { }
+export namespace Context {
+  export interface Config {
+    env?: Record<string, any>
+  }
+}
 
 export abstract class Service<T = any, C extends Context = Context> extends cordis.Service<T, C> { }
 
@@ -36,10 +41,9 @@ import WindowService from './window' // fix loading before definition
 export type EffectScope<C extends Context = Context> = cordis.EffectScope<C>
 export type ForkScope<C extends Context = Context> = cordis.ForkScope<C>
 export type MainScope<C extends Context = Context> = cordis.MainScope<C>
-export const APP_NAME = 'Satori App for Desktop'
-export const APP_VERSION = Package.version
-export const APP_ID = 'com.satoriapp.desktop'
+
 export { Logger, Schema, Inject, ScopeStatus } from 'cordis'
 export type { Disposable, Plugin } from 'cordis'
+export * from './common'
 export * from 'cosmokit'
 export * from '@satorijs/protocol'

@@ -1,7 +1,9 @@
 import * as electron from 'electron'
-import { APP_NAME, Context, Service, Schema } from '@satoriapp/main'
+import type { Context } from '.'
+import { Service, Schema } from 'cordis'
+import { APP_NAME } from './common'
 
-declare module '@satoriapp/main' {
+declare module '.' {
   interface Context {
     window: WindowService
   }
@@ -9,6 +11,9 @@ declare module '@satoriapp/main' {
     'internal/window': (type: 'create' | 'close', name: string, ...args: any[]) => void
   }
 }
+
+declare const MAIN_WINDOW_VITE_DEV_SERVER_URL: string | undefined
+declare const MAIN_WINDOW_VITE_NAME: string | undefined
 
 class WindowService extends Service {
   static readonly name = 'window'
@@ -25,7 +30,7 @@ class WindowService extends Service {
     return this.config.theme === 'dark' || (this.config.theme === 'system' && electron.nativeTheme.shouldUseDarkColors)
   }
 
-  constructor(ctx: Context, public config: WindowService.Config) {
+  constructor(public ctx: Context, public config: WindowService.Config) {
     super(ctx, 'window')
     ctx.app.on('activate', () => {
       if (electron.BrowserWindow.getAllWindows().length === 0) {
@@ -54,6 +59,17 @@ class WindowService extends Service {
         preload: './preload.js',
       },
     })
+
+    if (this.ctx.$env.MAIN_WINDOW_VITE_DEV_SERVER_URL) {
+      this.mainWindow.loadURL(this.ctx.$env.MAIN_WINDOW_VITE_DEV_SERVER_URL)
+    } else {
+      this.mainWindow.loadFile(`../renderer/${this.ctx.$env.MAIN_WINDOW_VITE_NAME}/index.html`)
+    }
+
+    if (process.env.NODE_ENV === 'development') {
+      this.ctx.logger.info('development mode, open dev tools')
+      this.mainWindow.webContents.openDevTools()
+    }
   }
 
   createWindow(name: string, options: electron.BrowserWindowConstructorOptions) {

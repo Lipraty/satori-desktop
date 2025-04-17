@@ -13,7 +13,13 @@ if (stared) {
 }
 
 // Create the Cordis context
-const app = new Context()
+const app = new Context({
+  env: {
+    MAIN_WINDOW_VITE_DEV_SERVER_URL,
+    MAIN_WINDOW_VITE_NAME,
+  }
+})
+
 app.provide('satori', undefined, true)
 app.provide('bots', [], true)
 
