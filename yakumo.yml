@@ -3,10 +3,12 @@
   config:
     exclude:
     - app/electron
+    - packages/yakumo
     pipeline:
       dev:
         - bundle
         - tsc
+        - run app/electron -- electron-forge start
 - name: yakumo-tsc
 - id: n9e3do
   name: '@satoriapp/yakumo'

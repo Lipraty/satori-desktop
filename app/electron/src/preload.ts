@@ -1,1 +1,1 @@
-export * from '@satoriapp/loader'
+import '@satoriapp/preload'

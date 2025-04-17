@@ -13,7 +13,7 @@ declare module './utils' {
   }
 }
 
-interface ExposedNative {
+export interface ExposedNative {
   platform: NodeJS.Platform
   cordisEventBridge: (callback: <K extends keyof Events<Context>>(name: K, args: Parameters<GetEvents<Context>[K]>) => void) => void
 }

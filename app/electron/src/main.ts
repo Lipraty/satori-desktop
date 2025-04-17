@@ -1,36 +1,40 @@
 import * as electorn from 'electron'
-import started from 'electron-squirrel-startup'
+import stared from 'electron-squirrel-startup'
 import { Context } from '@satoriapp/main'
 import Loader from '@satoriapp/loader'
 import Satori from '@satorijs/core'
 
-let isQuitting = false
+let isQuiting = false
 
-if (started) {
-  isQuitting = true
+// If the app is started by Squirrel, quit the app
+if (stared) {
+  isQuiting = true
   electorn.app.quit()
 }
 
+// Create the Cordis context
 const app = new Context()
 app.provide('satori', undefined, true)
 app.provide('bots', [], true)
+
 // @ts-ignore
 app.plugin(Loader?.default || Loader)
 // @ts-ignore
 app.plugin(Satori?.default || Satori)
 
+// Lifecycle of Cordis
 app.on('dispose', () => {
-  isQuitting = true
+  isQuiting = true
   electorn.app.quit()
 })
 
-electorn.app.whenReady().then(() => {
-  app.start()
-})
-
+// Lifecycle of Electron
 electorn.app.on('before-quit', (e) => {
-  if (!isQuitting) {
+  if (!isQuiting) {
     e.preventDefault()
     app.stop()
   }
+})
+electorn.app.on('ready', () => {
+  app.start()
 })
