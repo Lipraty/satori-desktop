@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "SQLite plugin for Satori App",
   "license": "MIT",
-  "main": ".lib/index.mjs",
+  "main": "lib/index.mjs",
   "typings": "lib/index.d.ts",
   "exports": {
     ".": {
