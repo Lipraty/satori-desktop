@@ -1,16 +1,9 @@
-/**
- * In Electron projects, the development and production modes operate in fundamentally different ways. This loader primarily serves three key purposes:
- * 
- * 1. ​Development - Automatically discovers and loads plugins/packages from the designated plugins directory during runtime.
- * 2. Production - Directly imports pre-built bundles without performing any dynamic loading operations.
- * 3. External Plugin - Functions as a centralized loader for externally developed plugins residing in application-defined directories.
- */
 import { APP_NAME, APP_VERSION, Context, Dict, emptyObject, ForkScope, Inject, Schema, Plugin } from '@satoriapp/main'
 import { resolve } from 'node:path'
 import { readFile, writeFile } from 'node:fs/promises'
 
 // @ts-ignore
-import { PluginManifest, plugins } from './plugins'
+import { plugins } from './plugins'
 
 declare module 'cordis' {
   interface Context {
