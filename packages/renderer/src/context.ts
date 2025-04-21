@@ -1,6 +1,7 @@
 import * as cordis from 'cordis'
 import { App, createApp, defineComponent, h, inject, InjectionKey, markRaw, onScopeDispose } from 'vue'
 import { Events as SharedEvents } from '@satoriapp/common'
+import Root from './client/App.vue'
 
 const rootContext = Symbol('context') as InjectionKey<Context>
 
@@ -18,16 +19,9 @@ export class Context extends cordis.Context {
 
   constructor() {
     super()
-    this.app = createApp(defineComponent({
-      setup() {
-        return () => {
-          h('div', null, 'foo')
-        }
-      }
-    }))
+    this.app = createApp(Root)
     this.app.provide(rootContext, this)
     this.on('ready', () => {
-      this.logger('renderer').info('renderer context ready')
       this.app.mount('#app')
     })
   }

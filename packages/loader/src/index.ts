@@ -9,7 +9,8 @@ import { APP_NAME, APP_VERSION, Context, Dict, emptyObject, ForkScope, Inject, S
 import { resolve } from 'node:path'
 import { readFile, writeFile } from 'node:fs/promises'
 
-import manifest from './plugins.manifest.json'
+// @ts-ignore
+import { PluginManifest, plugins } from './plugins'
 
 declare module 'cordis' {
   interface Context {

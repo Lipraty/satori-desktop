@@ -6,14 +6,14 @@
   "exports": {
     ".": {
       "types": "./src/index.ts",
-      "require": "./lib/index.js",
-      "import": "./lib/index.mjs"
+      "require": "./lib/index.cjs",
+      "import": "./lib/index.js"
     },
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@vueuse/core": "^13.1.0",
     "@satoriapp/common": "workspace:*",
+    "@vueuse/core": "^13.1.0",
     "cordis": "^3.18.1",
     "pinia": "^3.0.2",
     "vue": "^3.5.13",
