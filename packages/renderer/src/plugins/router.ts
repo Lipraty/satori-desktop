@@ -1,8 +1,8 @@
 import { } from 'vue'
 import { } from 'vue-router'
-import { Disposable } from '@satoriapp/main'
+import type { Disposable } from '@satoriapp/main'
 
-import { Context } from '../context'
+import type { Context } from '../context'
 
 declare module '../context' {
 

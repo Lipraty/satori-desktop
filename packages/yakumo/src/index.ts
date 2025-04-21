@@ -1,6 +1,6 @@
 import { Context, PackageJson } from 'yakumo'
 import * as vite from 'vite'
-import { writeFile } from 'node:fs/promises'
+import { copyFile, writeFile } from 'node:fs/promises'
 import { builtinModules } from 'node:module'
 
 import MainConfig from './configs/main'
@@ -8,19 +8,20 @@ import PreloadConfig from './configs/preload'
 import RendererConfig from './configs/renderer'
 import LoaderConfig from './configs/loader'
 import DefaultConfig from './configs/default'
+import { resolve } from 'node:path'
 
 export const inject = ['yakumo']
 
 export const builtins = ['electron', ...builtinModules.map((m) => [m, `node:${m}`]).flat()];
 
 export function apply(ctx: Context) {
-  const builder = async (path: string, configer: (root: string, external?: string[]) => vite.UserConfig) => {
+  const builder = async (path: string, configer: (root: string, external?: string[]) => vite.UserConfig, config: vite.UserConfig = {}) => {
     const meta = ctx.yakumo.workspaces[path]
     const root = ctx.yakumo.cwd + path
-    return await vite.build(configer(root, [
+    return await vite.build(vite.mergeConfig(configer(root, [
       ...builtins,
       ...Object.keys(meta?.dependencies || {})
-    ]))
+    ]), config))
   }
 
   ctx.register('bundle', async () => {
@@ -28,8 +29,16 @@ export function apply(ctx: Context) {
     const packages = paths.filter(path => path.startsWith('/packages'))
     const plugins = paths.filter(path => path.startsWith('/plugins'))
 
-    // step 1: build plugins and generate manifest.json
-    let manifest: Record<string, any> = {}
+    const loaderPath = ctx.yakumo.cwd + '/packages/loader/package.json'
+    const loaderBackupPath = ctx.yakumo.cwd + '/packages/loader/package.json.bak'
+    await copyFile(loaderPath, loaderBackupPath)
+
+    const manifest: Record<string, any> = {}
+    const pluginImports: {
+      name: string
+      version: string
+      import: string
+    }[] = []
     for (const path of plugins) {
       const meta = ctx.yakumo.workspaces[path]
       const deps = {
@@ -39,13 +48,22 @@ export function apply(ctx: Context) {
         ...meta.optionalDependencies,
       }
       manifest[meta.name] = {
-        path,
+        path: resolve(path, 'src/index.js'),
         meta: meta['sapp'] || {},
         deps
       }
 
+
       try {
-        const result = await builder(path, DefaultConfig)
+        const result = await builder(path, DefaultConfig, {
+          build: {
+            rollupOptions: {
+              output: {
+                
+              }
+            }
+          }
+        })
       } catch (error) {
         ctx.logger('builder').error('build ', meta.name, ' failed %c', error)
         continue
@@ -54,7 +72,7 @@ export function apply(ctx: Context) {
 
     await writeFile(ctx.yakumo.cwd + '/packages/loader/src/plugins.manifest.json', JSON.stringify(manifest, null, 2))
 
-    // step 2: build app packages
+    // step 3: build app packages
     for (const path of packages) {
       const meta = ctx.yakumo.workspaces[path]
 

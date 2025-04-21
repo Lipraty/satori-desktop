@@ -1,5 +1,6 @@
 import type { ConfigEnv, UserConfig } from 'vite'
 import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
 
 import { pluginExposeRenderer } from './vite.base.config';
 
@@ -15,8 +16,11 @@ export default defineConfig((env) => {
     base: './',
     build: {
       outDir: `.vite/renderer/${name}`,
+      rollupOptions: {
+        input: './index.html',
+      }
     },
-    plugins: [pluginExposeRenderer(name)],
+    plugins: [pluginExposeRenderer(name), vue()],
     resolve: {
       preserveSymlinks: true,
     },

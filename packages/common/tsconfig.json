@@ -6,5 +6,6 @@
   },
   "include": [
     "src",
+    "src/plugins.manifest.json",
   ],
 }

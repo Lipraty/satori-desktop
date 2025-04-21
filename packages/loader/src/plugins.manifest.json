@@ -1,6 +1,6 @@
 {
   "@satoriapp/plugin-satori-server": {
-    "path": "/plugins/satori-server",
+    "path": "/plugins/satori-server/src/index.js",
     "meta": {
       "service": {
         "required": [
@@ -17,7 +17,7 @@
     }
   },
   "@satoriapp/plugin-sqlite": {
-    "path": "/plugins/sqlite",
+    "path": "/plugins/sqlite/src/index.js",
     "meta": {
       "service": {
         "implements": [

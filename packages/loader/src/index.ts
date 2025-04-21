@@ -55,25 +55,7 @@ class Loader {
   }
 
   async init(init: boolean) {
-    let _plugins: Record<string, () => Promise<Plugin>> = {}
-    // if (import.meta?.env?.DEV) {
-    //   const _plugins = import.meta.glob([
-    //     'plugins/**/index.ts',
-    //   ]) as Record<string, () => Promise<Plugin>>
-    // } else {
-    //   // Directly imports pre-built bundles.
-    //   // @ts-ignore
-    //   _plugins = await import('../plugins.js')
-    // }
-    // if (emptyObject(_plugins)) {
-    //   this.ctx.logger.error('fatal: unable to internal plugins')
-    //   this.ctx.app.quit()
-    //   return
-    // }
-    // for (const [path, module] of Object.entries(_plugins)) {
-    //   const plugin = unwrapExport(module)
-      
-    // }
+    
   }
 
   private _handleConfig(config: Dict) {
@@ -144,9 +126,16 @@ namespace Loader {
   }
 
   export interface Manifest {
-    sapp?: string
-    dependences?: string[]
-    peerDependencies?: string[]
+    path: string
+    meta?: ManifestMeta
+  }
+
+  export interface ManifestMeta {
+    service?: {
+      required?: string[]
+      optional?: string[]
+      implements?: string[]
+    }
   }
 }
 

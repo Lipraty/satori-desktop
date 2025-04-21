@@ -1,6 +1,6 @@
 import * as cordis from 'cordis'
 import { App, createApp, defineComponent, h, inject, InjectionKey, markRaw, onScopeDispose } from 'vue'
-import { webUtils } from 'electron'
+import { Events as SharedEvents } from '@satoriapp/common'
 
 const rootContext = Symbol('context') as InjectionKey<Context>
 
@@ -10,6 +10,8 @@ export function useContext() {
   onScopeDispose(fork.dispose)
   return fork.ctx
 }
+
+export interface Events<C extends Context = Context> extends SharedEvents<C> { }
 
 export class Context extends cordis.Context {
   app: App
@@ -25,12 +27,9 @@ export class Context extends cordis.Context {
     }))
     this.app.provide(rootContext, this)
     this.on('ready', () => {
+      this.logger('renderer').info('renderer context ready')
       this.app.mount('#app')
     })
-  }
-
-  getPathForFile(file: File) {
-    return webUtils.getPathForFile(file)
   }
 }
 

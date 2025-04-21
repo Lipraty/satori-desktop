@@ -17,6 +17,7 @@ const app = new Context({
   env: {
     MAIN_WINDOW_VITE_DEV_SERVER_URL,
     MAIN_WINDOW_VITE_NAME,
+    PRELOAD_PATH: `${__dirname}/preload.js`,
   }
 })
 

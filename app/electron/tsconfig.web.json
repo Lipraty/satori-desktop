@@ -1,6 +1,7 @@
 {
   "extends": "@electron-toolkit/tsconfig/tsconfig.web.json",
   "include": [
+    "src/preload.ts",
     "src/renderer.ts",
     "vite.*.config.ts",
     "forge.*.config.ts",

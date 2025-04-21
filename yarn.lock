@@ -1517,6 +1517,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@satoriapp/common@workspace:*, @satoriapp/common@workspace:packages/common":
+  version: 0.0.0-use.local
+  resolution: "@satoriapp/common@workspace:packages/common"
+  dependencies:
+    cordis: "npm:^3.18.1"
+    cosmokit: "npm:^1.8.0"
+  languageName: unknown
+  linkType: soft
+
 "@satoriapp/loader@workspace:*, @satoriapp/loader@workspace:packages/loader":
   version: 0.0.0-use.local
   resolution: "@satoriapp/loader@workspace:packages/loader"
@@ -1531,9 +1540,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@satoriapp/main@workspace:packages/main"
   dependencies:
+    "@satoriapp/common": "workspace:*"
     "@satorijs/core": "npm:^4.5.0"
     cordis: "npm:^3.18.1"
-    cosmokit: "npm:^1.8.0"
     electron: "npm:^35.1.5"
   peerDependencies:
     electron: "*"
@@ -1557,17 +1566,6 @@ __metadata:
     "@minatojs/driver-sqlite": "npm:^4.6.0"
   peerDependencies:
     "@satoriapp/core": "workspace:*"
-  languageName: unknown
-  linkType: soft
-
-"@satoriapp/preload@workspace:*, @satoriapp/preload@workspace:packages/preload":
-  version: 0.0.0-use.local
-  resolution: "@satoriapp/preload@workspace:packages/preload"
-  dependencies:
-    cordis: "npm:^3.18.1"
-    electron: "npm:^35.1.5"
-  peerDependencies:
-    electron: "*"
   languageName: unknown
   linkType: soft
 
@@ -7594,11 +7592,11 @@ __metadata:
     "@electron/fuses": "npm:^1.8.0"
     "@satoriapp/loader": "workspace:*"
     "@satoriapp/main": "workspace:*"
-    "@satoriapp/preload": "workspace:*"
     "@satoriapp/renderer": "workspace:*"
     "@satorijs/core": "npm:^4.5.0"
     "@types/electron-squirrel-startup": "npm:^1.0.1"
     "@types/node": "npm:^22.14.1"
+    "@vitejs/plugin-vue": "npm:^5.2.3"
     electron: "npm:^35.1.5"
     electron-extension-installer: "npm:^1.2.0"
     electron-squirrel-startup: "npm:^1.0.1"

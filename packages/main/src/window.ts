@@ -1,7 +1,6 @@
 import * as electron from 'electron'
 import type { Context } from '.'
 import { Service, Schema } from 'cordis'
-import { APP_NAME } from './common'
 
 declare module '.' {
   interface Context {
@@ -54,9 +53,9 @@ class WindowService extends Service {
       backgroundMaterial: 'mica',
       vibrancy: 'titlebar',
       backgroundColor: '#00000000',
-      title: APP_NAME,
+      title: this.ctx.$env.APP_NAME,
       webPreferences: {
-        preload: './preload.js',
+        preload: this.ctx.$env.PRELOAD_PATH,
       },
     })
 

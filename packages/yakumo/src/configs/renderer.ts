@@ -8,17 +8,18 @@ export default (root: string, external: string[]) => defineConfig({
   build: {
     minify: true,
     emptyOutDir: false,
+    outDir: resolve(root, 'lib'),
     commonjsOptions: {
       strictRequires: true,
     },
-    rollupOptions: {
-      makeAbsoluteExternalsRelative: true,
-      external,
-      input: resolve(root, 'src/index.ts'),
-      output: {
-        format: 'iife',
-      },
+    lib: {
+      entry: resolve(root, 'src/index.ts'),
+      fileName: 'index',
+      formats: ['es', 'cjs'],
     },
+    rollupOptions: {
+      external
+    }
   },
   css: {
     preprocessorOptions: {
@@ -27,5 +28,5 @@ export default (root: string, external: string[]) => defineConfig({
       },
     },
   },
-  clearScreen: false,
+  clearScreen: true,
 })

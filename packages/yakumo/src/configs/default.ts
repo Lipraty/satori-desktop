@@ -9,7 +9,6 @@ export default (root: string, external: string[]) => defineConfig({
     minify: false,
     lib: {
       entry: resolve(root, 'src/index.ts'),
-      fileName: () => '[name].js',
       formats: ['es', 'cjs'],
     },
     rollupOptions: {

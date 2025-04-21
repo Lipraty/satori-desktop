@@ -2,8 +2,6 @@
   "name": "@satoriapp/renderer",
   "version": "0.0.1",
   "license": "AGPL-3.0-only",
-  "main": ".lib/index.js",
-  "typings": "lib/index.d.ts",
   "description": "Satori App renderer module",
   "exports": {
     ".": {
@@ -15,6 +13,7 @@
   },
   "dependencies": {
     "@vueuse/core": "^13.1.0",
+    "@satoriapp/common": "workspace:*",
     "cordis": "^3.18.1",
     "pinia": "^3.0.2",
     "vue": "^3.5.13",

@@ -5,10 +5,9 @@
     "paths": {
       "satoriapp": ["app/electron/src"],
 
-      "@satoriapp/core": ["packages/core/src"],
       "@satoriapp/main": ["packages/main/src"],
       "@satoriapp/renderer": ["packages/renderer/src"],
-      "@satoriapp/preload": ["packages/preload/src"],
+      "@satoriapp/common": ["packages/common/src"],
       "@satoriapp/*": ["packages/*/src"],
 
       // plugins
