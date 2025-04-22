@@ -33,7 +33,10 @@
     "make": "yarn workspace satoriapp electron-forge make",
     "publish": "yarn workspace satoriapp electron-forge publish",
     "lint": "eslint --ext .ts,.tsx .",
-    "format": "prettier --check . "
+    "format": "prettier --check . ",
+    "w:m": "yarn workspace @satoriapp/main",
+    "w:r": "yarn workspace @satoriapp/renderer",
+    "w:l": "yarn workspace @satoriapp/loader"
   },
   "keywords": [],
   "devDependencies": {

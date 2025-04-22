@@ -1,7 +1,5 @@
-import { Context } from '@satoriapp/renderer'
+import { root } from '@satoriapp/renderer'
 import type { } from './preload'
-
-const root = new Context()
 
 root.start()
 

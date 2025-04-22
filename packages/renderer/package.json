@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@satoriapp/common": "workspace:*",
+    "@satorijs/protocol": "^1.6.0",
     "@vueuse/core": "^13.1.0",
     "cordis": "^3.18.1",
     "pinia": "^3.0.2",
