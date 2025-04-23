@@ -1,11 +1,9 @@
 import { Component } from 'vue'
 import { createMemoryHistory, createRouter } from 'vue-router'
-import type { Disposable } from 'cordis'
+import { Disposable, Service } from 'cordis'
+import { Context, generateId } from '@satoriapp/renderer'
 
-import { Context, Service } from '../context'
-import { generateId } from '../utils'
-
-declare module '../context' {
+declare module '@satoriapp/renderer' {
   interface Context {
     $router: RouterService
     page: (options: Pager.Options) => void
@@ -65,7 +63,7 @@ export class Pager {
   }
 }
 
-export default class RouterService extends Service {
+export default class RouterService extends Service<any, Context> {
   public pages: Record<string, Pager> = {}
   public router = createRouter({
     // in electron app, since there is no address bar, using memory is better.
