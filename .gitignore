@@ -104,7 +104,7 @@ lib/
 
 # Yarn Integrity file
 install-state.gz
-
+yarn.lock
 .legacy
 
 # Loader plugins

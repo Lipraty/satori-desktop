@@ -1,6 +1,8 @@
 import * as cordis from 'cordis'
 import { App, Component, createApp, defineComponent, h, inject, InjectionKey, markRaw, onScopeDispose, provide, resolveComponent } from 'vue'
 import { Events as SharedEvents } from '@satoriapp/common'
+import RouterService from './plugins/router'
+import Vuetify from './plugins/vuetify'
 
 const rootContext = Symbol('context') as InjectionKey<Context>
 
@@ -18,13 +20,17 @@ export class Context extends cordis.Context {
 
   constructor() {
     super()
+    this.plugin(RouterService)
+    this.plugin(Vuetify)
+
     this.app = createApp(this.component(defineComponent({
       setup: () => () => h(resolveComponent('router-view'))
     })))
     this.app.provide(rootContext, this)
     this.on('ready', () => {
       this.app.use(this.$router.router)
-      this.app.mount('#app')
+        .use(this.$vuetify)
+        .mount('#app')
     })
   }
 

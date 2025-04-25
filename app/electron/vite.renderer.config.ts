@@ -18,6 +18,24 @@ export default defineConfig((env) => {
       outDir: `.vite/renderer/${name}`,
       rollupOptions: {
         input: './index.html',
+        output: {
+          format: 'iife',
+          entryFileNames: '[name].js',
+          chunkFileNames: '[name].js',
+          assetFileNames: '[name].[ext]'
+        },
+        external: [
+          'electron',
+          'electron-devtools-installer',
+          'electron-reload',
+          'electron-store',
+          'vue',
+          'vuetify',
+          'vue-router',
+          'cordis',
+          '@cordisjs/logger',
+          'reggol'
+        ]
       }
     },
     plugins: [pluginExposeRenderer(name), vue()],
