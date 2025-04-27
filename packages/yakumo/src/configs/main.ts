@@ -12,7 +12,7 @@ export default {
       build: {
         lib: {
           entry: resolve(root, 'src/index.ts'),
-          fileName: () => '[name].js',
+          fileName: '[name]',
           formats: ['es', 'cjs'],
         },
         rollupOptions: {
