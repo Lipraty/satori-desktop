@@ -1,7 +1,7 @@
-import { Component } from 'vue'
+import { Component, h, resolveComponent } from 'vue'
 import { createMemoryHistory, createRouter } from 'vue-router'
 import { Disposable, Service } from 'cordis'
-import { Context, generateId } from '@satoriapp/renderer'
+import { Context } from '@satoriapp/renderer'
 
 declare module '@satoriapp/renderer' {
   interface Context {
@@ -12,7 +12,6 @@ declare module '@satoriapp/renderer' {
 
 export namespace Pager {
   export interface Options {
-    id?: string
     path: string
     icon?: string
     name: string
@@ -26,20 +25,15 @@ export class Pager {
   private fibers: Disposable[] = []
 
   constructor(private ctx: Context, private options: Pager.Options) {
-    options.id ??= generateId(options.path)
     options.position ??= 'top'
-    const { id, path, name, component } = options
+    const { path, name, component } = options
     this.fibers.push(this.ctx.$router.router.addRoute({
       path,
       name,
       component,
       meta: { activity: this }
     }))
-    ctx.$router.pages[id] = this
-  }
-
-  get id() {
-    return this.options.id!
+    ctx.$router.pages[name] = this
   }
 
   get path() {
@@ -51,7 +45,7 @@ export class Pager {
   }
 
   get icon() {
-    return this.options.icon
+    return this.options.icon ?? 'default'
   }
 
   get tooltip() {

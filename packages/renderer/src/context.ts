@@ -2,9 +2,14 @@ import * as cordis from 'cordis'
 import { App, Component, createApp, defineComponent, h, inject, InjectionKey, markRaw, onScopeDispose, provide, resolveComponent } from 'vue'
 import { Events as SharedEvents } from '@satoriapp/common'
 import RouterService from './plugins/router'
-import Vuetify from './plugins/vuetify'
+import { install } from './components'
 
 const rootContext = Symbol('context') as InjectionKey<Context>
+const platformMap = {
+  macos: ['macOS', 'darwin', 'Mac OS X'],
+  win: ['windows', 'win32', 'Windows'],
+  linux: ['linux', 'Linux'],
+}
 
 export function useContext() {
   const parent = inject(rootContext)!
@@ -20,16 +25,17 @@ export class Context extends cordis.Context {
 
   constructor() {
     super()
-    this.plugin(RouterService)
-    this.plugin(Vuetify)
-
     this.app = createApp(this.component(defineComponent({
-      setup: () => () => h(resolveComponent('router-view'))
+      setup: () => () => h(resolveComponent('satori-root')),
     })))
     this.app.provide(rootContext, this)
+
+    this.plugin(RouterService)
+
     this.on('ready', () => {
-      this.app.use(this.$router.router)
-        .use(this.$vuetify)
+      this.app
+        .use(this.$router.router)
+        .use(install)
         .mount('#app')
     })
   }
@@ -39,6 +45,31 @@ export class Context extends cordis.Context {
       provide(rootContext, this)
       return () => h(component, props, slots)
     })
+  }
+
+  getPlatform(): keyof typeof platformMap | 'unknown' {
+    if ('userAgentData' in navigator) {
+      // @ts-ignore
+      const { platform } = navigator.userAgentData
+      if (platform) {
+        for (const [key, values] of Object.entries(platformMap)) {
+          if (values.some((v) => platform.includes(v))) {
+            return key as keyof typeof platformMap
+          }
+        }
+        return 'unknown'
+      } else {
+        return 'unknown'
+      }
+    } else {
+      const ua = navigator.userAgent
+      for (const [key, values] of Object.entries(platformMap)) {
+        if (values.some((v) => ua.includes(v))) {
+          return key as keyof typeof platformMap
+        }
+      }
+      return 'unknown'
+    }
   }
 }
 

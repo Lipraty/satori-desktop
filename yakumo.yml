@@ -3,6 +3,7 @@
   config:
     exclude:
     - app/electron
+    - app/electron-esm
     - packages/yakumo
     pipeline:
       dev:

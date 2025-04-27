@@ -1,7 +1,6 @@
 <template>
-  <div>
-    chat
-  </div>
+  <satori-view title="Networks">
+  </satori-view>
 </template>
 
 <script setup lang="ts">

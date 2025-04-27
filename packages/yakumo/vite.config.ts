@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite'
+import { builtinModules } from 'node:module'
 import { resolve } from 'path'
 
 export default defineConfig({
@@ -14,20 +15,12 @@ export default defineConfig({
     rollupOptions: {
       external: [
         'fsevents',
-        'node:path',
-        'path',
-        'node:fs',
-        'fs',
-        'node:fs/promises',
-        'fs/promises',
-        'node:module',
-        'node:crypto',
         'tty',
-        'util',
         'vite',
         '@vitejs/plugin-vue',
         'vue',
-        'yakumo'
+        'yakumo',
+        ...builtinModules.map((m) => [m, `node:${m}`]).flat(),
       ]
     }
   }

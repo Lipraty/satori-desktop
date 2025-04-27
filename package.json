@@ -36,7 +36,9 @@
     "format": "prettier --check . ",
     "w:m": "yarn workspace @satoriapp/main",
     "w:r": "yarn workspace @satoriapp/renderer",
-    "w:l": "yarn workspace @satoriapp/loader"
+    "w:l": "yarn workspace @satoriapp/loader",
+    "w:ykm": "yarn workspace @satoriapp/yakumo",
+    "w:ee": "yarn workspace electron-esm"
   },
   "keywords": [],
   "devDependencies": {

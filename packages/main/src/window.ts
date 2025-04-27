@@ -11,9 +11,6 @@ declare module '.' {
   }
 }
 
-declare const MAIN_WINDOW_VITE_DEV_SERVER_URL: string | undefined
-declare const MAIN_WINDOW_VITE_NAME: string | undefined
-
 class WindowService extends Service {
   static readonly name = 'window'
   static Config: Schema<WindowService.Config> = Schema.object({
@@ -50,6 +47,8 @@ class WindowService extends Service {
         color: '#00000000',
         height: 44,
       },
+      titleBarStyle: 'hidden',
+      ...(process.platform !== 'darwin' ? { titleBarOverlay: true } : {}),
       backgroundMaterial: 'mica',
       vibrancy: 'titlebar',
       backgroundColor: '#00000000',
@@ -59,10 +58,10 @@ class WindowService extends Service {
       },
     })
 
-    if (this.ctx.$env.MAIN_WINDOW_VITE_DEV_SERVER_URL) {
-      this.mainWindow.loadURL(this.ctx.$env.MAIN_WINDOW_VITE_DEV_SERVER_URL)
+    if (this.ctx.$env.MAIN_DEV_SERVER_URL) {
+      this.mainWindow.loadURL(this.ctx.$env.MAIN_DEV_SERVER_URL)
     } else {
-      this.mainWindow.loadFile(`../renderer/${this.ctx.$env.MAIN_WINDOW_VITE_NAME}/index.html`)
+      this.mainWindow.loadFile(this.ctx.$env.MAIN_PROD_FILE)
     }
 
     if (process.env.NODE_ENV === 'development') {

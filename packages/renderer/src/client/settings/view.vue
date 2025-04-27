@@ -1,7 +1,7 @@
 <template>
-  <div>
-    Main Home
-  </div>
+  <satori-view>
+    settings
+  </satori-view>
 </template>
 
 <script setup lang="ts">

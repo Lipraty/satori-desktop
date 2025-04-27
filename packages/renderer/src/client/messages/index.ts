@@ -1,10 +1,11 @@
 import { Context } from '@satoriapp/renderer'
-import Home from './home.vue'
+import MessageView from './view.vue'
 
 export default function (ctx: Context) {
   ctx.page({
     path: '/',
-    name: 'home',
-    component: Home,
+    name: 'Message',
+    component: MessageView,
+    icon: 'ChatSparkle'
   })
 }
