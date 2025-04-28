@@ -8,24 +8,23 @@ export function injectCssImports(): Plugin {
     apply: 'build',
 
     async generateBundle(_, bundle) {
-      const cssAssets = new Map<string, string>()
-      for (const fileName in bundle) {
-        if (fileName.endsWith('.css')) {
-          const baseName = path.basename(fileName, '.css')
-          cssAssets.set(baseName, fileName)
-        }
-      }
+      const cssFiles = Object.keys(bundle).filter(name => name.endsWith('.css'))
       for (const fileName in bundle) {
         if (fileName.endsWith('.vue.js') || fileName.endsWith('.vue.mjs')) {
           const chunk = bundle[fileName]
           if (chunk.type !== 'chunk') continue
           const baseName = path.basename(fileName, fileName.endsWith('.vue.js') ? '.vue.js' : '.vue.mjs')
-          const cssFileName = cssAssets.get(baseName)
+          const dirName = path.dirname(fileName)
+          const cssFileName = cssFiles.find(css => {
+            return path.basename(css, '.css') === baseName && path.dirname(css) === dirName
+          })
+          
           if (cssFileName) {
             const isEsm = fileName.endsWith('.mjs')
-            const relativePath = path.relative(path.dirname(fileName), cssFileName)
-            const importPath = relativePath.startsWith('.') ? relativePath : `./${relativePath}`
-            chunk.code = isEsm ? `import '${importPath}'\n${chunk.code}` : `require('${importPath}')\n${chunk.code}`
+            const importPath = `./${path.basename(cssFileName)}`
+            chunk.code = isEsm
+              ? `import '${importPath}'\n${chunk.code}`
+              : `require('${importPath}')\n${chunk.code}`
           }
         }
       }
