@@ -1,4 +1,4 @@
-import { defineComponent, h, PropType } from 'vue'
+import { computed, defineComponent, h, PropType } from 'vue'
 import { icons } from './map'
 
 export type IconName = Exclude<keyof typeof icons, `Filled${string}`>
@@ -17,10 +17,10 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const icon = props.filled ? `Filled${props.name}` : props.name
-    const Icon = icons[icon]
+    const iconName = computed(() => props.filled ? `Filled${props.name}` : props.name)
+    const iconSvg = computed(() => icons[iconName.value])
     return () => {
-      if (!Icon) {
+      if (!iconSvg.value) {
         return null
       }
       return h('div', {
@@ -32,7 +32,7 @@ export default defineComponent({
           justifyContent: 'center',
           alignItems: 'center'
         },
-        innerHTML: Icon.replace(/(<svg[^>]*)/, (match) => {
+        innerHTML: iconSvg.value.replace(/(<svg[^>]*)/, (match) => {
           return `${match} width="${props.size}" height="${props.size}"`;
         }),
       })
