@@ -55,6 +55,7 @@ class WindowService extends Service {
       title: this.ctx.$env.APP_NAME,
       webPreferences: {
         preload: this.ctx.$env.PRELOAD_PATH,
+        sandbox: false,
       },
     })
 

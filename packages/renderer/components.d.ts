@@ -8,7 +8,6 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    FlAdd: typeof import('@kalimahapps/vue-icons/fl/FlAdd')['FlAdd']
     Icon: typeof import('./src/components/icon.vue')['default']
     Root: typeof import('./src/components/root.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
