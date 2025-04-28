@@ -1,6 +1,9 @@
 import * as cordis from 'cordis'
 import { App, Component, createApp, defineComponent, h, inject, InjectionKey, markRaw, onScopeDispose, provide, resolveComponent } from 'vue'
 import { Events as SharedEvents } from '@satoriapp/common'
+import { setTheme } from '@fluentui/web-components'
+import { webLightTheme, webDarkTheme } from '@fluentui/tokens'
+
 import RouterService from './plugins/router'
 import { install } from './components'
 
@@ -18,10 +21,17 @@ export function useContext() {
   return fork.ctx
 }
 
-export interface Events<C extends Context = Context> extends SharedEvents<C> { }
+export interface Context {
+  [Context.events]: Events
+}
+
+export interface Events<C extends Context = Context> extends SharedEvents<C> {
+  'internal/theme': (theme: 'light' | 'dark') => void
+}
 
 export class Context extends cordis.Context {
   app: App
+  theme: 'light' | 'dark' = 'light'
 
   constructor() {
     super()
@@ -32,11 +42,30 @@ export class Context extends cordis.Context {
 
     this.plugin(RouterService)
 
+    const themeMedia = window.matchMedia('(prefers-color-scheme: dark)')
+    this.theme = themeMedia.matches ? 'dark' : 'light'
+    // @ts-ignore
+    this.emit('internal/theme', this.theme)
+    this.effect(() => {
+      themeMedia.addEventListener('change', e => {
+        this.theme = e.matches ? 'dark' : 'light'
+        // @ts-ignore
+        this.emit('internal/theme', this.theme)
+      })
+      return () => themeMedia.removeEventListener('change', () => { })
+    })
+
     this.on('ready', () => {
       this.app
         .use(this.$router.router)
         .use(install)
         .mount('#app')
+
+      setTheme(this.theme === 'dark' ? webDarkTheme : webLightTheme)
+    })
+
+    this.on('internal/theme', (theme) => {
+      setTheme(theme === 'dark' ? webDarkTheme : webLightTheme)
     })
   }
 

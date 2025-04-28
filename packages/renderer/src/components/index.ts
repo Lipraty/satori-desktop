@@ -1,6 +1,6 @@
 import { App } from 'vue'
 import { ButtonDefinition, FluentDesignSystem, setTheme } from '@fluentui/web-components'
-import { webDarkTheme, webLightTheme } from '@fluentui/tokens'
+import { webLightTheme } from '@fluentui/tokens'
 
 import Root from './root.vue'
 import ViewBox from './view.vue'
@@ -9,7 +9,7 @@ import Spacer from './spacer.vue'
 import Icons from './icons'
 
 export function install(app: App) {
-  setTheme(webDarkTheme)
+  setTheme(webLightTheme)
   ButtonDefinition.define(FluentDesignSystem.registry)
 
   app.component('satori-icons', Icons)
