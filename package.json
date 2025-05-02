@@ -38,7 +38,7 @@
     "w:r": "yarn workspace @satoriapp/renderer",
     "w:l": "yarn workspace @satoriapp/loader",
     "w:ykm": "yarn workspace @satoriapp/yakumo",
-    "w:ee": "yarn workspace electron-esm"
+    "w:ee": "yarn workspace satoriapp-esm"
   },
   "keywords": [],
   "devDependencies": {
