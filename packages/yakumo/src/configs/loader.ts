@@ -1,6 +1,8 @@
 import { readdirSync } from "node:fs";
 import { resolve } from "node:path";
+
 import { defineConfig } from "vite";
+
 import { BundleConfig } from "../utils";
 
 export default {

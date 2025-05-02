@@ -1,6 +1,7 @@
-import { APP_NAME, APP_VERSION, Context, Dict, emptyObject, ForkScope, Inject, Schema, Plugin } from '@satoriapp/main'
 import { resolve } from 'node:path'
 import { readFile, writeFile } from 'node:fs/promises'
+
+import { APP_NAME, APP_VERSION, Context, Dict, emptyObject, ForkScope, Inject, Schema, Plugin } from '@satoriapp/main'
 
 // @ts-ignore
 import { plugins } from './plugins'

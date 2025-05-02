@@ -1,4 +1,5 @@
 import { computed, defineComponent, h, PropType } from 'vue'
+
 import { icons } from './map'
 
 export type IconName = Exclude<keyof typeof icons, `Filled${string}`>

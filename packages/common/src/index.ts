@@ -1,5 +1,6 @@
-import type * as cordis from 'cordis'
 import type { IpcMainEvent, IpcMainInvokeEvent, IpcRendererEvent } from 'electron'
+
+import type * as cordis from 'cordis'
 
 // IPC Types
 export type IpcListener<K extends IpcEventKeys> = (event: IpcMainEvent | IpcRendererEvent, ...args: Parameters<IpcEvents[K]>) => void

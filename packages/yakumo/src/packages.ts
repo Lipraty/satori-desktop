@@ -1,11 +1,14 @@
-import { Context } from 'yakumo'
+import { resolve } from 'node:path'
+
 import * as vite from 'vite'
+
+import { Context } from 'yakumo'
 
 import { BundleConfig, ENTRY, externals, OUT_DIR } from './utils'
 import MainConfig from './configs/main'
 import RendererConfig from './configs/renderer'
 import LoaderConfig from './configs/loader'
-import { resolve } from 'node:path'
+
 
 export const configMapping: Record<string, BundleConfig> = {
   '@satoriapp/main': MainConfig,

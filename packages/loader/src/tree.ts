@@ -1,4 +1,5 @@
 import { Context, ForkScope, Plugin, Schema } from '@satoriapp/main'
+
 import Loader from '.'
 
 declare module '@satoriapp/main' {

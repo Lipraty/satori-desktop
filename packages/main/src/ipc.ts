@@ -1,7 +1,10 @@
-import type { Context } from '.'
+import { BrowserWindow, ipcMain, webContents } from 'electron'
+
 import type { IpcListener, IpcEventKeys, IpcHandlerKeys, IpcEvents, IpcInvokable } from '@satoriapp/common'
 import { Service } from 'cordis'
-import { BrowserWindow, ipcMain, webContents } from 'electron'
+
+import type { Context } from '.'
+
 
 declare module 'cordis' {
   interface Context {

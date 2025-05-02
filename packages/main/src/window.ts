@@ -1,6 +1,8 @@
 import * as electron from 'electron'
-import type { Context } from '.'
+
 import { Service, Schema } from 'cordis'
+
+import type { Context } from '.'
 
 declare module '.' {
   interface Context {

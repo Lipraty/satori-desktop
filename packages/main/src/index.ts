@@ -1,7 +1,9 @@
 import * as electron from 'electron'
+
 import * as cordis from 'cordis'
-import * as Package from '../package.json'
 import { Events as SharedEvents } from '@satoriapp/common'
+
+import * as Package from '../package.json'
 
 import WindowService from './window'
 import IpcService from './ipc'

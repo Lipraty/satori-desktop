@@ -1,5 +1,6 @@
-import type { Plugin } from 'vite'
 import path from 'path'
+
+import type { Plugin } from 'vite'
 
 export function injectCssImports(): Plugin {
   return {

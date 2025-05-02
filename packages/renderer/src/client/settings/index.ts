@@ -1,4 +1,5 @@
 import { Context } from '@satoriapp/renderer'
+
 import SettingsView from './view.vue'
 
 export default function (ctx: Context) {

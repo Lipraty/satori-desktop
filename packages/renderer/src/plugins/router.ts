@@ -1,6 +1,7 @@
 import { Component, h, resolveComponent } from 'vue'
 import { createMemoryHistory, createRouter } from 'vue-router'
 import { Disposable, Service } from 'cordis'
+
 import { Context } from '@satoriapp/renderer'
 
 declare module '@satoriapp/renderer' {
