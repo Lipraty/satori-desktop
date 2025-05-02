@@ -9,5 +9,9 @@
     "incremental": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
-  }
+  },
+  "include": [
+    "packages",
+    "plugins"
+  ]
 }

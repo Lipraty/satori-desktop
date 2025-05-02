@@ -9,71 +9,84 @@ const compat = new FlatCompat({
   baseDirectory: import.meta.dirname,
 });
 
-export default tseslint.config(
-  {
-    languageOptions: {
-      ecmaVersion: 2022,
-      sourceType: 'module',
-      globals: {
-        ...globals.browser,
-        ...globals.es2021,
-        ...globals.node,
-      },
-      parser: tseslint.parser,
-      parserOptions: {
-        project: true,
-      },
-    },
-    linterOptions: {
-      reportUnusedDisableDirectives: true,
-    },
-    settings: {
-      'import/resolver': {
-        typescript: true,
-        node: true,
-      },
-    },
-    plugins: {
-      import: importPlugin,
-      'react-refresh': reactRefreshPlugin,
-    },
-  },
+const ignoreConfig = { ignores: ['app/**', '**/lib/**', 'packages/yakumo/**', 'node_modules/**'] };
 
-  eslint.configs.recommended,
-  ...tseslint.configs.recommended,
-  ...compat.config({
-    extends: [
-      'plugin:import/recommended',
-      'plugin:import/electron',
-      'plugin:import/typescript',
-    ],
-  }),
+export default [
+  ignoreConfig,
 
-  {
-    rules: {
-      'import/no-unresolved': [
-        'error',
-        {
-          commonjs: true,
-          caseSensitive: true,
-          ignore: ['electron', '\\.s?css$'],
+  ...tseslint.config(
+    {
+      languageOptions: {
+        ecmaVersion: 2022,
+        sourceType: 'module',
+        globals: {
+          ...globals.browser,
+          ...globals.es2021,
+          ...globals.node,
         },
-      ],
-      'import/order': [
-        'error',
-        {
-          groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
-          'newlines-between': 'always',
+      },
+      linterOptions: {
+        reportUnusedDisableDirectives: true,
+      },
+      settings: {
+        'import/resolver': {
+          typescript: true,
+          node: true,
         },
-      ],
-      '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-namespace': 'off',
-      '@typescript-eslint/no-unsafe-declaration-merging': 'off',
-      '@typescript-eslint/no-unused-vars': [
-        1,
-        { argsIgnorePattern: '^_|^config$' },
-      ],
-      'react-refresh/only-export-components': 'error',
+      },
+      plugins: {
+        import: importPlugin,
+        'react-refresh': reactRefreshPlugin,
+      },
     },
-  }
-);
+
+    eslint.configs.recommended,
+
+    {
+      files: ['**/*.ts', '**/*.tsx'],
+      languageOptions: {
+        parser: tseslint.parser,
+        parserOptions: {
+          project: ['./tsconfig.base.json', './packages/*/tsconfig.json'],
+        },
+      },
+    },
+    
+    ...tseslint.configs.recommended,
+    ...compat.config({
+      extends: [
+        'plugin:import/recommended',
+        'plugin:import/electron',
+        'plugin:import/typescript',
+      ],
+    }),
+
+    {
+      rules: {
+        'import/no-unresolved': [
+          'error',
+          {
+            commonjs: true,
+            caseSensitive: true,
+            ignore: ['electron', '\\.s?css$'],
+          },
+        ],
+        'import/order': [
+          'error',
+          {
+            groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
+            'newlines-between': 'always',
+          },
+        ],
+        '@typescript-eslint/no-empty-object-type': 'off',
+        '@typescript-eslint/no-explicit-any': 'off',
+        '@typescript-eslint/no-namespace': 'off',
+        '@typescript-eslint/no-unsafe-declaration-merging': 'off',
+        '@typescript-eslint/no-unused-vars': [
+          1,
+          { argsIgnorePattern: '^_|^config$' },
+        ],
+      },
+    }
+  )
+];

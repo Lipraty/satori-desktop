@@ -3,6 +3,7 @@ import { readFile, writeFile } from 'node:fs/promises'
 
 import { APP_NAME, APP_VERSION, Context, Dict, emptyObject, ForkScope, Inject, Schema, Plugin } from '@satoriapp/main'
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { plugins } from './plugins'
 
