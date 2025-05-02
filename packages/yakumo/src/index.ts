@@ -7,7 +7,12 @@ export const inject = ['yakumo']
 
 export function apply(ctx: Context) {
   ctx.register('bundle', async () => {
-    await bundlePlugins(ctx)
+    ctx.logger.info('Bundling packages')
     await bundlePackages(ctx)
+  })
+
+  ctx.register('plugins', async () => {
+    ctx.logger.info('Bundling plugins')
+    await bundlePlugins(ctx)
   })
 }

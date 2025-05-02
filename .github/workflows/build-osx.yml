@@ -32,11 +32,17 @@ jobs:
           YARN_ENABLE_IMMUTABLE_INSTALLS: false
         run: yarn
 
+      - name: Build yakumo
+        run: yarn build:ykm
+
+      - name: Plugin pre-build
+        run: yarn yakumo prebuild
+
       - name: Lint
         run: yarn lint
 
-      - name: Yakumo build
-        run: yarn yakumo dev
+      - name: Packages build
+        run: yarn yakumo pkgbuild
 
       - name: Build Electron app
         run: yarn w:ee build:mac

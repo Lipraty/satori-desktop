@@ -32,8 +32,17 @@ jobs:
           YARN_ENABLE_IMMUTABLE_INSTALLS: false
         run: yarn install
 
+      - name: Build yakumo
+        run: yarn build:ykm
+
+      - name: Plugin pre-build
+        run: yarn yakumo prebuild
+
       - name: Lint
         run: yarn lint
+
+      - name: Packages build
+        run: yarn yakumo pkgbuild
 
       - name: Install system dependencies
         run: |

@@ -7,6 +7,12 @@
     - packages/yakumo
     pipeline:
       dev:
+        - plugins
+        - bundle
+        - tsc
+      prebuild:
+        - plugins
+      pkgbuild:
         - bundle
         - tsc
 - name: yakumo-tsc
