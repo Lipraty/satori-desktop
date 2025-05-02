@@ -1,6 +1,6 @@
 <div align="center">
 
-[![Satori App for Desktop](./sad-logo.png)](https://github.com/Lipraty/satori-desktop)
+[![Satori App for Desktop](.github/sad-logo.png)](https://github.com/Lipraty/satori-desktop)
 
 # Satori App Desktop
 
