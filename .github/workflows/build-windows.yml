@@ -35,8 +35,8 @@ jobs:
       - name: Lint
         run: yarn lint
 
-      - name: Type check
-        run: yarn w:ee typecheck
+      - name: Yakumo build
+        run: yarn yakumo dev
 
       - name: Build Electron app
         run: yarn w:ee build:win
