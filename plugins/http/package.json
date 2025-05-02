@@ -1,6 +1,6 @@
 {
-  "name": "@satoriapp/plugin-sqlite",
-  "version": "4.6.0",
+  "name": "@satoriapp/plugin-http",
+  "version": "0.6.3",
   "description": "SQLite plugin for Satori App",
   "license": "MIT",
   "main": "lib/index.mjs",
@@ -16,12 +16,12 @@
   "sapp": {
     "service": {
       "implements": [
-        "database"
+        "http"
       ]
     }
   },
   "dependencies": {
-    "@minatojs/driver-sqlite": "4.6.0",
+    "@cordisjs/plugin-http": "0.6.3",
     "@satoriapp/main": "workspace:*"
   },
   "peerDependencies": {

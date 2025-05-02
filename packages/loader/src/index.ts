@@ -5,7 +5,11 @@ import { readFile, writeFile } from 'node:fs/promises'
 // @ts-ignore
 import { plugins } from './plugins'
 
-declare module 'cordis' {
+declare module '@satoriapp/main' {
+  interface Events {
+    'config/read': (config: Dict) => void
+    'config/write': (config: Dict) => void
+  }
   interface Context {
     loader: Loader
   }
@@ -53,6 +57,10 @@ class Loader {
   }
 
   private _handleConfig(config: Dict) {
+    const eventer = (event: 'read' | 'write') => {
+      this.ctx.logger('config').info(`Config ${event} event`, config)
+      this.ctx.emit(`config/${event}`, config)
+    }
     const handler = {
       get: (target: Dict, key: string) => {
         if (typeof target[key] === 'object' && target[key] !== null) {
@@ -65,6 +73,9 @@ class Loader {
         if (this.suspend) return true
         this.ctx.setTimeout(() => {
           this.write(target)
+            .finally(() => {
+              this.suspend = false
+            })
         }, 500)
         return true
       }

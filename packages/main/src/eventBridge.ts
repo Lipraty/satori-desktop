@@ -13,7 +13,7 @@ export const inject = ['ipc', 'window']
 
 export function apply(ctx: Context) {
   ctx.on('internal/event', (type, name, args) => {
-    if (type === 'emit') {
+    if (type === 'emit' && !name.startsWith('internal/')) {
       ctx.ipc.sendAll('internal:event', name as keyof MainEvents<Context>, argsFormat(args))
     }
   })

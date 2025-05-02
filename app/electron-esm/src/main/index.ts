@@ -13,7 +13,7 @@ if (started) {
   isQuiting = true
   electorn.app.quit()
 }
-console.log(fileURLToPath(new URL('../preload/index.mjs', import.meta.url)))
+
 const app = new Context({
   env: {
     MAIN_WINDOW_ICON: icon,

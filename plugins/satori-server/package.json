@@ -1,6 +1,6 @@
 {
   "name": "@satoriapp/plugin-satori-server",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Legacy Satori Server",
   "license": "AGPL-3.0-only",
   "main": ".lib/index.mjs",
