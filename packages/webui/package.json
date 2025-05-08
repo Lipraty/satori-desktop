@@ -1,8 +1,8 @@
 {
-  "name": "@satoriapp/renderer",
+  "name": "@satoriapp/webui",
   "version": "0.0.1",
   "license": "AGPL-3.0-only",
-  "description": "Satori App renderer module",
+  "description": "Satori App WebUI",
   "exports": {
     ".": {
       "types": "./src/index.ts",

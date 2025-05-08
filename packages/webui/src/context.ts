@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import * as cordis from 'cordis'
 import { App, Component, createApp, defineComponent, h, inject, InjectionKey, markRaw, onScopeDispose, provide, resolveComponent } from 'vue'
 import { Events as SharedEvents } from '@satoriapp/common'
@@ -7,6 +6,12 @@ import { webLightTheme, webDarkTheme } from '@fluentui/tokens'
 
 import RouterService from './plugins/router'
 import { install } from './components'
+
+declare module '@satoriapp/common' {
+  interface Events {
+    'internal/theme': (theme: 'light' | 'dark') => void
+  }
+}
 
 const rootContext = Symbol('context') as InjectionKey<Context>
 const platformMap = {
@@ -23,12 +28,10 @@ export function useContext() {
 }
 
 export interface Context {
-  [Context.events]: Events
+  [Context.events]: SharedEvents<this>
 }
 
-export interface Events<C extends Context = Context> extends SharedEvents<C> {
-  'internal/theme': (theme: 'light' | 'dark') => void
-}
+export type Events<C extends Context = Context> = SharedEvents<C>
 
 export class Context extends cordis.Context {
   app: App
@@ -44,14 +47,12 @@ export class Context extends cordis.Context {
     this.plugin(RouterService)
 
     const themeMedia = window.matchMedia('(prefers-color-scheme: dark)')
-    this.theme = themeMedia.matches ? 'dark' : 'light'
-    // @ts-ignore
-    this.emit('internal/theme', this.theme)
+    this.theme = themeMedia.matches ? 'dark' : 'light';
+    (this as Context).emit('internal/theme', this.theme)
     this.effect(() => {
       themeMedia.addEventListener('change', e => {
-        this.theme = e.matches ? 'dark' : 'light'
-        // @ts-ignore
-        this.emit('internal/theme', this.theme)
+        this.theme = e.matches ? 'dark' : 'light';
+        (this as Context).emit('internal/theme', this.theme)
       })
       return () => themeMedia.removeEventListener('change', () => { })
     })
@@ -79,6 +80,7 @@ export class Context extends cordis.Context {
 
   getPlatform(): keyof typeof platformMap | 'unknown' {
     if ('userAgentData' in navigator) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       const { platform } = navigator.userAgentData
       if (platform) {
