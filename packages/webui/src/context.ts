@@ -1,17 +1,10 @@
 import * as cordis from 'cordis'
 import { App, Component, createApp, defineComponent, h, inject, InjectionKey, markRaw, onScopeDispose, provide, resolveComponent } from 'vue'
-import { Events as SharedEvents } from '@satoriapp/common'
 import { setTheme } from '@fluentui/web-components'
 import { webLightTheme, webDarkTheme } from '@fluentui/tokens'
 
 import RouterService from './plugins/router'
 import { install } from './components'
-
-declare module '@satoriapp/common' {
-  interface Events {
-    'internal/theme': (theme: 'light' | 'dark') => void
-  }
-}
 
 const rootContext = Symbol('context') as InjectionKey<Context>
 const platformMap = {
@@ -27,11 +20,13 @@ export function useContext() {
   return fork.ctx
 }
 
-export interface Context {
-  [Context.events]: SharedEvents<this>
+export interface Events<C extends Context = Context> extends cordis.Events<C> {
+  'internal/theme': (theme: 'light' | 'dark') => void
 }
 
-export type Events<C extends Context = Context> = SharedEvents<C>
+export interface Context {
+  [Context.events]: Events<this>
+}
 
 export class Context extends cordis.Context {
   app: App

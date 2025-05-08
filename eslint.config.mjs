@@ -75,7 +75,7 @@ export default [
           'error',
           {
             groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
-            'newlines-between': 'always',
+            'newlines-between': 'ignore',
           },
         ],
         '@typescript-eslint/no-empty-object-type': 'off',

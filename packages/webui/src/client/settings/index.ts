@@ -1,4 +1,4 @@
-import { Context } from '@satoriapp/renderer'
+import { Context } from '@satoriapp/webui'
 
 import SettingsView from './view.vue'
 

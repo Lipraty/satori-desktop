@@ -3,10 +3,11 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "satoriapp": ["app/electron/src"],
+      "satoriapp": ["app/electron-esm/src"],
+      "satoriapp-cirno": ["app/cirno/src"],
 
-      "@satoriapp/main": ["packages/main/src"],
-      "@satoriapp/renderer": ["packages/renderer/src"],
+      "@satoriapp/app": ["packages/app/src"],
+      "@satoriapp/webui": ["packages/webui/src"],
       "@satoriapp/common": ["packages/common/src"],
       "@satoriapp/*": ["packages/*/src"],
 

@@ -22,7 +22,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useContext } from '@satoriapp/renderer'
+import { useContext } from '@satoriapp/webui'
 
 const ctx = useContext()
 const topPages = Object.values(ctx.$router.pages).filter(pager => pager['options'] && pager['options'].position === 'top')

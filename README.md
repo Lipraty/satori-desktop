@@ -10,37 +10,8 @@ English | [简体中文](./README_CN.md)
 
 </div>
 
-> [!NOTE]
+> [!IMPORTANT]
 > This is project under development and not ready for production use. Welcome to contribute to this project.
-
-<details>
-
-<summary>Roadmap</summary>
-
-## Roadmap
-
-### Desktop App
-
-- Roadmap: [click here](https://github.com/users/Lipraty/projects/1)
-- Todo list: [click here](https://github.com/users/Lipraty/projects/2)
-
-### Satori App Server(SAS)
-
-- Roadmap: TODO
-- Todo list: TODO
-- Documentation: TODO
-
-### UI Design
-
-- [JSDesign](https://js.design/f/YcrbVO?p=jl2EY3zpvG&mode=design)
-
-## Technologies
-
-- [Cordis](https://github.com/cordiverse/cordis): Meta-Framework for Modern Applications.
-- [Satori](https://github.com/satorijs/satori): THe universal messager protocol.
-- [Electron](https://www.electronjs.org/): Open-source framework developed and maintained by GitHub.
-
-</details>
 
 ## Getting Started
 
@@ -48,24 +19,26 @@ Download the latest release from the [releases page]().
 
 ## Features
 
-### Cross chat platforms
+- Flexible: Supports startup in any way, as long as it is node or browser compatible.
+- Multiplatform: Runs on Windows, macOS, and Linux
+- Universal: One app for all your chat needs
 
-The project is developed based on the Satori protocol. Benefit from to the excellent design and powerful platform support of the Satori protocol, Satori App Desktop can access multiple chat platforms:
+  > The project is developed based on the Satori protocol. Benefit from to the excellent design and powerful platform support of the Satori protocol, Satori App Desktop can access multiple chat platforms:
 
-- [x] DingTalk
-- [x] Discord
-- [x] KOOK
-- [x] Lark
-- [x] Line
-- [x] Mail
-- [x] Matrix
-- [x] QQ Guild
-- [x] Slack
-- [x] Telegram
-- [x] WhatsApp
-- [x] WeCom (WeChat Work)
-- [x] WeChat Official
-- [x] Zulip
+  - [x] DingTalk
+  - [x] Discord
+  - [x] KOOK
+  - [x] Lark
+  - [x] Line
+  - [x] Mail
+  - [x] Matrix
+  - [x] QQ Guild
+  - [x] Slack
+  - [x] Telegram
+  - [x] WhatsApp
+  - [x] WeCom (WeChat Work)
+  - [x] WeChat Official
+  - [x] Zulip
 
 ## Contributing
 

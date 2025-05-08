@@ -1,5 +1,5 @@
 {
-  "name": "satoriapp",
+  "name": "satoriapplegacy",
   "productName": "satoriapp",
   "version": "0.0.1",
   "description": "Satori App for Desktop",
@@ -14,6 +14,15 @@
       "email": "maiko.tan.coding@gmail.com"
     }
   ],
+  "exports": {
+    "./main": {
+      "types": "./src/main/index.ts"
+    },
+    "./renderer": {
+      "types": "./src/renderer/index.ts"
+    },
+    "./package.json": "./package.json"
+  },
   "license": "AGPL-3.0-only",
   "bin": {
     "electron-filter": "../../script/cli.js"
@@ -49,10 +58,11 @@
     "vite": "^6.3.0"
   },
   "dependencies": {
+    "@satoriapp/app": "workspace:*",
     "@satoriapp/loader": "workspace:*",
-    "@satoriapp/main": "workspace:*",
-    "@satoriapp/renderer": "workspace:*",
+    "@satoriapp/webui": "workspace:*",
     "@satorijs/core": "^4.5.0",
+    "cordis": "^3.18.1",
     "electron-squirrel-startup": "^1.0.1"
   },
   "packageManager": "yarn@4.4.0"

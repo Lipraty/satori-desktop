@@ -1,8 +1,20 @@
 import * as electorn from 'electron'
 import stared from 'electron-squirrel-startup'
-import { Context } from '@satoriapp/main'
+import { Context } from 'cordis'
+
+import SatoriApp from '@satoriapp/app'
 import Loader from '@satoriapp/loader'
-import Satori from '@satorijs/core'
+
+declare module 'cordis' {
+  interface Context {
+    electron: typeof electorn
+    $env: {
+      PRELOAD_PATH: string
+      MAIN_DEV_SERVER_URL: string
+      MAIN_PROD_FILE: string
+    }
+  }
+}
 
 let isQuiting = false
 
@@ -13,21 +25,16 @@ if (stared) {
 }
 
 // Create the Cordis context
-const app = new Context({
-  env: {
-    MAIN_WINDOW_VITE_DEV_SERVER_URL,
-    MAIN_WINDOW_VITE_NAME,
-    PRELOAD_PATH: `${__dirname}/preload.js`,
-  }
-})
+const app = new Context()
 
+app.provide('electorn', electorn, true)
 app.provide('satori', undefined, true)
 app.provide('bots', [], true)
-
-// @ts-ignore
-app.plugin(Loader?.default || Loader)
-// @ts-ignore
-app.plugin(Satori?.default || Satori)
+app.provide('$env', {
+  PRELOAD_PATH: `${__dirname}/preload.js`,
+  MAIN_DEV_SERVER_URL: MAIN_WINDOW_VITE_DEV_SERVER_URL,
+  MAIN_PROD_FILE: MAIN_WINDOW_VITE_NAME,
+})
 
 // Lifecycle of Cordis
 app.on('dispose', () => {
@@ -43,5 +50,7 @@ electorn.app.on('before-quit', (e) => {
   }
 })
 electorn.app.on('ready', () => {
+  app.plugin(SatoriApp)
+  app.plugin(Loader)
   app.start()
 })

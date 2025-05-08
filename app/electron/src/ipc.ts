@@ -3,7 +3,7 @@ import { BrowserWindow, ipcMain, webContents } from 'electron'
 import type { IpcListener, IpcEventKeys, IpcHandlerKeys, IpcEvents, IpcInvokable } from '@satoriapp/common'
 import { Service } from 'cordis'
 
-import type { Context } from '.'
+import type { Context } from '../../../packages/app/src'
 
 
 declare module 'cordis' {

@@ -1,8 +1,8 @@
 {
-  "name": "@satoriapp/main",
+  "name": "@satoriapp/app",
   "version": "0.0.1",
   "main": ".lib/index.js",
-  "description": "Satori App main process module",
+  "description": "Satori App",
   "exports": {
     ".": {
       "types": "./src/index.ts",
@@ -14,13 +14,9 @@
   "license": "AGPL-3.0-only",
   "dependencies": {
     "@satoriapp/common": "workspace:*",
-    "@satorijs/core": "^4.5.0",
-    "cordis": "^3.18.1"
+    "@satorijs/core": "^4.5.0"
   },
   "devDependencies": {
-    "electron": "^35.1.5"
-  },
-  "peerDependencies": {
-    "electron": "*"
+    "satoriapp": "workspace:*"
   }
 }

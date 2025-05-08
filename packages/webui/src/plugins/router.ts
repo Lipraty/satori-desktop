@@ -1,10 +1,10 @@
-import { Component, h, resolveComponent } from 'vue'
+import { Component } from 'vue'
 import { createMemoryHistory, createRouter } from 'vue-router'
 import { Disposable, Service } from 'cordis'
 
-import { Context } from '@satoriapp/renderer'
+import { Context } from '@satoriapp/webui'
 
-declare module '@satoriapp/renderer' {
+declare module '@satoriapp/webui' {
   interface Context {
     $router: RouterService
     page: (options: Pager.Options) => void

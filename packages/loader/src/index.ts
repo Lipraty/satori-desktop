@@ -60,7 +60,7 @@ class Loader extends ImportTree {
       if (isESM)
         return await import(path)
       else
-        return createRequire(resolve(this.ctx.dataDir, 'sapp/external'))(path)
+        return createRequire(resolve(this.ctx.dataDir, 'external'))(path)
     } catch (_e) {
       this.ctx.logger('loader').error('failed to access %s', path)
       return undefined

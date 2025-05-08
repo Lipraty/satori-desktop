@@ -1,4 +1,4 @@
-import { root } from '@satoriapp/renderer'
+import { root } from '@satoriapp/webui'
 
 declare global {
   interface Window {

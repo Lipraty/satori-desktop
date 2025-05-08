@@ -5,14 +5,14 @@ import * as vite from 'vite'
 import { Context } from 'yakumo'
 
 import { BundleConfig, ENTRY, externals, OUT_DIR } from './utils'
-import MainConfig from './configs/main'
-import RendererConfig from './configs/renderer'
+import MainConfig from './configs/app'
+import RendererConfig from './configs/webui'
 import LoaderConfig from './configs/loader'
 
 
 export const configMapping: Record<string, BundleConfig> = {
-  '@satoriapp/main': MainConfig,
-  '@satoriapp/renderer': RendererConfig,
+  '@satoriapp/app': MainConfig,
+  '@satoriapp/webui': RendererConfig,
   '@satoriapp/loader': LoaderConfig,
 }
 

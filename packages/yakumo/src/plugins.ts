@@ -23,6 +23,9 @@ ${manifest.map(plugin => `import ${plugin.isDefault ? '' : '* as '}${plugin.name
 
 export interface PluginManifest {
   name: string
+  packageName: string
+  // Only used in external plugins from 'createRequire' scope
+  path?: string
   meta: Record<string, any>
   version: string
   plugin: any
@@ -30,8 +33,9 @@ export interface PluginManifest {
 
 export const plugins: PluginManifest[] = [
   ${manifest.map(plugin => `{
-    name: "${plugin.name}",
-    meta: ${JSON.stringify(plugin.meta, null, 4)},
+    name: "${plugin.packageName.replace('@satoriapp/plugin-', '')}",
+    packageName: "${plugin.packageName}",
+    meta: ${JSON.stringify(plugin.meta, null, 2)},
     version: "${plugin.version}",
     plugin: ${plugin.name},
   }`).join(',\n  ')}

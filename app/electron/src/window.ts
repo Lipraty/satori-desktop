@@ -1,15 +1,17 @@
 import * as electron from 'electron'
+import { Context, Schema, Service } from 'cordis'
 
-import { Service, Schema } from 'cordis'
+import { APP_NAME } from '@satoriapp/app'
 
-import type { Context } from '.'
-
-declare module '.' {
-  interface Context {
-    window: WindowService
-  }
+declare module 'cordis' {
   interface Events {
     'internal/window': (type: 'create' | 'close', name: string, ...args: any[]) => void
+  }
+}
+
+declare module 'cordis' {
+  interface Context {
+    window: WindowService
   }
 }
 
@@ -30,7 +32,7 @@ class WindowService extends Service {
 
   constructor(public ctx: Context, public config: WindowService.Config) {
     super(ctx, 'window')
-    ctx.app.on('activate', () => {
+    ctx.electron.app.on('activate', () => {
       if (electron.BrowserWindow.getAllWindows().length === 0) {
         this.start()
       }
@@ -38,7 +40,7 @@ class WindowService extends Service {
   }
 
   async start() {
-    await this.ctx.app.whenReady()
+    await this.ctx.electron.app.whenReady()
     this.mainWindow ??= this.createWindow('main', {
       width: this.config.width,
       height: this.config.height,
@@ -54,7 +56,7 @@ class WindowService extends Service {
       backgroundMaterial: 'mica',
       vibrancy: 'titlebar',
       backgroundColor: '#00000000',
-      title: this.ctx.$env.APP_NAME,
+      title: APP_NAME,
       webPreferences: {
         preload: this.ctx.$env.PRELOAD_PATH,
         sandbox: false,

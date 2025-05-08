@@ -23,11 +23,5 @@
         "satori-server"
       ]
     }
-  },
-  "dependencies": {
-    "@satoriapp/main": "workspace:*"
-  },
-  "peerDependencies": {
-    "@satoriapp/main": "workspace:*"
   }
 }

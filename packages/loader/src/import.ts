@@ -46,7 +46,7 @@ export abstract class ImportTree {
   }
 
   async discoverExternal() {
-    const externalDir = resolve(this.ctx.dataDir, 'sapp/external')
+    const externalDir = resolve(this.ctx.dataDir, 'external')
     try {
       const paths = await readdir(externalDir, { withFileTypes: true })
 
