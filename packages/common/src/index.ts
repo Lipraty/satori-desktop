@@ -1,17 +1,45 @@
-import type { IpcMainEvent, IpcMainInvokeEvent, IpcRendererEvent } from 'electron'
+import { Dict } from 'cosmokit'
+import type { } from 'cordis'
 
-import type * as cordis from 'cordis'
+declare module 'cordis' {
+  interface Context {
+    $version: string
+    dataDir: string
+  }
+}
 
-// IPC Types
-export type IpcListener<K extends IpcEventKeys> = (event: IpcMainEvent | IpcRendererEvent, ...args: Parameters<IpcEvents[K]>) => void
-export type IpcInvokable<K extends IpcHandlerKeys> = (event: IpcMainInvokeEvent, ...args: Parameters<IpcHandlers[K]>) => Promise<ReturnType<IpcHandlers[K]>>
-export type IpcEventKeys = keyof IpcEvents
-export type IpcHandlerKeys = keyof IpcHandlers
-export interface IpcEvents { }
-export interface IpcHandlers { }
+export type DependencyType = 'dependencies' | 'devDependencies' | 'peerDependencies' | 'optionalDependencies'
+export interface CordisConfig {
+  duration?: boolean
+  description?: string
+  service?: {
+    required?: string[]
+    optional?: string[]
+    implements?: string[]
+  }
+}
 
-// Shared Cordis Events
-export interface Events<C extends cordis.Context> extends cordis.Events<C> { }
+export interface PackageJson extends Partial<Record<DependencyType, Dict<string>>> {
+  name: string
+  type: 'module' | 'commonjs'
+  main: string
+  module?: string
+  bin?: string | Dict<string>
+  exports?: PackageJson.Exports
+  description?: string
+  private?: boolean
+  version: string
+  workspaces?: string[]
+  scripts?: Dict<string>
+  sapp?: CordisConfig
+  cordis?: CordisConfig
+  koishi?: CordisConfig
+  peerDependenciesMeta?: Dict<{ optional?: boolean }>
+}
+
+export namespace PackageJson {
+  export type Exports = string | { [key: string]: Exports }
+}
 
 export function emptyObject(obj: any) {
   for (const key in obj) {

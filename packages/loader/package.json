@@ -13,11 +13,9 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@satoriapp/main": "workspace:*",
     "@satoriapp/plugin-satori-server": "workspace:*",
-    "@satoriapp/plugin-sqlite": "workspace:*"
-  },
-  "peerDependencies": {
-    "@satoriapp/main": "workspace:*"
+    "@satoriapp/plugin-sqlite": "workspace:*",
+    "@satoriapp/plugin-adapter-satori": "workspace:*",
+    "@satoriapp/plugin-http": "workspace:*"
   }
 }
