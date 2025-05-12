@@ -3,11 +3,10 @@ import { access } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 
 import { Context, Inject, Schema, Plugin, ForkScope } from 'cordis'
-import { Dict } from '@satoriapp/common'
+import { Dict, CordisConfig } from '@satoriapp/common'
 
 import { ImportTree } from './import'
 import { Entry } from './entry'
-import { PluginManifest } from './plugins'
 
 declare module 'cordis' {
   interface Events {
@@ -82,6 +81,10 @@ class Loader extends ImportTree {
     }
     return undefined
   }
+
+  _mixins(plugins: PluginManifest[]) {
+    this.cache.push(...plugins)
+  }
 }
 
 namespace Loader {
@@ -112,6 +115,17 @@ namespace Loader {
       implements?: string[]
     }
   }
+}
+
+export interface PluginManifest {
+  name: string
+  packageName: string
+  // Only used in external plugins from 'createRequire' scope
+  path?: string
+  meta: Record<string, any> & CordisConfig
+  version: string
+  internal?: boolean
+  plugin: any
 }
 
 export default Loader

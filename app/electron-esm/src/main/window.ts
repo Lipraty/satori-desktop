@@ -16,6 +16,7 @@ declare module 'cordis' {
 }
 
 class WindowService extends Service {
+  static readonly inject = ['app']
   static readonly name = 'window'
   static Config: Schema<WindowService.Config> = Schema.object({
     theme: Schema.union(['dark', 'light', 'system']).default('system'),
@@ -32,7 +33,7 @@ class WindowService extends Service {
 
   constructor(public ctx: Context, public config: WindowService.Config) {
     super(ctx, 'window')
-    ctx.electron.app.on('activate', () => {
+    ctx.app.on('activate', () => {
       if (electron.BrowserWindow.getAllWindows().length === 0) {
         this.start()
       }
@@ -40,7 +41,7 @@ class WindowService extends Service {
   }
 
   async start() {
-    await this.ctx.electron.app.whenReady()
+    await this.ctx.app.whenReady()
     this.mainWindow ??= this.createWindow('main', {
       width: this.config.width,
       height: this.config.height,

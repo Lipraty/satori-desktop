@@ -13,10 +13,15 @@
   },
   "license": "AGPL-3.0-only",
   "dependencies": {
-    "@satoriapp/common": "workspace:*",
-    "@satorijs/core": "^4.5.0"
+    "@satoriapp/common": "workspace:*"
   },
   "devDependencies": {
-    "satoriapp": "workspace:*"
+    "@cordisjs/plugin-http": "^0.6.3",
+    "@satorijs/core": "^4.5.0",
+    "cordis": "^3.18.1"
+  },
+  "peerDependencies": {
+    "@satorijs/core": "*",
+    "cordis": "*"
   }
 }

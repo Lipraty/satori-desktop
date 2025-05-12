@@ -11,8 +11,5 @@
       "import": "./lib/index.mjs"
     },
     "./package.json": "./package.json"
-  },
-  "dependencies": {
-    "@satoriapp/plugin-satori-server": "workspace:*"
   }
 }

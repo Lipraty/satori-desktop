@@ -8,8 +8,9 @@ import { Dict, PackageJson } from '@satoriapp/common'
 // `plugin.ts` is automatically generated
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import { plugins as prePlugin, PluginManifest } from './plugins'
+import { plugins as prePlugin } from './plugins'
 import { Entry } from './entry'
+import type { PluginManifest } from '.'
 
 export interface ImportCache {
   internal: PluginManifest[]
@@ -35,8 +36,11 @@ export abstract class ImportTree {
     // step 1: load external plugins manifest and save it to cache
     await this.discoverExternal()
 
-    // step 2: load internal plugins
-    for (const plugin of prePlugin) {
+    // step 2: find internal plugins via cache
+    const internal = this.cache.filter(p => p.internal)
+
+    // step 3: load internal plugins
+    for (const plugin of [...prePlugin, ...internal]) {
       const entry = await this.resolveEntry(plugin)
       if (!entry) continue
 
@@ -59,8 +63,10 @@ export abstract class ImportTree {
     } catch (error) {
       if (error.code === 'ENOENT') {
         this.ctx.logger('loader').info('no external plugins.')
+        return
       }
       this.ctx.logger('loader').error('failed to read external plugins', error)
+      return
     }
   }
 

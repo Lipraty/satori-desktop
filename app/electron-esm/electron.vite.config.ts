@@ -1,9 +1,19 @@
 import { resolve } from 'path'
 import { defineConfig, externalizeDepsPlugin } from 'electron-vite'
 
+import jsonImportAttributesPlugin from './vite/vite-plugin-import-attr'
+
 export default defineConfig({
   main: {
-    plugins: [externalizeDepsPlugin()],
+    plugins: [
+      externalizeDepsPlugin(),
+      jsonImportAttributesPlugin({
+        force: true,
+        minNodeVersion: 22,
+        extensions: ['.json'],
+        debug: true
+      })
+    ],
     build: {
       rollupOptions: {
         output: {

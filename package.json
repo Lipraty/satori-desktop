@@ -26,19 +26,17 @@
     "electron-filter": "./script/cli.js"
   },
   "scripts": {
-    "dev": "yakumo dev && yarn workspace satoriapp electron-filter electron-forge start",
+    "lint": "eslint --cache . --fix",
+    "start:e": "yarn workspace satoriapp dev",
+    "start:c": "yarn workspace satoriapp-cirno dev",
     "build:ykm": "yarn workspace @satoriapp/yakumo vite build --config vite.config.ts",
-    "trace": "yarn workspace satoriapp electron --trace-warnings .",
-    "package": "yarn workspace satoriapp electron-forge package",
-    "make": "yarn workspace satoriapp electron-forge make",
-    "publish": "yarn workspace satoriapp electron-forge publish",
-    "lint": "eslint --ext .ts,.tsx .",
-    "format": "prettier --check . ",
-    "w:m": "yarn workspace @satoriapp/main",
-    "w:r": "yarn workspace @satoriapp/renderer",
+    "build:pkg": "yarn yakumo pkgbuild",
+    "build:pre": "yarn yakumo prebuild",
+    "w:a": "yarn workspace @satoriapp/app",
+    "w:w": "yarn workspace @satoriapp/webui",
     "w:l": "yarn workspace @satoriapp/loader",
-    "w:ykm": "yarn workspace @satoriapp/yakumo",
-    "w:ee": "yarn workspace satoriapp-esm"
+    "w:e": "yarn workspace satoriapp",
+    "w:c": "yarn workspace satoriapp-cirno"
   },
   "keywords": [],
   "devDependencies": {

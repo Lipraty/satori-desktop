@@ -1,6 +1,8 @@
-import { resolve } from 'node:path'
 import type * as electorn from 'electron'
-import { Context, Service } from 'cordis'
+import { Context, Schema, Service } from 'cordis'
+
+import { } from '@satorijs/core'
+import { } from '@cordisjs/plugin-http'
 
 declare module 'cordis' {
   interface Context {
@@ -12,27 +14,39 @@ import * as Package from '../package.json'
 
 declare module 'cordis' {
   interface Context {
-    app: SatoriApp
+    sapp: SatoriApp
     $version: string
   }
 }
 
 export const APP_NAME = 'Satori App for Desktop'
 export const APP_VERSION = Package.version
-export const APP_ID = 'com.satoriapp.desktop'
+export const APP_ID = 'chat.satori.desktop'
 
 class SatoriApp extends Service {
+  static readonly inject = ['satori', 'server']
+  static readonly Config: Schema<SatoriApp.Config> = Schema.object({
+    port: Schema.number().default(11510),
+    maxPort: Schema.number().default(11519),
+    host: Schema.string()
+  })
+
   constructor(ctx: Context) {
-    super(ctx)
+    super(ctx, 'sapp')
     ctx.set('$version', APP_VERSION)
-    ctx.inject(['electorn'], (ctx) => {
-      ctx.set('dataDir', resolve(ctx.electorn.app.getPath('userData'), 'sapp'))
-    })
-    // TODO
-    // ctx.inject(['cirno'], (ctx) => {})
   }
+
+  async start() { }
+
+  async stop() { }
 }
 
-namespace SatoriApp { }
+namespace SatoriApp {
+  export interface Config {
+    port: number
+    maxPort?: number
+    host?: string
+  }
+}
 
 export default SatoriApp
