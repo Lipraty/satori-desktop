@@ -18,6 +18,10 @@
       </router-view>
     </main>
   </div>
+  <div class="satori-background">
+    <div class="satori-background__image" />
+    <div class="satori-background__mask" />
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -46,6 +50,7 @@ ctx.$router.router.afterEach((to, _) => {
   height: calc(100vh - 44px);
   width: 100%;
   overflow: hidden;
+  z-index: 5;
 }
 .satori-nav {
   display: flex;
@@ -139,5 +144,32 @@ ctx.$router.router.afterEach((to, _) => {
 }
 .satori-icon svg {
   fill: var(--colorNeutralForeground1);
+}
+.satori-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+  
+  &__mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--colorBrandStroke1);
+    opacity: 0.12;
+    backdrop-filter: blur(5px);
+  }
+
+  &__image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
 }
 </style>

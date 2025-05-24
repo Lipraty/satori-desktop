@@ -32,7 +32,8 @@ const props = defineProps({
   width: 100%;
   border-radius: 8px;
   border: 1px solid var(--colorNeutralBackground6);
-  background-color: var(--colorNeutralBackground2);
+  background-color: color-mix(in srgb, var(--colorNeutralBackground2), transparent 15%);
+  backdrop-filter: blur(50px);
 }
 .satori-view-content {
   display: flex;

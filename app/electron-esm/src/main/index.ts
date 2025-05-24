@@ -40,7 +40,10 @@ app.set('$version', APP_VERSION)
 
 app.dataDir = resolve(electorn.app.getPath('home'), '.sapp')
 app.plugin(Loader)
-app.loader._mixins(plugins)
+app.inject(['loader', 'app'], (ctx) => {
+  ctx.loader._mixins(plugins)
+  ctx.loader.init()
+})
 
 app.on('dispose', () => {
   isQuiting = true

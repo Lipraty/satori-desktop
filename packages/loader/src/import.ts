@@ -43,9 +43,10 @@ export abstract class ImportTree {
     for (const plugin of [...prePlugin, ...internal]) {
       const entry = await this.resolveEntry(plugin)
       if (!entry) continue
-
+      entry.options.meta.internal = true
       const config = this.config[plugin.name]
-      entry.reload(this.ctx, config)
+      console.log(entry)
+      await entry.reload(this.ctx, config)
     }
   }
 
@@ -97,6 +98,7 @@ export abstract class ImportTree {
 
   async import(name: string, config?: Dict): Promise<ForkScope> {
     name = name.includes('plugin-') ? this.purifyName(name) : name
+    console.log(name)
 
     for (const entry of this.entryTree.values()) {
       if (entry.options.name === name && !entry.options.meta.reusable)

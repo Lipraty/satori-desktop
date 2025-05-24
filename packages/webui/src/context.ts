@@ -31,6 +31,8 @@ export interface Context {
 export class Context extends cordis.Context {
   app: App
   theme: 'light' | 'dark' = 'light'
+  
+  private _process = null
 
   constructor() {
     super()
@@ -51,6 +53,15 @@ export class Context extends cordis.Context {
       })
       return () => themeMedia.removeEventListener('change', () => { })
     })
+
+    // electron process
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    if (window.electron) {
+      this._process = window.electron.process
+    }
+    
+    // TODO: cirno process
 
     this.on('ready', () => {
       this.app

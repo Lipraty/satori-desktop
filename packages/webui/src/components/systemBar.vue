@@ -16,6 +16,7 @@ const platform = ctx.getPlatform()
 
 <style scoped lang="scss">
 .satori-system-bar {
+  z-index: 90;
   display: flex;
   flex-direction: row;
   align-items: center;
