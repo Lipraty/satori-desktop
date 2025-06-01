@@ -1,10 +1,10 @@
 import * as cordis from 'cordis'
 import { App, Component, createApp, defineComponent, h, inject, InjectionKey, markRaw, onScopeDispose, provide, resolveComponent } from 'vue'
 import { setTheme } from '@fluentui/web-components'
-import { webLightTheme, webDarkTheme } from '@fluentui/tokens'
 
 import RouterService from './plugins/router'
 import { install } from './components'
+import { Theme, } from './components/themes'
 
 const rootContext = Symbol('context') as InjectionKey<Context>
 const platformMap = {
@@ -21,7 +21,7 @@ export function useContext() {
 }
 
 export interface Events<C extends Context = Context> extends cordis.Events<C> {
-  'internal/theme': (theme: 'light' | 'dark') => void
+  'internal/theme': (theme: Theme.Mode) => void
 }
 
 export interface Context {
@@ -30,8 +30,9 @@ export interface Context {
 
 export class Context extends cordis.Context {
   app: App
-  theme: 'light' | 'dark' = 'light'
-  
+  theme: Theme.Mode = 'light'
+  token: Theme.Token = 'koishi'
+
   private _process = null
 
   constructor() {
@@ -60,7 +61,7 @@ export class Context extends cordis.Context {
     if (window.electron) {
       this._process = window.electron.process
     }
-    
+
     // TODO: cirno process
 
     this.on('ready', () => {
@@ -69,12 +70,20 @@ export class Context extends cordis.Context {
         .use(install)
         .mount('#app')
 
-      setTheme(this.theme === 'dark' ? webDarkTheme : webLightTheme)
+      setTheme(Theme.getTheme(this.token, this.theme))
     })
 
     this.on('internal/theme', (theme) => {
-      setTheme(theme === 'dark' ? webDarkTheme : webLightTheme)
+      setTheme(Theme.getTheme(this.token, theme))
     })
+  }
+
+  get process() {
+    return this._process
+  }
+
+  get isElectron() {
+    return !!this._process
   }
 
   component(component: Component) {
