@@ -1,0 +1,126 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "**.md"
+  pull_request:
+    branches: [main]
+    paths-ignore:
+      - "**.md"
+
+jobs:
+  build:
+    name: Lint and Build (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Cache modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.yarn/cache
+            ~/.npm
+            ~/.cache/yarn
+            **/node_modules
+          key: ${{ runner.os }}-deps-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-deps-
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        env:
+          YARN_ENABLE_IMMUTABLE_INSTALLS: false
+        run: yarn install
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Build yakumo
+        if: ${{ contains(github.event.head_commit.message, 'bump:') }}
+        run: yarn build:ykm
+
+      - name: Plugin pre-build
+        if: ${{ contains(github.event.head_commit.message, 'bump:') }}
+        run: yarn yakumo prebuild
+
+      - name: Packages build
+        if: ${{ contains(github.event.head_commit.message, 'bump:') }}
+        run: yarn yakumo pkgbuild
+
+      - name: Install system dependencies
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev libgbm-dev libasound2-dev xvfb
+
+      - name: Build
+        if: ${{ contains(github.event.head_commit.message, 'bump:') }}
+        run: yarn build:${{ matrix.os }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload artifacts
+        if: ${{ contains(github.event.head_commit.message, 'bump:') }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.os }}-build
+          path: |
+            app/electron-esm/out
+            app/cirno/dist
+      
+    
+  release:
+    name: Create Release
+    needs: build
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, 'bump:') }}
+    steps:
+      - name: Extract version
+        id: extract-version
+        run: |
+          VERSION=$(echo "${{ github.event.head_commit.message }}" | grep -oP 'bump: \K(\d+\.\d+\.\d+)')
+          echo "version=$VERSION" >> $GITHUB_ENV
+          echo "::set-output name=version::$VERSION"
+      
+      - name: Download artifacts
+        run: |
+          mkdir artifacts
+          for os in ubuntu-latest macos-latest windows-latest; do
+            gh run download ${{ github.run_id }} -n build-$os -D artifacts/$os
+          done
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download all artifacts
+        run: |
+          mkdir artifacts
+          for os in ubuntu-latest macos-latest windows-latest; do
+            gh run download ${{ github.run_id }} -n build-$os -D artifacts/$os
+          done
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ steps.extract-version.outputs.version }}
+          name: Release v${{ steps.extract-version.outputs.version }}
+          body: "Multi-platform release"
+          files: |
+            artifacts/**/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
