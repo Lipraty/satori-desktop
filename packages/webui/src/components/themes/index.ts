@@ -2,6 +2,7 @@ import { createDarkTheme, createLightTheme, BrandVariants, Theme as FluentTheme 
 
 import { koishiBrand } from './koishi'
 import { satoriBrand } from './satori'
+import { coffeeBrand } from './coffee'
 
 export class Theme {
   static _themes: Record<string, { light: FluentTheme, dark: FluentTheme }> = {}
@@ -25,3 +26,4 @@ export namespace Theme {
 
 Theme.defineTheme('koishi', koishiBrand)
 Theme.defineTheme('satori', satoriBrand)
+Theme.defineTheme('coffee', coffeeBrand)

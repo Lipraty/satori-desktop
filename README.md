@@ -40,6 +40,10 @@ Download the latest release from the [releases page]().
   - [x] WeChat Official
   - [x] Zulip
 
+## Design resources
+
+- [Theme color](./packages/webui/src/components/themes/readme.md)
+
 ## Contributing
 
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.

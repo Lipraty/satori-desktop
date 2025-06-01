@@ -39,6 +39,10 @@
   - [x] Wechat Official (微信公众号)
   - [x] Zulip
 
+## 设计资源
+
+- [主题色](./packages/webui/src/components/themes/readme.md)
+
 ## 贡献
 
 欢迎为该项目做出贡献，阅读 [CONTRIBUTING.md](CONTRIBUTING.md) 了解流程。
