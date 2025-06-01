@@ -68,7 +68,7 @@ export default [
           {
             commonjs: true,
             caseSensitive: true,
-            ignore: ['electron', '\\.s?css$'],
+            ignore: ['electron', '\\.s?css$', './plugins'],
           },
         ],
         'import/order': [

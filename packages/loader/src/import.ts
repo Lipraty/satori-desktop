@@ -1,3 +1,5 @@
+// eslint-disable import/no-unresolved
+// eslint-disable import/no-extraneous-dependencies
 import { readdir, readFile, writeFile } from 'node:fs/promises'
 import { Dirent } from 'node:fs'
 import { resolve } from 'node:path'
@@ -6,7 +8,6 @@ import { Context, ForkScope, Plugin, Schema } from 'cordis'
 import { Dict, PackageJson } from '@satoriapp/common'
 
 // `plugin.ts` is automatically generated
-// eslint-disable-next-line import/no-unresolved
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { plugins as prePlugin } from './plugins'
