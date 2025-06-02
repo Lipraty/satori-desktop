@@ -10,6 +10,8 @@ declare global {
 
 root.start()
 
+root.on('communication/status', (status) => {})
+
 window.api.cordisEventBridge((name, args) => {
   console.log('event', name, args)
   root.emit(name, args as any)

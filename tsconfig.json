@@ -9,6 +9,7 @@
       "@satoriapp/app": ["packages/app/src"],
       "@satoriapp/webui": ["packages/webui/src"],
       "@satoriapp/common": ["packages/common/src"],
+      "@satoriapp/plugin-communication-web": ["packages/communication-web/src"],
       "@satoriapp/*": ["packages/*/src"],
 
       // plugins
