@@ -4,13 +4,22 @@ import { setTheme } from '@fluentui/web-components'
 
 import RouterService from './plugins/router'
 import { install } from './components'
-import { Theme, } from './components/themes'
+import { Theme } from './components/themes'
 
 const rootContext = Symbol('context') as InjectionKey<Context>
 const platformMap = {
   macos: ['macOS', 'darwin', 'Mac OS X'],
   win: ['windows', 'win32', 'Windows'],
   linux: ['linux', 'Linux'],
+}
+
+export interface Versions {
+  Runtime: 'electron' | 'cirno' | 'web'
+  Electorn?: string
+  Cirno?: string
+  Chromium: string
+  Node?: string
+  V8?: string
 }
 
 export function useContext() {
@@ -33,8 +42,6 @@ export class Context extends cordis.Context {
   theme: Theme.Mode = 'light'
   token: Theme.Token = 'koishi'
 
-  private _process = null
-
   constructor() {
     super()
     this.app = createApp(this.component(defineComponent({
@@ -55,15 +62,6 @@ export class Context extends cordis.Context {
       return () => themeMedia.removeEventListener('change', () => { })
     })
 
-    // electron process
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    if (window.electron) {
-      this._process = window.electron.process
-    }
-
-    // TODO: cirno process
-
     this.on('ready', () => {
       this.app
         .use(this.$router.router)
@@ -78,12 +76,14 @@ export class Context extends cordis.Context {
     })
   }
 
-  get process() {
-    return this._process
-  }
-
-  get isElectron() {
-    return !!this._process
+  get versions(): Versions {
+    return {
+      Runtime: 'electron' in window ? 'electron' : 'cirno' in window ? 'cirno' : 'web',
+      Electorn: window?.electron?.process.versions.electron || undefined,
+      Cirno: window?.cirno?.version || undefined,
+      Chromium: window?.electron?.process.versions.chrome || window?.cirno?.chromium || navigator.userAgent,
+      Node: window?.electron?.process.versions.node || undefined,
+    }
   }
 
   component(component: Component) {

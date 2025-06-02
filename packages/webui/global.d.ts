@@ -15,5 +15,6 @@ declare namespace globalThis {
       webFrame: any
       webUtils: any
     }
+    cirno?: any
   }
 }

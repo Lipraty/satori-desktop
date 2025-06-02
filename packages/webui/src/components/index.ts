@@ -6,6 +6,7 @@ import ViewBox from './view.vue'
 import SystemBar from './systemBar.vue'
 import Spacer from './spacer.vue'
 import Icons from './icons'
+import Card from './card.vue'
 
 export function install(app: App) {
   ButtonDefinition.define(FluentDesignSystem.registry)
@@ -15,4 +16,5 @@ export function install(app: App) {
   app.component('satori-spacer', Spacer)
   app.component('satori-root', Root)
   app.component('satori-view', ViewBox)
+  app.component('satori-card', Card)
 }
