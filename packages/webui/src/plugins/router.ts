@@ -1,5 +1,5 @@
 import { Component } from 'vue'
-import { createMemoryHistory, createRouter } from 'vue-router'
+import { createMemoryHistory, createRouter, createWebHashHistory } from 'vue-router'
 import { Disposable, Service } from 'cordis'
 
 import { Context } from '@satoriapp/webui'
@@ -62,7 +62,7 @@ export default class RouterService extends Service<any, Context> {
   public pages: Record<string, Pager> = {}
   public router = createRouter({
     // in electron app, since there is no address bar, using memory is better.
-    history: createMemoryHistory(),
+    history: this.ctx.platform !== 'web' ? createMemoryHistory() : createWebHashHistory(),
     routes: [],
   })
 

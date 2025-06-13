@@ -47,7 +47,6 @@ export abstract class ImportTree {
       if (!entry) continue
       entry.options.meta.internal = true
       const config = this.config[plugin.name]
-      console.log(entry)
       await entry.reload(this.ctx, config)
     }
   }
@@ -100,7 +99,6 @@ export abstract class ImportTree {
 
   async import(name: string, config?: Dict): Promise<ForkScope> {
     name = name.includes('plugin-') ? this.purifyName(name) : name
-    console.log(name)
 
     for (const entry of this.entryTree.values()) {
       if (entry.options.name === name && !entry.options.meta.reusable)

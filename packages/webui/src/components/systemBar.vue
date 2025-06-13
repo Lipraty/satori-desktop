@@ -1,6 +1,6 @@
 <template>
   <div class="satori-system-bar">
-    <satori-spacer v-if="platform === 'macos'" />
+    <satori-spacer v-if="ctx.os === 'macos'" />
     <span>Satori App for Desktop</span>
     <satori-spacer />
   </div>
@@ -11,7 +11,6 @@ import { useContext } from '@satoriapp/webui';
 import { } from 'vue'
 
 const ctx = useContext()
-const platform = ctx.getPlatform()
 </script>
 
 <style scoped lang="scss">

@@ -7,19 +7,27 @@ import { install } from './components'
 import { Theme } from './components/themes'
 
 const rootContext = Symbol('context') as InjectionKey<Context>
-const platformMap = {
+const osMap = {
   macos: ['macOS', 'darwin', 'Mac OS X'],
   win: ['windows', 'win32', 'Windows'],
   linux: ['linux', 'Linux'],
 }
 
+export type PlatformType = 'electron' | 'cirno' | 'web'
+
 export interface Versions {
-  Runtime: 'electron' | 'cirno' | 'web'
   Electorn?: string
   Cirno?: string
   Chromium: string
   Node?: string
   V8?: string
+}
+
+export interface System {
+  platform: PlatformType
+  versions: Versions
+  electron?: any
+  cirno?: any
 }
 
 export function useContext() {
@@ -41,6 +49,8 @@ export class Context extends cordis.Context {
   app: App
   theme: Theme.Mode = 'light'
   token: Theme.Token = 'koishi'
+
+  private $os: keyof typeof osMap | 'unknown' = 'unknown'
 
   constructor() {
     super()
@@ -69,6 +79,8 @@ export class Context extends cordis.Context {
         .mount('#app')
 
       setTheme(Theme.getTheme(this.token, this.theme))
+
+      this.$os = this.getOS()
     })
 
     this.on('internal/theme', (theme) => {
@@ -76,13 +88,29 @@ export class Context extends cordis.Context {
     })
   }
 
+  get os(): keyof typeof osMap | 'unknown' {
+    return this.$os
+  }
+
   get versions(): Versions {
     return {
-      Runtime: 'electron' in window ? 'electron' : 'cirno' in window ? 'cirno' : 'web',
       Electorn: window?.electron?.process.versions.electron || undefined,
       Cirno: window?.cirno?.version || undefined,
       Chromium: window?.electron?.process.versions.chrome || window?.cirno?.chromium || navigator.userAgent,
       Node: window?.electron?.process.versions.node || undefined,
+    }
+  }
+
+  get platform(): PlatformType {
+    return 'electron' in window ? 'electron' : 'cirno' in window ? 'cirno' : 'web'
+  }
+
+  get system(): System {
+    return {
+      platform: this.platform,
+      versions: this.versions,
+      electron: 'electron' in window ? window.electron : undefined,
+      cirno: 'cirno' in window ? window.cirno : undefined,
     }
   }
 
@@ -93,15 +121,15 @@ export class Context extends cordis.Context {
     })
   }
 
-  getPlatform(): keyof typeof platformMap | 'unknown' {
+  private getOS(): keyof typeof osMap | 'unknown' {
     if ('userAgentData' in navigator) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       const { platform } = navigator.userAgentData
       if (platform) {
-        for (const [key, values] of Object.entries(platformMap)) {
+        for (const [key, values] of Object.entries(osMap)) {
           if (values.some((v) => platform.includes(v))) {
-            return key as keyof typeof platformMap
+            return key as keyof typeof osMap
           }
         }
         return 'unknown'
@@ -110,9 +138,9 @@ export class Context extends cordis.Context {
       }
     } else {
       const ua = navigator.userAgent
-      for (const [key, values] of Object.entries(platformMap)) {
+      for (const [key, values] of Object.entries(osMap)) {
         if (values.some((v) => ua.includes(v))) {
-          return key as keyof typeof platformMap
+          return key as keyof typeof osMap
         }
       }
       return 'unknown'
