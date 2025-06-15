@@ -52,6 +52,8 @@ export const bundlePlugins = async (ctx: Context) => {
     const meta = ctx.yakumo.workspaces[path]
     const entryFile = await readFile(resolve(root, 'src/index.ts'), 'utf-8')
     const isDefaultExport = entryFile.includes('export default') || entryFile.includes('export const defaultExport')
+    if (meta && meta['sapp'] && !meta['sapp'].node)
+      continue // Skip non-node plugins
     manifest.push({
       name: toCamelCase(meta.name.replace('@satoriapp/plugin-', '')),
       packageName: meta.name,
