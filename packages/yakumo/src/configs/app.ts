@@ -1,9 +1,9 @@
-import { readdirSync } from "node:fs";
-import { resolve } from "node:path";
+import type { BundleConfig } from '../utils'
+import { readdirSync } from 'node:fs'
 
-import { defineConfig } from "vite";
+import { resolve } from 'node:path'
 
-import { BundleConfig } from "../utils";
+import { defineConfig } from 'vite'
 
 export default {
   priprocess: (root: string, external: string[]) => {
@@ -25,12 +25,12 @@ export default {
           external,
           output: {
             exports: 'named',
-          }
+          },
         },
       },
       resolve: {
         mainFields: ['module', 'jsnext:main', 'jsnext'],
       },
     })
-  }
+  },
 } as BundleConfig

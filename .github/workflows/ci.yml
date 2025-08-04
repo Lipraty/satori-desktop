@@ -4,11 +4,11 @@ on:
   push:
     branches: [main]
     paths-ignore:
-      - "**.md"
+      - '**.md'
   pull_request:
     branches: [main]
     paths-ignore:
-      - "**.md"
+      - '**.md'
 
 jobs:
   build:
@@ -81,8 +81,7 @@ jobs:
           path: |
             app/electron-esm/out
             app/cirno/dist
-      
-    
+
   release:
     name: Create Release
     needs: build
@@ -95,7 +94,7 @@ jobs:
           VERSION=$(echo "${{ github.event.head_commit.message }}" | grep -oP 'bump: \K(\d+\.\d+\.\d+)')
           echo "version=$VERSION" >> $GITHUB_ENV
           echo "::set-output name=version::$VERSION"
-      
+
       - name: Download artifacts
         run: |
           mkdir artifacts
@@ -113,13 +112,13 @@ jobs:
           done
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
+
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ steps.extract-version.outputs.version }}
           name: Release v${{ steps.extract-version.outputs.version }}
-          body: "Multi-platform release"
+          body: Multi-platform release
           files: |
             artifacts/**/*
         env:

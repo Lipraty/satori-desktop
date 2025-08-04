@@ -1,6 +1,6 @@
-import path from 'path'
-
 import type { Plugin } from 'vite'
+
+import path from 'node:path'
 
 export function injectCssImports(): Plugin {
   return {
@@ -13,13 +13,14 @@ export function injectCssImports(): Plugin {
       for (const fileName in bundle) {
         if (fileName.endsWith('.vue.js') || fileName.endsWith('.vue.mjs')) {
           const chunk = bundle[fileName]
-          if (chunk.type !== 'chunk') continue
+          if (chunk.type !== 'chunk')
+            continue
           const baseName = path.basename(fileName, fileName.endsWith('.vue.js') ? '.vue.js' : '.vue.mjs')
           const dirName = path.dirname(fileName)
-          const cssFileName = cssFiles.find(css => {
+          const cssFileName = cssFiles.find((css) => {
             return path.basename(css, '.css') === baseName && path.dirname(css) === dirName
           })
-          
+
           if (cssFileName) {
             const isEsm = fileName.endsWith('.mjs')
             const importPath = `./${path.basename(cssFileName)}`
@@ -29,6 +30,6 @@ export function injectCssImports(): Plugin {
           }
         }
       }
-    }
+    },
   }
 }

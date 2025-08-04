@@ -1,18 +1,18 @@
 // eslint-disable import/no-unresolved
 // eslint-disable import/no-extraneous-dependencies
+import type { Dict, PackageJson } from '@satoriapp/common'
+import type { Context, ForkScope, Plugin, Schema } from 'cordis'
+import type { Dirent } from 'node:fs'
+
+import type { PluginManifest } from '.'
 import { readdir, readFile, writeFile } from 'node:fs/promises'
-import { Dirent } from 'node:fs'
+
 import { resolve } from 'node:path'
-
-import { Context, ForkScope, Plugin, Schema } from 'cordis'
-import { Dict, PackageJson } from '@satoriapp/common'
-
+import { Entry } from './entry'
 // `plugin.ts` is automatically generated
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { plugins as prePlugin } from './plugins'
-import { Entry } from './entry'
-import type { PluginManifest } from '.'
 
 export interface ImportCache {
   internal: PluginManifest[]
@@ -44,7 +44,8 @@ export abstract class ImportTree {
     // step 3: load internal plugins
     for (const plugin of [...prePlugin, ...internal]) {
       const entry = await this.resolveEntry(plugin)
-      if (!entry) continue
+      if (!entry)
+        continue
       entry.options.meta.internal = true
       const config = this.config[plugin.name]
       await entry.reload(this.ctx, config)
@@ -57,18 +58,20 @@ export abstract class ImportTree {
       const paths = await readdir(externalDir, { withFileTypes: true })
 
       for (const path of paths) {
-        if (!path.isDirectory()) continue
+        if (!path.isDirectory())
+          continue
         const manifest = await this.externalManifest(path, externalDir)
-        if (!manifest) continue
+        if (!manifest)
+          continue
         this.cache.push(manifest)
       }
-    } catch (error) {
+    }
+    catch (error) {
       if (error.code === 'ENOENT') {
         this.ctx.logger('loader').info('no external plugins.')
         return
       }
       this.ctx.logger('loader').error('failed to read external plugins', error)
-      return
     }
   }
 
@@ -76,20 +79,24 @@ export abstract class ImportTree {
     try {
       const pkgPath = resolve(baseDir, path.name, 'package.json')
       const pkgFile = JSON.parse(await readFile(pkgPath, 'utf-8')) as PackageJson
-      if (!/^(@satoriapp\/plugin-|sapp-plugin-|@[^/]+\/sapp-plugin-).+/.test(pkgFile.name)) return undefined
-      if (pkgFile.main) return undefined
+      if (!/^(@satoriapp\/plugin-|sapp-plugin-|@[^/]+\/sapp-plugin-).+/.test(pkgFile.name))
+        return undefined
+      if (pkgFile.main)
+        return undefined
       return {
         name: this.purifyName(pkgFile.name),
         packageName: pkgFile.name,
         version: pkgFile.version,
         path: resolve(pkgPath, '..', pkgFile.main || pkgFile.module),
         meta: pkgFile.sapp || {},
-        plugin: this.require(pkgPath, pkgFile.type === 'module')
+        plugin: this.require(pkgPath, pkgFile.type === 'module'),
       }
-    } catch (error) {
+    }
+    catch (error) {
       if (error.code === 'ENOENT') {
         this.ctx.logger('loader').error('failed to read package.json')
-      } else if (error instanceof SyntaxError || error.message.includes('Unexpected token')) {
+      }
+      else if (error instanceof SyntaxError || error.message.includes('Unexpected token')) {
         this.ctx.logger('loader').error('failed to parse package.json')
       }
       this.ctx.logger('loader').error('failed to load plugin "%c"', path.name)
@@ -106,7 +113,8 @@ export abstract class ImportTree {
     }
 
     const entry = await this.resolveEntry(name)
-    if (!entry) return
+    if (!entry)
+      return
 
     return entry.reload(this.ctx, config)
   }
@@ -116,7 +124,8 @@ export abstract class ImportTree {
   protected async resolveEntry(arg: string | PluginManifest) {
     const manifest = typeof arg === 'string' ? this.cache.find(p => p.name === arg) : arg
 
-    if (!manifest) return undefined
+    if (!manifest)
+      return undefined
 
     const internal = prePlugin.findIndex(p => p.name === arg) !== -1
     const plugin = this.unwrapExport(manifest.plugin) as Plugin
@@ -129,8 +138,8 @@ export abstract class ImportTree {
         disabled: false,
         internal,
         schema: plugin?.Config as Schema,
-        reusable: plugin?.reusable
-      }
+        reusable: plugin?.reusable,
+      },
     }
 
     options.id = this.ensureId(options)
@@ -165,7 +174,8 @@ export abstract class ImportTree {
       },
       set: (target: Dict, key: string, value: any) => {
         target[key] = value
-        if (this.suspend) return true
+        if (this.suspend)
+          return true
         this.ctx.setTimeout(() => {
           this.writeCofig(target)
             .finally(() => {
@@ -173,7 +183,7 @@ export abstract class ImportTree {
             })
         }, 500)
         return true
-      }
+      },
     }
     return new Proxy(config, handler)
   }
@@ -181,18 +191,21 @@ export abstract class ImportTree {
   async readCofig() {
     this.suspend = true
     try {
-      const raw = await readFile(this.configPath, 'utf-8').catch(err => {
+      const raw = await readFile(this.configPath, 'utf-8').catch((err) => {
         if (err.code === 'ENOENT') {
           return '{}'
-        } else {
+        }
+        else {
           throw err
         }
       })
       return this._handleConfig(JSON.parse(raw))
-    } catch (error) {
+    }
+    catch (error) {
       this.ctx.logger.error('Failed to read config', error)
       return {}
-    } finally {
+    }
+    finally {
       this.suspend = false
     }
   }
@@ -201,9 +214,11 @@ export abstract class ImportTree {
     this.suspend = true
     try {
       await writeFile(this.configPath, JSON.stringify(config, null, 2), 'utf-8')
-    } catch (error) {
+    }
+    catch (error) {
       this.ctx.logger.error('Failed to write config', error)
-    } finally {
+    }
+    finally {
       this.suspend = false
     }
   }

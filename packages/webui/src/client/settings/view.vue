@@ -1,3 +1,9 @@
+<script setup lang="ts">
+import { useContext } from '@satoriapp/webui'
+
+const ctx = useContext()
+</script>
+
 <template>
   <satori-view title="Settings">
     <div class="satori-view-info">
@@ -6,20 +12,13 @@
           <span class="satori-view-info__key">{{ key }}</span>
           <span class="satori-view-info__value">{{ value }}</span>
         </div>
-        <fluent-divider orientation="vertical"/>
+        <fluent-divider orientation="vertical" />
       </template>
     </div>
-    <fluent-divider></fluent-divider>
+    <fluent-divider />
     <p>System</p>
   </satori-view>
 </template>
-
-<script setup lang="ts">
-import { useContext } from '@satoriapp/webui'
-
-const ctx = useContext()
-
-</script>
 
 <style lang="scss" scoped>
 .satori-view-info {

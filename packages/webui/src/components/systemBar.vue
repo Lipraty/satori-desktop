@@ -1,3 +1,10 @@
+<script setup lang="ts">
+import { useContext } from '@satoriapp/webui'
+import { } from 'vue'
+
+const ctx = useContext()
+</script>
+
 <template>
   <div class="satori-system-bar">
     <satori-spacer v-if="ctx.os === 'macos'" />
@@ -5,13 +12,6 @@
     <satori-spacer />
   </div>
 </template>
-
-<script setup lang="ts">
-import { useContext } from '@satoriapp/webui';
-import { } from 'vue'
-
-const ctx = useContext()
-</script>
 
 <style scoped lang="scss">
 .satori-system-bar {

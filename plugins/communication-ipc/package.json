@@ -1,7 +1,7 @@
 {
-  "name": "@satoriapp/common",
+  "name": "@satoriapp/plugin-communication-ipc",
   "version": "0.0.1",
-  "description": "SAPP:Commons",
+  "description": "SAPP:WebUI Communication Adapter for IPC",
   "license": "AGPL-3.0-only",
   "exports": {
     ".": {
@@ -13,7 +13,10 @@
   },
   "main": ".lib/index.mjs",
   "dependencies": {
-    "cordis": "^3.18.1",
-    "cosmokit": "^1.8.0"
+    "@satoriapp/webui": "workspace:*",
+    "electron": "35.1.5"
+  },
+  "sapp": {
+    "node": false
   }
 }

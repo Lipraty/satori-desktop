@@ -1,4 +1,4 @@
-import { Context } from '@satoriapp/webui'
+import type { Context } from '@satoriapp/webui'
 
 import NetworkView from './view.vue'
 

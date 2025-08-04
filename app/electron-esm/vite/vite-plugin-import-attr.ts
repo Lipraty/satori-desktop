@@ -1,7 +1,7 @@
-import { Plugin } from 'vite'
+import type { OutputBundle, OutputChunk } from 'rollup'
+import type { Plugin } from 'vite'
+import { extname } from 'node:path'
 import MagicString from 'magic-string'
-import { extname } from 'path'
-import { OutputBundle, OutputChunk } from 'rollup'
 
 interface ImportAttributesPluginOptions {
   /** 强制启用，忽略 Node 版本检查 */
@@ -15,16 +15,16 @@ interface ImportAttributesPluginOptions {
 }
 
 export default function importAttributesPlugin(
-  options: ImportAttributesPluginOptions = {}
+  options: ImportAttributesPluginOptions = {},
 ): Plugin {
   const {
     force = false,
     minNodeVersion = 22,
     extensions = ['.json'],
-    debug = false
+    debug = false,
   } = options
 
-  const nodeMajor = parseInt(process.versions.node.split('.')[0], 10)
+  const nodeMajor = Number.parseInt(process.versions.node.split('.')[0], 10)
   const enabled = force || nodeMajor >= minNodeVersion
   const log = (msg: string, ...args: any[]) => debug && console.log(`[vite-plugin-import-attrs] ${msg}`, ...args)
 
@@ -34,10 +34,12 @@ export default function importAttributesPlugin(
     apply: 'build',
 
     generateBundle(_options, bundle: OutputBundle) {
-      if (!enabled) return
+      if (!enabled)
+        return
       for (const fileName of Object.keys(bundle)) {
         const chunk = bundle[fileName] as OutputChunk
-        if (chunk.type !== 'chunk' || chunk.isEntry === false || chunk.facadeModuleId == null) continue
+        if (chunk.type !== 'chunk' || chunk.isEntry === false || chunk.facadeModuleId == null)
+          continue
         if (chunk.fileName.endsWith('.js') && chunk.fileName.endsWith('.mjs') || chunk.fileName.endsWith('.cjs')) {
           // skip non-esm or cjs
         }
@@ -53,8 +55,10 @@ export default function importAttributesPlugin(
             if (node.type === 'ImportDeclaration') {
               const src = node.source.value as string
               const ext = extname(src)
-              if (!extensions.includes(ext)) continue
-              if (node.attributes && node.attributes.length > 0) continue
+              if (!extensions.includes(ext))
+                continue
+              if (node.attributes && node.attributes.length > 0)
+                continue
 
               const { start, end } = node.source
               const type = ext.slice(1)
@@ -72,6 +76,6 @@ export default function importAttributesPlugin(
           }
         }
       }
-    }
+    },
   }
 }

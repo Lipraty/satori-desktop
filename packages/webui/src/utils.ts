@@ -10,5 +10,5 @@ export function generateId(inputStr: string) {
   const numericHash = hash(inputStr) % (max36 + 1)
   return numericHash.toString(36)
     .padStart(6, '0')
-    .slice(0, 6);
+    .slice(0, 6)
 }

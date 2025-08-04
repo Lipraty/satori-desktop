@@ -1,19 +1,32 @@
+<script setup lang="ts">
+import { useContext } from '@satoriapp/webui'
+import { ref } from 'vue'
+
+const ctx = useContext()
+const topPages = Object.values(ctx.$router.pages).filter(pager => pager.options && pager.options.position === 'top')
+const bottomPages = Object.values(ctx.$router.pages).filter(pager => pager.options && pager.options.position === 'bottom')
+const current = ref('/')
+ctx.$router.router.afterEach((to, _) => {
+  current.value = to.path
+})
+</script>
+
 <template>
   <satori-system-bar />
   <div class="satori-container">
     <nav class="satori-nav">
-      <router-link class="satori-nav-item" v-for="page in topPages" :to="page.path" ::key="`link-${page.name}`" ondragstart="return false">
-        <satori-icons v-if="page.icon" :name="page.icon" :filled="page.path === current"/>
+      <router-link v-for="page in topPages" class="satori-nav-item" :to="page.path" ::key="`link-${page.name}`" ondragstart="return false">
+        <satori-icons v-if="page.icon" :name="page.icon" :filled="page.path === current" />
         <span>{{ page.name }}</span>
       </router-link>
       <satori-spacer />
-      <router-link class="satori-nav-item" v-for="page in bottomPages" :to="page.path" ::key="`link-${page.name}`" ondragstart="return false">
-        <satori-icons v-if="page.icon" :name="page.icon" :filled="page.path === current"/>
+      <router-link v-for="page in bottomPages" class="satori-nav-item" :to="page.path" ::key="`link-${page.name}`" ondragstart="return false">
+        <satori-icons v-if="page.icon" :name="page.icon" :filled="page.path === current" />
         <span>{{ page.name }}</span>
       </router-link>
     </nav>
     <main class="satori-main">
-      <router-view v-slot="{ Component, route}">
+      <router-view v-slot="{ Component, route }">
         <component :is="Component" />
       </router-view>
     </main>
@@ -23,19 +36,6 @@
     <div class="satori-background__mask" />
   </div>
 </template>
-
-<script setup lang="ts">
-import { ref } from 'vue'
-import { useContext } from '@satoriapp/webui'
-
-const ctx = useContext()
-const topPages = Object.values(ctx.$router.pages).filter(pager => pager['options'] && pager['options'].position === 'top')
-const bottomPages = Object.values(ctx.$router.pages).filter(pager => pager['options'] && pager['options'].position === 'bottom')
-const current = ref('/')
-ctx.$router.router.afterEach((to, _) => {
-  current.value = to.path
-})
-</script>
 
 <style lang="scss">
 * {
@@ -152,7 +152,7 @@ ctx.$router.router.afterEach((to, _) => {
   right: 0;
   bottom: 0;
   z-index: -1;
-  
+
   &__mask {
     position: absolute;
     top: 0;

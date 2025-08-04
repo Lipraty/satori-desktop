@@ -1,14 +1,14 @@
-import Satori from '@satorijs/core'
+import type { PluginManifest } from '@satoriapp/loader'
 import HTTP from '@cordisjs/plugin-http'
+import HTTPPkg from '@cordisjs/plugin-http/package.json' with { type: 'json' }
 import Server from '@cordisjs/plugin-server'
+
+import ServerPkg from '@cordisjs/plugin-server/package.json' with { type: 'json' }
 import SatoriApp from '@satoriapp/app'
+import SatoriAppPkg from '@satoriapp/app/package.json' with { type: 'json' }
+import Satori from '@satorijs/core'
 
 import SatoriPkg from '@satorijs/core/package.json' with { type: 'json' }
-import HTTPPkg from '@cordisjs/plugin-http/package.json' with { type: 'json' }
-import ServerPkg from '@cordisjs/plugin-server/package.json' with { type: 'json' }
-import SatoriAppPkg from '@satoriapp/app/package.json' with { type: 'json' }
-
-import { PluginManifest } from '@satoriapp/loader'
 
 export const plugins: PluginManifest[] = [
   {
@@ -17,7 +17,7 @@ export const plugins: PluginManifest[] = [
     meta: SatoriPkg.cordis || {},
     version: SatoriPkg.version,
     internal: true,
-    plugin: Satori
+    plugin: Satori,
   },
   {
     name: 'http',
@@ -25,7 +25,7 @@ export const plugins: PluginManifest[] = [
     meta: {},
     version: HTTPPkg.version,
     internal: true,
-    plugin: HTTP
+    plugin: HTTP,
   },
   {
     name: 'server',
@@ -33,7 +33,7 @@ export const plugins: PluginManifest[] = [
     meta: {},
     version: ServerPkg.version,
     internal: true,
-    plugin: Server
+    plugin: Server,
   },
   {
     name: 'sapp',
@@ -41,7 +41,6 @@ export const plugins: PluginManifest[] = [
     meta: {},
     version: SatoriAppPkg.version,
     internal: true,
-    plugin: SatoriApp
-  }
+    plugin: SatoriApp,
+  },
 ]
-

@@ -1,7 +1,8 @@
-import * as electron from 'electron'
-import { Context, Schema, Service } from 'cordis'
-
+import type { Context } from 'cordis'
 import { APP_NAME } from '@satoriapp/app'
+import { Schema, Service } from 'cordis'
+
+import * as electron from 'electron'
 
 declare module 'cordis' {
   interface Events {
@@ -65,7 +66,8 @@ class WindowService extends Service {
 
     if (this.ctx.$env.MAIN_DEV_SERVER_URL) {
       this.mainWindow.loadURL(this.ctx.$env.MAIN_DEV_SERVER_URL)
-    } else {
+    }
+    else {
       this.mainWindow.loadFile(this.ctx.$env.MAIN_PROD_FILE)
     }
 

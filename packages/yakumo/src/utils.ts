@@ -1,18 +1,18 @@
-import { builtinModules } from 'node:module'
-
 import type { UserConfig } from 'vite'
+
+import { builtinModules } from 'node:module'
 
 export const OUT_DIR = 'lib'
 export const ENTRY = 'src/index.ts'
 
-export const externals = (external: string[] = []) => {
+export function externals(external: string[] = []) {
   return [
     'electron',
     'electron/main',
     'electron/renderer',
     'electron/common',
     'electron/remote',
-    ...builtinModules.map((m) => [m, `node:${m}`]).flat(),
+    ...builtinModules.map(m => [m, `node:${m}`]).flat(),
     ...external,
   ]
 }

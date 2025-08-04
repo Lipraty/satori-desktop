@@ -1,15 +1,15 @@
-import { readdirSync } from "node:fs";
-import { resolve } from "node:path";
+import type { BundleConfig } from '../utils'
+import { readdirSync } from 'node:fs'
 
-import { defineConfig } from "vite";
+import { resolve } from 'node:path'
 
-import { BundleConfig } from "../utils";
+import { defineConfig } from 'vite'
 
 export default {
   priprocess: (root: string, external: string[]) => {
     const input = readdirSync(resolve(root, 'src'))
       .map(file => resolve(root, 'src', file))
-    
+
     return defineConfig({
       build: {
         lib: {

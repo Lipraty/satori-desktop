@@ -2,9 +2,9 @@
   name: yakumo
   config:
     exclude:
-    - app/electron
-    - app/electron-esm
-    - packages/yakumo
+      - app/electron
+      - app/electron-esm
+      - packages/yakumo
     pipeline:
       dev:
         - plugins
@@ -14,7 +14,6 @@
         - plugins
       pkgbuild:
         - bundle
-        - tsc
 - name: yakumo-tsc
 - id: n9e3do
   name: '@satoriapp/yakumo'

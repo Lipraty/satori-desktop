@@ -1,14 +1,15 @@
-import * as electorn from 'electron'
-import { fileURLToPath } from 'node:url'
 import { resolve } from 'node:path'
-import { Context } from 'cordis'
-import started from 'electron-squirrel-startup'
-import Loader from '@satoriapp/loader'
+import process from 'node:process'
+import { fileURLToPath } from 'node:url'
 import { APP_VERSION } from '@satoriapp/app'
+import Loader from '@satoriapp/loader'
+import { Context } from 'cordis'
+import * as electorn from 'electron'
+import started from 'electron-squirrel-startup'
 
 import icon from '../../resources/icon.png?asset'
-import WindowService from './window'
 import { plugins } from './internals'
+import WindowService from './window'
 
 declare module 'cordis' {
   interface Context {
@@ -32,9 +33,9 @@ app.provide('bots', [], true)
 app.provide('app', electorn.app, true)
 app.set('$env', {
   MAIN_WINDOW_ICON: icon,
-  MAIN_DEV_SERVER_URL: process.env['ELECTRON_RENDERER_URL'],
+  MAIN_DEV_SERVER_URL: process.env.ELECTRON_RENDERER_URL,
   MAIN_PROD_FILE: fileURLToPath(new URL('../renderer/index.html', import.meta.url)),
-  PRELOAD_PATH: fileURLToPath(new URL('../preload/index.mjs', import.meta.url))
+  PRELOAD_PATH: fileURLToPath(new URL('../preload/index.mjs', import.meta.url)),
 })
 app.set('$version', APP_VERSION)
 
@@ -64,7 +65,7 @@ electorn.app.on('before-quit', (e) => {
 })
 
 electorn.app.on('ready', () => {
-  app.plugin(WindowService, app.loader.config['$window'] || {
+  app.plugin(WindowService, app.loader.config.$window || {
     theme: 'system',
     width: 1076,
     height: 653,

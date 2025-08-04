@@ -1,8 +1,7 @@
 // See the Electron documentation for details on how to use preload scripts:
 // https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
 
-import { ipcRenderer } from 'electron'
-import { contextBridge } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron'
 
 declare global {
   interface Window extends Exposed { }
@@ -10,7 +9,7 @@ declare global {
 
 export function createBridge<K extends keyof ExposedApi>(
   key: K,
-  api: ExposedApi[K]
+  api: ExposedApi[K],
 ) {
   contextBridge.exposeInMainWorld(key, api)
 }

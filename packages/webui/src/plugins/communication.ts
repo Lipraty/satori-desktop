@@ -1,5 +1,6 @@
-import { Logger, Service } from 'cordis'
-import { Context } from '@satoriapp/webui'
+import type { Context } from '@satoriapp/webui'
+import type { Logger } from 'cordis'
+import { Service } from 'cordis'
 
 declare module '@satoriapp/webui' {
   interface Events {
@@ -21,6 +22,10 @@ export class Communication extends Service {
 
   set baseUrl(url: string) {
     this.point = url
+  }
+
+  get baseUrl() {
+    return this.point
   }
 
   private async init() {
@@ -61,7 +66,7 @@ export namespace Communication {
   export interface Response<T = any> {
     id: string
     data?: T
-    error: { message: string; code?: string }
+    error: { message: string, code?: string }
   }
 
   export abstract class Adapter {

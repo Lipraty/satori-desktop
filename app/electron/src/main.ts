@@ -1,9 +1,9 @@
-import * as electorn from 'electron'
-import stared from 'electron-squirrel-startup'
-import { Context } from 'cordis'
-
 import SatoriApp from '@satoriapp/app'
 import Loader from '@satoriapp/loader'
+import { Context } from 'cordis'
+
+import * as electorn from 'electron'
+import stared from 'electron-squirrel-startup'
 
 declare module 'cordis' {
   interface Context {

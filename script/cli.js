@@ -4,16 +4,16 @@ import process from 'node:process'
 
 process.env.FORCE_COLOR = 1
 
-const isJunkOutput = (output) => {
+function isJunkOutput(output) {
   return [
-    /\d+-\d+-\d+ \d+:\d+:\d+\.\d+ Electron(?: Helper)?\[\d+:\d+] /,
-    /\[\d+:\d+\/|\d+\.\d+:ERROR:CONSOLE\(\d+\)]/,
+    /\d+-\d+-\d+ \d+:\d+:\d+\.\d+ Electron(?: Helper)?\[\d+:\d+\] /,
+    /\[\d+:\d+\/|\d+\.\d+:ERROR:CONSOLE\(\d+\)\]/,
     /ALSA lib [a-z]+\.c:\d+:\([a-z_]+\)/,
-    /\+\[IMK.*\]/
+    /\+\[IMK.*\]/,
   ].some(pattern => pattern.test(output))
 }
 
-const filterJunkOutput = (data) => {
+function filterJunkOutput(data) {
   const output = data.toString()
   if (!isJunkOutput(output)) {
     process.stdout.write(output)

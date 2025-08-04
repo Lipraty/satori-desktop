@@ -1,10 +1,11 @@
-import * as cordis from 'cordis'
-import { App, Component, createApp, defineComponent, h, inject, InjectionKey, markRaw, onScopeDispose, provide, resolveComponent } from 'vue'
+import type { App, Component, InjectionKey } from 'vue'
 import { setTheme } from '@fluentui/web-components'
+import * as cordis from 'cordis'
+import { createApp, defineComponent, h, inject, markRaw, onScopeDispose, provide, resolveComponent } from 'vue'
 
-import RouterService from './plugins/router'
 import { install } from './components'
 import { Theme } from './components/themes'
+import RouterService from './plugins/router'
 
 const rootContext = Symbol('context') as InjectionKey<Context>
 const osMap = {
@@ -50,8 +51,6 @@ export class Context extends cordis.Context {
   theme: Theme.Mode = 'light'
   token: Theme.Token = 'koishi'
 
-  private $os: keyof typeof osMap | 'unknown' = 'unknown'
-
   constructor() {
     super()
     this.app = createApp(this.component(defineComponent({
@@ -65,7 +64,7 @@ export class Context extends cordis.Context {
     this.theme = themeMedia.matches ? 'dark' : 'light';
     (this as Context).emit('internal/theme', this.theme)
     this.effect(() => {
-      themeMedia.addEventListener('change', e => {
+      themeMedia.addEventListener('change', (e) => {
         this.theme = e.matches ? 'dark' : 'light';
         (this as Context).emit('internal/theme', this.theme)
       })
@@ -79,8 +78,6 @@ export class Context extends cordis.Context {
         .mount('#app')
 
       setTheme(Theme.getTheme(this.token, this.theme))
-
-      this.$os = this.getOS()
     })
 
     this.on('internal/theme', (theme) => {
@@ -89,7 +86,7 @@ export class Context extends cordis.Context {
   }
 
   get os(): keyof typeof osMap | 'unknown' {
-    return this.$os
+    return this.getOS()
   }
 
   get versions(): Versions {
@@ -128,18 +125,20 @@ export class Context extends cordis.Context {
       const { platform } = navigator.userAgentData
       if (platform) {
         for (const [key, values] of Object.entries(osMap)) {
-          if (values.some((v) => platform.includes(v))) {
+          if (values.some(v => platform.includes(v))) {
             return key as keyof typeof osMap
           }
         }
         return 'unknown'
-      } else {
+      }
+      else {
         return 'unknown'
       }
-    } else {
+    }
+    else {
       const ua = navigator.userAgent
       for (const [key, values] of Object.entries(osMap)) {
-        if (values.some((v) => ua.includes(v))) {
+        if (values.some(v => ua.includes(v))) {
           return key as keyof typeof osMap
         }
       }

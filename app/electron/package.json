@@ -2,8 +2,8 @@
   "name": "satoriapplegacy",
   "productName": "satoriapp",
   "version": "0.0.1",
+  "packageManager": "yarn@4.4.0",
   "description": "Satori App for Desktop",
-  "main": ".vite/build/main.js",
   "author": {
     "name": "Lipraty",
     "email": "i@lonay.me"
@@ -14,6 +14,7 @@
       "email": "maiko.tan.coding@gmail.com"
     }
   ],
+  "license": "AGPL-3.0-only",
   "exports": {
     "./main": {
       "types": "./src/main/index.ts"
@@ -23,7 +24,7 @@
     },
     "./package.json": "./package.json"
   },
-  "license": "AGPL-3.0-only",
+  "main": ".vite/build/main.js",
   "bin": {
     "electron-filter": "../../script/cli.js"
   },
@@ -35,6 +36,14 @@
     "publish": "electron-forge publish",
     "lint": "eslint --ext .ts,.tsx .",
     "format": "prettier --check . "
+  },
+  "dependencies": {
+    "@satoriapp/app": "workspace:*",
+    "@satoriapp/loader": "workspace:*",
+    "@satoriapp/webui": "workspace:*",
+    "@satorijs/core": "^4.5.0",
+    "cordis": "^3.18.1",
+    "electron-squirrel-startup": "^1.0.1"
   },
   "devDependencies": {
     "@electron-forge/cli": "^7.8.0",
@@ -56,14 +65,5 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3",
     "vite": "^6.3.0"
-  },
-  "dependencies": {
-    "@satoriapp/app": "workspace:*",
-    "@satoriapp/loader": "workspace:*",
-    "@satoriapp/webui": "workspace:*",
-    "@satorijs/core": "^4.5.0",
-    "cordis": "^3.18.1",
-    "electron-squirrel-startup": "^1.0.1"
-  },
-  "packageManager": "yarn@4.4.0"
+  }
 }

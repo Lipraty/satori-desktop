@@ -1,14 +1,14 @@
+import type { Context } from 'yakumo'
+
+import type { BundleConfig } from './utils'
+
 import { resolve } from 'node:path'
 
 import * as vite from 'vite'
-
-import { Context } from 'yakumo'
-
-import { BundleConfig, ENTRY, externals, OUT_DIR } from './utils'
 import MainConfig from './configs/app'
-import RendererConfig from './configs/webui'
 import LoaderConfig from './configs/loader'
-
+import RendererConfig from './configs/webui'
+import { ENTRY, externals, OUT_DIR } from './utils'
 
 export const configMapping: Record<string, BundleConfig> = {
   '@satoriapp/app': MainConfig,
@@ -16,7 +16,7 @@ export const configMapping: Record<string, BundleConfig> = {
   '@satoriapp/loader': LoaderConfig,
 }
 
-export const bundlePackages = async (ctx: Context) => {
+export async function bundlePackages(ctx: Context) {
   const paths = ctx.yakumo.locate(ctx.yakumo.argv._).filter(path => path.startsWith('/packages'))
 
   for (const path of paths) {
@@ -49,10 +49,11 @@ export const bundlePackages = async (ctx: Context) => {
           alias: {
             // Prevent vite from parsing main/module/exports of package.json incorrectly.
             [meta.name]: resolve(root, ENTRY),
-          }
-        }
+          },
+        },
       }), config))
-    } catch (error) {
+    }
+    catch (error) {
       ctx.logger('builder').error('build %s failed %c', meta.name, error)
       continue
     }

@@ -1,19 +1,19 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "lib",
-    "types": [
-      "vite/client",
-    ],
     "lib": [
       "DOM",
       "ESNext"
-    ]
+    ],
+    "rootDir": "src",
+    "types": [
+      "vite/client"
+    ],
+    "outDir": "lib"
   },
   "include": [
     "src",
     "src/**/*.json",
     "global.d.ts"
-  ],
+  ]
 }

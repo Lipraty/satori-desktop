@@ -1,24 +1,24 @@
 {
   "extends": "@electron-toolkit/tsconfig/tsconfig.web.json",
-  "include": [
-    "src/preload.ts",
-    "src/renderer.ts",
-    "vite.*.config.ts",
-    "forge.*.config.ts",
-  ],
   "compilerOptions": {
     "composite": true,
-    "moduleResolution": "Bundler",
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "isolatedModules": true,
-    "noImplicitAny": true,
-    "types": [
-      "vite/client",
-    ],
     "lib": [
       "DOM",
       "ESNext"
     ],
-  }
+    "moduleResolution": "Bundler",
+    "resolveJsonModule": true,
+    "types": [
+      "vite/client"
+    ],
+    "noImplicitAny": true,
+    "esModuleInterop": true,
+    "isolatedModules": true
+  },
+  "include": [
+    "src/preload.ts",
+    "src/renderer.ts",
+    "vite.*.config.ts",
+    "forge.*.config.ts"
+  ]
 }

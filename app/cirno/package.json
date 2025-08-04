@@ -1,8 +1,8 @@
 {
   "name": "satoriapp-cirno",
   "version": "0.0.0",
+  "packageManager": "yarn@4.4.0",
   "description": "Satori App for Desktop",
-  "main": "./out/main/index.js",
   "author": {
     "name": "Lipraty",
     "email": "i@lonay.me"
@@ -14,11 +14,11 @@
     }
   ],
   "license": "AGPL-3.0-only",
+  "main": "./out/main/index.js",
   "bin": {
     "electron-filter": "../../script/cli.js"
   },
   "scripts": {
     "lint": "eslint --cache ."
-  },
-  "packageManager": "yarn@4.4.0"
+  }
 }

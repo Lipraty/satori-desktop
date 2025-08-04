@@ -1,6 +1,6 @@
-import { resolve } from "node:path";
+import { resolve } from 'node:path'
 
-import { defineConfig } from "vite";
+import { defineConfig } from 'vite'
 
 export default (root: string, external: string[]) => defineConfig({
   root,

@@ -1,5 +1,5 @@
-import { root } from '@satoriapp/webui'
 import type { } from './preload'
+import { root } from '@satoriapp/webui'
 
 root.start()
 

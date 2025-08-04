@@ -1,20 +1,20 @@
-<template>
-  <div class="satori-card">
-    <div class="satori-card__header">
-      <slot name="header"></slot>
-    </div>
-    <div class="satori-card__body">
-      <slot></slot>
-    </div>
-    <div class="satori-card__footer">
-      <slot name="footer"></slot>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
 
 </script>
+
+<template>
+  <div class="satori-card">
+    <div class="satori-card__header">
+      <slot name="header" />
+    </div>
+    <div class="satori-card__body">
+      <slot />
+    </div>
+    <div class="satori-card__footer">
+      <slot name="footer" />
+    </div>
+  </div>
+</template>
 
 <style lang="scss" scoped>
 .satori-card {

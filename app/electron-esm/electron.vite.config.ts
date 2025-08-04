@@ -1,4 +1,4 @@
-import { resolve } from 'path'
+import { resolve } from 'node:path'
 import { defineConfig, externalizeDepsPlugin } from 'electron-vite'
 
 import jsonImportAttributesPlugin from './vite/vite-plugin-import-attr'
@@ -11,32 +11,32 @@ export default defineConfig({
         force: true,
         minNodeVersion: 22,
         extensions: ['.json'],
-        debug: true
-      })
+        debug: true,
+      }),
     ],
     build: {
       rollupOptions: {
         output: {
-          format: 'es'
-        }
-      }
-    }
+          format: 'es',
+        },
+      },
+    },
   },
   preload: {
     plugins: [externalizeDepsPlugin()],
     build: {
       rollupOptions: {
         output: {
-          format: 'es'
-        }
-      }
-    }
+          format: 'es',
+        },
+      },
+    },
   },
   renderer: {
     resolve: {
       alias: {
-        '@renderer': resolve('src/renderer/src')
-      }
-    }
-  }
+        '@renderer': resolve('src/renderer/src'),
+      },
+    },
+  },
 })

@@ -1,16 +1,17 @@
+import type { Context } from 'cordis'
 import type * as electorn from 'electron'
-import { Context, Schema, Service } from 'cordis'
+import { } from '@cordisjs/plugin-http'
 
 import { } from '@satorijs/core'
-import { } from '@cordisjs/plugin-http'
+import { Schema, Service } from 'cordis'
+
+import * as Package from '../package.json'
 
 declare module 'cordis' {
   interface Context {
     electorn: typeof electorn
   }
 }
-
-import * as Package from '../package.json'
 
 declare module 'cordis' {
   interface Context {
@@ -28,7 +29,7 @@ class SatoriApp extends Service {
   static readonly Config: Schema<SatoriApp.Config> = Schema.object({
     port: Schema.number().default(11510),
     maxPort: Schema.number().default(11519),
-    host: Schema.string()
+    host: Schema.string(),
   })
 
   constructor(ctx: Context) {

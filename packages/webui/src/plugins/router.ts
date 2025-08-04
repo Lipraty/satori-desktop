@@ -1,8 +1,9 @@
-import { Component } from 'vue'
-import { createMemoryHistory, createRouter, createWebHashHistory } from 'vue-router'
-import { Disposable, Service } from 'cordis'
+import type { Context } from '@satoriapp/webui'
+import type { Disposable } from 'cordis'
+import type { Component } from 'vue'
+import { Service } from 'cordis'
 
-import { Context } from '@satoriapp/webui'
+import { createMemoryHistory, createRouter, createWebHashHistory } from 'vue-router'
 
 declare module '@satoriapp/webui' {
   interface Context {
@@ -32,7 +33,7 @@ export class Pager {
       path,
       name,
       component,
-      meta: { activity: this }
+      meta: { activity: this },
     }))
     ctx.$router.pages[name] = this
   }

@@ -1,4 +1,5 @@
-import { computed, defineComponent, h, PropType } from 'vue'
+import type { PropType } from 'vue'
+import { computed, defineComponent, h } from 'vue'
 
 import { icons } from './map'
 
@@ -10,11 +11,11 @@ export default defineComponent({
     name: String as PropType<IconName>,
     filled: {
       type: Boolean,
-      default: false
+      default: false,
     },
     size: {
       type: [String, Number],
-      default: 24
+      default: 24,
     },
   },
   setup(props) {
@@ -31,10 +32,10 @@ export default defineComponent({
           height: props.size,
           display: 'inline-flex',
           justifyContent: 'center',
-          alignItems: 'center'
+          alignItems: 'center',
         },
         innerHTML: iconSvg.value.replace(/(<svg[^>]*)/, (match) => {
-          return `${match} width="${props.size}" height="${props.size}"`;
+          return `${match} width="${props.size}" height="${props.size}"`
         }),
       })
     }

@@ -1,5 +1,5 @@
-import { Dict } from '@satoriapp/common'
-import { Context, ForkScope, Inject, Plugin, Schema } from 'cordis'
+import type { Dict } from '@satoriapp/common'
+import type { Context, ForkScope, Inject, Plugin, Schema } from 'cordis'
 
 export class Entry {
   public parent?: Context
@@ -29,9 +29,11 @@ export class Entry {
     if (this.fork) {
       this.fork.update(config)
       ctx.emit('loader/update', this.plugin.name, config)
-    } else {
+    }
+    else {
       this.fork = await ctx.loader.import(this.options.name, config)
-      if (!this.fork) return
+      if (!this.fork)
+        return
       ctx.emit('loader/apply', this.plugin.name, this.fork)
       ctx.loader.entryTree.set(this.id, this)
     }
@@ -51,17 +53,20 @@ export class Entry {
       ['object', 'intersect', 'tuple', 'dict', 'array'].includes(type)
 
     const mergeObject = (s: Entry.SchemaRaw, c: Dict) => {
-      const merged = { ...c };
+      const merged = { ...c }
       Object.entries(s.children || {}).forEach(([key, child]: [string, Entry.SchemaRaw]) => {
-        const existingValue = merged[key];
-        if (existingValue !== undefined && !isNestedType(child.type)) return
+        const existingValue = merged[key]
+        if (existingValue !== undefined && !isNestedType(child.type))
+          return
         if (child.meta?.default !== undefined) {
           if (existingValue === undefined) {
             merged[key] = getDefaultValue(child)
-          } else if (isNestedType(child.type)) {
+          }
+          else if (isNestedType(child.type)) {
             merged[key] = this.dictShecma(child, existingValue).bind(this)
           }
-        } else if (isNestedType(child.type)) {
+        }
+        else if (isNestedType(child.type)) {
           merged[key] = this.dictShecma(child, existingValue || {}).bind(this)
         }
       })
@@ -79,8 +84,8 @@ export class Entry {
       if (child.type === 'intersect') {
         return mergeIntersect(child, {})
       }
-      return child.meta?.default;
-    };
+      return child.meta?.default
+    }
 
     if (schema.type === 'object') {
       return mergeObject(schema, config)
@@ -95,19 +100,25 @@ export class Entry {
   private reverseSchema(schema: Schema) {
     const { type, meta } = schema
     const result: Entry.SchemaRaw = { type, meta, children: {} }
-    if (type === 'const') result.children = schema.value
-    if (type === 'transform') result.children = this.reverseSchema(schema.inner!)
+    if (type === 'const')
+      result.children = schema.value
+    if (type === 'transform')
+      result.children = this.reverseSchema(schema.inner!)
     if (type === 'object') {
-      Object.keys(schema.dict!).forEach(key => {
+      Object.keys(schema.dict!).forEach((key) => {
         result.children[key] = this.reverseSchema(schema.dict![key])
       })
-    } else if (['tuple', 'intersect', 'union'].includes(type)) {
+    }
+    else if (['tuple', 'intersect', 'union'].includes(type)) {
       result.children = schema.list!.map(this.reverseSchema.bind(this))
-    } else if (type === 'dict') {
+    }
+    else if (type === 'dict') {
       result.children = this.reverseSchema(schema.inner!)
-    } else if (type === 'array') {
+    }
+    else if (type === 'array') {
       result.children = this.reverseSchema(schema.inner!)
-    } else if (['string', 'number', 'boolean'].includes(type)) {
+    }
+    else if (['string', 'number', 'boolean'].includes(type)) {
       result.children = null
     }
     return result
@@ -129,7 +140,7 @@ export namespace Entry {
     }
   }
 
-  export type SchemaRaw = {
+  export interface SchemaRaw {
     type: Schema['type']
     meta: Schema['meta']
     children: SchemaRaw | any

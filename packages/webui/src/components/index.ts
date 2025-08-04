@@ -1,12 +1,12 @@
-import { App } from 'vue'
+import type { App } from 'vue'
 import { ButtonDefinition, FluentDesignSystem } from '@fluentui/web-components'
 
-import Root from './root.vue'
-import ViewBox from './view.vue'
-import SystemBar from './systemBar.vue'
-import Spacer from './spacer.vue'
-import Icons from './icons'
 import Card from './card.vue'
+import Icons from './icons'
+import Root from './root.vue'
+import Spacer from './spacer.vue'
+import SystemBar from './systemBar.vue'
+import ViewBox from './view.vue'
 
 export function install(app: App) {
   ButtonDefinition.define(FluentDesignSystem.registry)

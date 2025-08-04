@@ -3,17 +3,17 @@
   "compilerOptions": {
     "composite": true,
     "moduleResolution": "Bundler",
-    "strictFunctionTypes": false,
-    "noImplicitAny": true,
     "types": [
       "node",
-      "electron-vite/node",
+      "electron-vite/node"
     ],
+    "strictFunctionTypes": false,
+    "noImplicitAny": true
   },
   "include": [
     "src/main.ts",
     "src/preload.ts",
     "forge.*",
-    "vite.*.config.ts",
+    "vite.*.config.ts"
   ]
 }

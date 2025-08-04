@@ -1,3 +1,9 @@
+<script setup lang="ts">
+const props = defineProps({
+  title: String,
+})
+</script>
+
 <template>
   <div class="satori-view">
     <div v-if="title" class="satori-view-title">
@@ -12,12 +18,6 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-const props = defineProps({
-  title: String,
-})
-</script>
 
 <style lang="scss">
 * {

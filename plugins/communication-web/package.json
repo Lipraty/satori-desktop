@@ -3,16 +3,19 @@
   "version": "0.0.1",
   "description": "SAPP:WebUI Communication Adapter for HTTP/WebSocket",
   "license": "AGPL-3.0-only",
-  "main": ".lib/index.mjs",
   "exports": {
     ".": {
       "types": "./src/index.ts",
-      "require": "./lib/index.js",
-      "import": "./lib/index.mjs"
+      "import": "./lib/index.mjs",
+      "require": "./lib/index.js"
     },
     "./package.json": "./package.json"
   },
+  "main": ".lib/index.mjs",
   "dependencies": {
     "@satoriapp/webui": "workspace:*"
+  },
+  "sapp": {
+    "node": false
   }
 }

@@ -1,10 +1,10 @@
-import { BrowserWindow, ipcMain, webContents } from 'electron'
-
-import type { IpcListener, IpcEventKeys, IpcHandlerKeys, IpcEvents, IpcInvokable } from '@satoriapp/common'
-import { Service } from 'cordis'
+import type { IpcEventKeys, IpcEvents, IpcHandlerKeys, IpcInvokable, IpcListener } from '@satoriapp/common'
+import type { BrowserWindow } from 'electron'
 
 import type { Context } from '../../../packages/app/src'
+import { Service } from 'cordis'
 
+import { ipcMain, webContents } from 'electron'
 
 declare module 'cordis' {
   interface Context {
@@ -40,8 +40,8 @@ export class IpcService extends Service {
 
   /**
    * handle the IPC calling function message from the renderer process
-   * @param channel 
-   * @param listener 
+   * @param channel
+   * @param listener
    */
   handler<K extends IpcHandlerKeys>(channel: K, listener: IpcInvokable<K>) {
     ipcMain.handle(channel, listener)
@@ -63,7 +63,7 @@ export class IpcService extends Service {
    * @param args message payload
    */
   sendAll<K extends IpcEventKeys>(channel: K, ...args: Parameters<IpcEvents[K]>) {
-    webContents.getAllWebContents().forEach(content => {
+    webContents.getAllWebContents().forEach((content) => {
       content.send(channel, ...args)
     })
   }

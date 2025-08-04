@@ -1,14 +1,14 @@
 import type { ConfigEnv, UserConfig } from 'vite'
-import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import { defineConfig } from 'vite'
 
-import { pluginExposeRenderer } from './vite.base.config';
+import { pluginExposeRenderer } from './vite.base.config'
 
 // https://vitejs.dev/config
 export default defineConfig((env) => {
-  const forgeEnv = env as ConfigEnv<'renderer'>;
-  const { root, mode, forgeConfigSelf } = forgeEnv;
-  const name = forgeConfigSelf.name ?? '';
+  const forgeEnv = env as ConfigEnv<'renderer'>
+  const { root, mode, forgeConfigSelf } = forgeEnv
+  const name = forgeConfigSelf.name ?? ''
 
   return {
     root,
@@ -22,7 +22,7 @@ export default defineConfig((env) => {
           format: 'iife',
           entryFileNames: '[name].js',
           chunkFileNames: '[name].js',
-          assetFileNames: '[name].[ext]'
+          assetFileNames: '[name].[ext]',
         },
         external: [
           'electron',
@@ -34,9 +34,9 @@ export default defineConfig((env) => {
           'vue-router',
           'cordis',
           '@cordisjs/logger',
-          'reggol'
-        ]
-      }
+          'reggol',
+        ],
+      },
     },
     plugins: [pluginExposeRenderer(name), vue()],
     resolve: {
@@ -50,5 +50,5 @@ export default defineConfig((env) => {
       },
     },
     clearScreen: false,
-  } as UserConfig;
-});
+  } as UserConfig
+})

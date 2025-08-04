@@ -1,6 +1,6 @@
-import { defineConfig } from 'vite'
 import { builtinModules } from 'node:module'
-import { resolve } from 'path'
+import { resolve } from 'node:path'
+import { defineConfig } from 'vite'
 
 export default defineConfig({
   build: {
@@ -8,7 +8,7 @@ export default defineConfig({
       entry: resolve(__dirname, 'src/index.ts'),
       name: 'satoriYakumo',
       fileName: 'index',
-      formats: ['es', 'cjs']
+      formats: ['es', 'cjs'],
     },
     outDir: 'lib',
     emptyOutDir: true,
@@ -20,8 +20,8 @@ export default defineConfig({
         '@vitejs/plugin-vue',
         'vue',
         'yakumo',
-        ...builtinModules.map((m) => [m, `node:${m}`]).flat(),
-      ]
-    }
-  }
+        ...builtinModules.map(m => [m, `node:${m}`]).flat(),
+      ],
+    },
+  },
 })

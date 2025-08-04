@@ -1,3 +1,9 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+
+const messaged = ref(false)
+</script>
+
 <template>
   <satori-view style="width: 320px;">
     <div class="satori-mesasge-conversation__header">
@@ -19,13 +25,6 @@
     </div>
   </satori-view>
 </template>
-
-<script setup lang="ts">
-import { ref } from 'vue'
-
-
-const messaged = ref(false)
-</script>
 
 <style lang="scss" scoped>
 .satori-mesasge__skeleton {

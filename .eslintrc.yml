@@ -31,11 +31,11 @@ rules:
         - \.s?css$
   import/order:
     - error
-    - groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index']
-      newlines-between: 'always'
-  '@typescript-eslint/no-explicit-any': 'off'
-  '@typescript-eslint/no-namespace': 'off'
-  '@typescript-eslint/no-unsafe-declaration-merging': 'off'
+    - groups: [builtin, external, internal, parent, sibling, index]
+      newlines-between: always
+  '@typescript-eslint/no-explicit-any': off
+  '@typescript-eslint/no-namespace': off
+  '@typescript-eslint/no-unsafe-declaration-merging': off
   '@typescript-eslint/no-unused-vars':
     - 1
     - argsIgnorePattern: '^_|^config$'

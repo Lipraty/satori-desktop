@@ -1,9 +1,9 @@
-import { resolve } from 'node:path'
+import type { BundleConfig } from '../utils'
 
-import { defineConfig } from 'vite'
+import { resolve } from 'node:path'
 import vue from '@vitejs/plugin-vue'
 
-import { BundleConfig } from '../utils'
+import { defineConfig } from 'vite'
 import { injectCssImports } from '../plugins/injectCssImports'
 
 export default {
@@ -12,9 +12,9 @@ export default {
       vue({
         template: {
           compilerOptions: {
-            isCustomElement: (tag) => tag.includes('fluent-')
-          }
-        }
+            isCustomElement: tag => tag.includes('fluent-'),
+          },
+        },
       }),
       injectCssImports(),
     ],
@@ -35,8 +35,8 @@ export default {
           preserveModulesRoot: 'src',
           assetFileNames: (assetInfo) => {
             return assetInfo.name || '[name]-[hash].[ext]'
-          }
-        }
+          },
+        },
       },
       cssCodeSplit: true,
     },
@@ -54,10 +54,10 @@ export default {
         },
         sass: {
           api: 'modern-compiler',
-        }
+        },
       },
       devSourcemap: true,
     },
     clearScreen: true,
-  })
+  }),
 } as BundleConfig

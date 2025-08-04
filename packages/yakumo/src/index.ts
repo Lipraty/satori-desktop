@@ -1,7 +1,7 @@
-import { Context } from 'yakumo'
+import type { Context } from 'yakumo'
 
-import { bundlePlugins } from './plugins'
 import { bundlePackages } from './packages'
+import { bundlePlugins } from './plugins'
 
 export const inject = ['yakumo']
 

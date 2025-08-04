@@ -1,12 +1,12 @@
-import { resolve } from 'node:path'
+import type { CordisConfig, Dict } from '@satoriapp/common'
+import type { Context, ForkScope, Inject, Plugin, Schema } from 'cordis'
+import type { Entry } from './entry'
+
 import { access } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 
-import { Context, Inject, Schema, Plugin, ForkScope } from 'cordis'
-import { Dict, CordisConfig } from '@satoriapp/common'
-
+import { resolve } from 'node:path'
 import { ImportTree } from './import'
-import { Entry } from './entry'
 
 declare module 'cordis' {
   interface Events {
@@ -60,7 +60,8 @@ class Loader extends ImportTree {
         return await import(path)
       else
         return createRequire(resolve(this.ctx.dataDir, 'external'))(path)
-    } catch (_e) {
+    }
+    catch (_e) {
       this.ctx.logger('loader').error('failed to access %s', path)
       return undefined
     }

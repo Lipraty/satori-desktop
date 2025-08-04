@@ -1,5 +1,5 @@
-import { Dict } from 'cosmokit'
 import type { } from 'cordis'
+import type { Dict } from 'cosmokit'
 
 declare module 'cordis' {
   interface Context {
