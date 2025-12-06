@@ -110,3 +110,5 @@ yarn.lock
 # Loader plugins
 
 packages/loader/src/plugins.ts
+
+legacy

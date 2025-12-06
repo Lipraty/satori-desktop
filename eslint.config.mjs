@@ -4,6 +4,7 @@ export default antfu({
   typescript: {
     overrides: {
       'ts/no-namespace': 'off',
+      'ts/consistent-type-imports': 'off',
     },
   },
 })

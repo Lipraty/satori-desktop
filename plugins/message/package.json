@@ -1,7 +1,7 @@
 {
-  "name": "@satoriapp/message-service",
+  "name": "@satoriapp/plugin-message",
   "version": "0.0.1",
-  "description": "SAPP:Message service",
+  "description": "SAPP: Message Service",
   "license": "AGPL-3.0-only",
   "exports": {
     ".": {
@@ -11,9 +11,12 @@
     },
     "./package.json": "./package.json"
   },
-  "main": ".lib/index.mjs",
+  "main": "./lib/index.mjs",
   "dependencies": {
-    "cordis": "^3.18.1",
-    "cosmokit": "^1.8.0"
+    "@satoriapp/webui": "workspace:*",
+    "electron": "35.1.5"
+  },
+  "sapp": {
+    "node": true
   }
 }
