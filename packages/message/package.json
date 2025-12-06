@@ -1,0 +1,19 @@
+{
+  "name": "@satoriapp/message-service",
+  "version": "0.0.1",
+  "description": "SAPP:Message service",
+  "license": "AGPL-3.0-only",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./lib/index.mjs",
+      "require": "./lib/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": ".lib/index.mjs",
+  "dependencies": {
+    "cordis": "^3.18.1",
+    "cosmokit": "^1.8.0"
+  }
+}
