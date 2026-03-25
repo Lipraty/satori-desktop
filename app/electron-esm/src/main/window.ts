@@ -1,13 +1,14 @@
 import type { Context } from 'cordis'
 import process from 'node:process'
-import { APP_NAME } from '@satoriapp/app'
 import { Schema, Service } from 'cordis'
 
 import * as electron from 'electron'
 
+const APP_NAME = 'Satori App for Desktop'
+
 declare module 'cordis' {
   interface Events {
-    'internal/window': (type: 'create' | 'close', name: string, ...args: any[]) => void
+    'internal/window': (type: 'create' | 'close', name: string, window?: electron.BrowserWindow) => void
   }
 }
 

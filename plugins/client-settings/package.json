@@ -1,0 +1,27 @@
+{
+  "name": "@satoriapp/plugin-client-settings",
+  "version": "0.0.1",
+  "description": "SAPP: settings client plugin",
+  "license": "AGPL-3.0-only",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./lib/index.mjs",
+      "require": "./lib/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./lib/index.mjs",
+  "dependencies": {
+    "@satoriapp/link": "workspace:*",
+    "@satoriapp/state": "workspace:*",
+    "cordis": "3.18.1"
+  },
+  "peerDependencies": {
+    "@satoriapp/webui": "workspace:*",
+    "vue": "^3.5.0"
+  },
+  "sapp": {
+    "node": true
+  }
+}

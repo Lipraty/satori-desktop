@@ -1,11 +1,13 @@
 import { resolve } from 'node:path'
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
-import { APP_VERSION } from '@satoriapp/app'
-import Loader from '@satoriapp/loader'
-import { Context } from 'cordis'
+import { ElectronLoader } from '@satoriapp/electron-loader'
+import SatoriAdapter from '@satorijs/adapter-satori'
+import { Context, Logger } from 'cordis'
 import * as electorn from 'electron'
 import started from 'electron-squirrel-startup'
+
+Logger.levels.base = 3
 
 import icon from '../../resources/icon.png?asset'
 import { plugins } from './internals'
@@ -16,6 +18,7 @@ declare module 'cordis' {
     app: electorn.App
     $version: string
     $env: { [key: string]: string }
+    loaderRuntime: ElectronLoader<Context>
   }
 }
 
@@ -27,6 +30,8 @@ if (started) {
 }
 
 const app = new Context()
+const loader = new ElectronLoader<Context>(app)
+app.provide('loaderRuntime', loader, true)
 
 app.provide('satori', undefined, true)
 app.provide('bots', [], true)
@@ -37,17 +42,34 @@ app.set('$env', {
   MAIN_PROD_FILE: fileURLToPath(new URL('../renderer/index.html', import.meta.url)),
   PRELOAD_PATH: fileURLToPath(new URL('../preload/index.mjs', import.meta.url)),
 })
-app.set('$version', APP_VERSION)
+app.set('$version', '0.1.0')
 
-app.dataDir = resolve(electorn.app.getPath('home'), '.sapp')
-app.plugin(Loader)
-app.inject(['loader', 'app'], (ctx) => {
-  ctx.loader._mixins(plugins)
-  ctx.loader.init()
-})
+loader.registerMany(plugins.map(item => [{
+  name: item.name,
+  requires: item.meta?.service?.required,
+  provides: item.meta?.service?.implements,
+  capabilities: item.meta?.service?.optional,
+  setup: (ctx, config) => {
+    return ctx.plugin(item.plugin, config)
+  },
+}, undefined]))
+
+loader.register(
+  { name: 'adapter-satori', setup: (ctx, config) => ctx.plugin(SatoriAdapter, config) },
+  undefined,
+  'internal',
+  '@satorijs/adapter-satori',
+  'default',
+)
+
+const loaderConfigPath = resolve(electorn.app.getPath('home'), '.satori', 'config.json')
+const externalPluginRoot = resolve(process.resourcesPath, 'plugin')
 
 app.on('dispose', () => {
   isQuiting = true
+  void loader.stop().catch((error) => {
+    app.logger('loader').warn('failed to stop runtime plugins: %s', error instanceof Error ? error.message : String(error))
+  })
   electorn.app.quit()
 })
 
@@ -64,11 +86,17 @@ electorn.app.on('before-quit', (e) => {
   }
 })
 
-electorn.app.on('ready', () => {
-  app.plugin(WindowService, app.loader.config.$window || {
+electorn.app.on('ready', async () => {
+  await loader.boot({
+    configPath: loaderConfigPath,
+    externalPluginRoot,
+  })
+
+  const rootConfig = loader.getRootConfig()
+  app.plugin(WindowService, (rootConfig.window ?? rootConfig.$window ?? {
     theme: 'system',
     width: 1076,
     height: 653,
-  })
+  }) as WindowService.Config)
   app.start()
 })

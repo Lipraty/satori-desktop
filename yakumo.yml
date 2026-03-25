@@ -2,16 +2,17 @@
   name: yakumo
   config:
     exclude:
-      - app/electron
       - app/electron-esm
       - packages/yakumo
     pipeline:
       dev:
         - plugins
+        - client
         - bundle
         - tsc
       prebuild:
         - plugins
+        - client
       pkgbuild:
         - bundle
 - name: yakumo-tsc

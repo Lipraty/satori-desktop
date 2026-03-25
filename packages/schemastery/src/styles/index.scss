@@ -1,0 +1,83 @@
+@use './menu.scss';
+
+.k-schema-item {
+  position: relative;
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid var(--colorNeutralStroke2);
+  transition: var(--color-transition);
+
+  &:first-child, :not(.k-schema-item):not(.k-schema-group) + & {
+    border-top: 1px solid var(--colorNeutralStroke2);
+  }
+
+  & + h2 {
+    margin-top: 2rem;
+  }
+
+  &:hover {
+    background-color: var(--colorNeutralBackground2);
+  }
+
+  .k-schema-right fluent-dropdown {
+    width: 12rem;
+  }
+}
+
+.k-schema-header {
+  font-size: 1.25rem;
+  margin: 1rem 0;
+
+  &:not(:first-child) {
+    margin-top: 2rem;
+  }
+}
+
+.k-schema-group {
+  position: relative;
+
+  &:empty {
+    border-bottom: none;
+  }
+
+  > :first-child {
+    border-top: none;
+  }
+}
+
+.k-schema-table {
+  fluent-text-input, fluent-text-area {
+    width: 100%;
+  }
+
+  &-cell-input {
+    min-width: 6rem;
+  }
+
+  &-cell-input-number {
+    min-width: 6rem;
+  }
+
+  &-cell-select {
+    min-width: 6rem;
+  }
+
+  fluent-text-input::part(root) {
+    box-shadow: none !important;
+  }
+
+  fluent-dropdown::part(control) {
+    box-shadow: none !important;
+  }
+}
+
+fluent-text-input.invalid::part(root),
+fluent-text-area.invalid::part(control) {
+  box-shadow: 0 0 0 1px var(--colorPaletteRedBackground3) inset;
+}
+
+.k-schema-edit-dialog {
+  fluent-dialog-body {
+    display: flex;
+    justify-content: space-between;
+  }
+}

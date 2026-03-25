@@ -1,0 +1,20 @@
+{
+  "name": "@satoriapp/adapter",
+  "version": "0.0.1",
+  "description": "SAPP: bundled Satori adapters and config manifests",
+  "license": "AGPL-3.0-only",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./lib/index.mjs",
+      "require": "./lib/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./lib/index.mjs",
+  "dependencies": {
+    "@satorijs/adapter-satori": "^1.5.1",
+    "@satorijs/core": "^4.5.0",
+    "schemastery": "^3.16.0"
+  }
+}

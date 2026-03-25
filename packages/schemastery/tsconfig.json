@@ -1,0 +1,17 @@
+{
+  "extends": "../../tsconfig.base",
+  "compilerOptions": {
+    "jsx": "preserve",
+    "rootDir": "src",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "types": [
+      "vite/client"
+    ],
+    "strictNullChecks": false,
+    "noImplicitAny": true
+  },
+  "include": [
+    "src"
+  ]
+}

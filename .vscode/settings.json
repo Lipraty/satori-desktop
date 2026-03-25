@@ -60,5 +60,10 @@
     "scss",
     "pcss",
     "postcss"
-  ]
+  ],
+  "chat.tools.terminal.autoApprove": {
+    "yarn workspace": true,
+    "yarn install": true,
+    "printf": true
+  }
 }

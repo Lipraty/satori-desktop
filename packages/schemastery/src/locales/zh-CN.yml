@@ -1,0 +1,31 @@
+title: 基础设置
+initial: 撤销更改
+default: 恢复默认值
+collapse: 折叠子项
+expand: 展开以编辑
+edit:
+  json: 编辑 JSON
+  invalid: 无效的配置。
+  save: 保存更改
+  copy: 复制到剪贴板
+  copied: 已复制
+badge:
+  deprecated: 已废弃
+  experimental: 实验性
+entry:
+  key: 键
+  value: 值
+  add-item: 添加项目
+  del-item: 删除项目
+  add-row: 添加行
+  del-row: 删除行
+  move-up: 上移项目
+  move-down: 下移项目
+  insert-before: 在上方插入
+  insert-after: 在下方插入
+select:
+  all: 全部选中
+  none: 清空选择
+errors:
+  duplicate-key: 键名重复
+  regexp-not-matched: 未能匹配正则表达式 {0}

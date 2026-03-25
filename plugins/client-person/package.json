@@ -1,0 +1,7 @@
+{
+  "name": "@satoriapp/plugin-client-person",
+  "version": "0.0.1",
+  "description": "SAPP: person client plugin",
+  "license": "AGPL-3.0-only",
+  "sapp": {}
+}

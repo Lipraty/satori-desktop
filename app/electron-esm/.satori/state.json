@@ -1,0 +1,57 @@
+{
+  "namespaces": {
+    "app": {
+      "theme": "dark",
+      "locale": "zh-CN",
+      "fontSize": "medium",
+      "window": {
+        "width": 1076,
+        "height": 653,
+        "x": 0,
+        "y": 0
+      },
+      "sidebar": {
+        "collapsed": false,
+        "width": 280
+      },
+      "messageInput": {
+        "sendKey": "Enter"
+      },
+      "pluginConfigs": {
+        "settings": {
+          "plugins": {
+            "app": {
+              "locale": "zh-CN",
+              "theme": "dark",
+              "autoLaunch": false
+            },
+            "message": {
+              "compactMode": false,
+              "previewLimit": 50
+            },
+            "@satoriapp/plugin-message": {
+              "compactMode": false,
+              "previewLimit": 50
+            }
+          }
+        }
+      }
+    },
+    "conversation": {
+      "currentId": "llonebot:private:1943181704",
+      "list": [
+        {
+          "type": "channel",
+          "opened": true,
+          "pinned": false,
+          "platform": "llonebot",
+          "channelId": "private:1943181704",
+          "unreadCount": 0,
+          "mute": false
+        }
+      ],
+      "drafts": {}
+    }
+  },
+  "updatedAt": 1774165870527
+}

@@ -26,7 +26,7 @@ export namespace Pager {
 export class Pager {
   private fibers: Disposable[] = []
 
-  constructor(private ctx: Context, private options: Pager.Options) {
+  constructor(private ctx: Context, public options: Pager.Options) {
     options.position ??= 'top'
     const { path, name, component } = options
     this.fibers.push(this.ctx.$router.router.addRoute({
