@@ -73,6 +73,7 @@ export class AppMessageService extends Service {
   static readonly inject: Record<string, { required: boolean }> = {
     stater: { required: true },
     database: { required: false },
+    satori: { required: false },
   }
 
   private readonly channels = new Map<string, ChannelRuntime>()
@@ -168,10 +169,15 @@ export class AppMessageService extends Service {
   }
 
   async create(input: CreateMessageInput): Promise<AppMessage> {
-    return this.ingest({
+    const message = await this.ingest({
       ...input,
       localOnly: input.localOnly ?? true,
     })
+
+    if (input.localOnly === true)
+      return message
+    await this.sendToPlatform(message, input)
+    return message
   }
 
   async receive(input: CreateMessageInput): Promise<AppMessage> {
@@ -592,6 +598,28 @@ export class AppMessageService extends Service {
     this.logger.warn('%s failed: %s', stage, message)
   }
 
+  private async sendToPlatform(message: AppMessage, input: CreateMessageInput): Promise<void> {
+    const bot = this.ctx.bots?.find(b => b.platform === input.platform)
+    if (!bot) {
+      this.logger.warn('no bot for platform=%s, message stays local', input.platform)
+      return
+    }
+    try {
+      const sent = await bot.createMessage(input.channelId, input.content ?? '')
+      if (sent?.[0]?.id) {
+        message.id = sent[0].id
+        message.localOnly = false
+        this.messageIdMap.set(
+          this.remoteMessageKey(message.platform, message.channelId, message.id),
+          message.seq,
+        )
+      }
+    }
+    catch (error) {
+      this.handleError('send-to-platform', error)
+    }
+  }
+
   private markDegraded(reason: string): void {
     if (this.degraded)
       return
@@ -835,25 +863,22 @@ export class AppMessageService extends Service {
 
     await this.projectSessionResources(session)
 
-    const s = session as any
-
     if (type === 'message') {
-      const message = s.message || {}
-      const timestamp = Number(message.createdAt || session.timestamp || Date.now())
+      const timestamp = Number(session.event.message?.createdAt || session.timestamp || Date.now())
       await this.receive({
-        id: message.id?.toString(),
+        id: session.messageId?.toString(),
         platform,
         channelId,
         timestamp,
-        content: this.toMessageContent(message.content),
+        content: session.content,
         localOnly: false,
-        conversationType: this.toConversationType(s.channel?.type),
+        conversationType: this.toConversationType(session.event.channel?.type),
       })
       return
     }
 
     if (type === 'message-deleted') {
-      const messageId = s.message?.id?.toString()
+      const messageId = session.messageId?.toString()
       if (!messageId)
         return
       const remoteKey = this.remoteMessageKey(platform, channelId, messageId)
@@ -868,23 +893,15 @@ export class AppMessageService extends Service {
       platform,
       channelId,
       timestamp: Number(session.timestamp || Date.now()),
-      content: this.toMessageContent(session.content),
+      content: session.content,
       localOnly: false,
       isEvent: true,
       eventType: type,
-      conversationType: this.toConversationType(s.channel?.type),
+      conversationType: this.toConversationType(session.event.channel?.type),
       payload: {
         sessionType: type,
       },
     })
-  }
-
-  private toMessageContent(content: unknown): string | undefined {
-    if (content == null)
-      return undefined
-    if (typeof content === 'string')
-      return content
-    return String(content)
   }
 
   private toConversationType(channelType: unknown): 'channel' | 'group' | 'private' {

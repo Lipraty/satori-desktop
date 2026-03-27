@@ -15,10 +15,10 @@ defineOptions({
 })
 
 const props = defineProps({
-  schema: {} as PropType<Schema>,
-  initial: {} as PropType<any>,
-  modelValue: {} as PropType<any>,
-  extra: {} as PropType<any>,
+  schema: { type: Object as PropType<Schema> },
+  initial: { type: Object as PropType<any> },
+  modelValue: { type: Object as PropType<any> },
+  extra: { type: Object as PropType<any> },
   disabled: Boolean,
   branch: Boolean,
   prefix: { type: String, default: '' },

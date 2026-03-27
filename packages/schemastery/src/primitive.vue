@@ -9,7 +9,7 @@ import zhCN from './locales/zh-CN.yml'
 import enUS from './locales/en-US.yml'
 
 const props = defineProps({
-  schema: {} as PropType<Schema>,
+  schema: { type: Object as PropType<Schema> },
   modelValue: {},
   disabled: Boolean,
   minimal: Boolean,

@@ -10,11 +10,11 @@ import zhCN from '../locales/zh-CN.yml'
 import enUS from '../locales/en-US.yml'
 
 const props = defineProps({
-  schema: {} as PropType<Schema>,
-  modelValue: {} as PropType<{}>,
-  disabled: {} as PropType<boolean>,
-  prefix: {} as PropType<string>,
-  initial: {} as PropType<{}>,
+  schema: { type: Object as PropType<Schema> },
+  modelValue: { type: Object as PropType<{}> },
+  disabled: { type: Object as PropType<boolean> },
+  prefix: { type: Object as PropType<string> },
+  initial: { type: Object as PropType<{}> },
 })
 
 defineEmits(['update:modelValue'])

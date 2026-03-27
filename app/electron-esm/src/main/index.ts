@@ -7,11 +7,11 @@ import { Context, Logger } from 'cordis'
 import * as electorn from 'electron'
 import started from 'electron-squirrel-startup'
 
-Logger.levels.base = 3
-
 import icon from '../../resources/icon.png?asset'
 import { plugins } from './internals'
 import WindowService from './window'
+
+Logger.levels.base = 3
 
 declare module 'cordis' {
   interface Context {

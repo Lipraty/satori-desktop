@@ -12,14 +12,14 @@
     "./package.json": "./package.json"
   },
   "main": "./lib/index.mjs",
+  "peerDependencies": {
+    "@satoriapp/webui": "workspace:*",
+    "vue": "^3.5.0"
+  },
   "dependencies": {
     "@satoriapp/electron-loader": "workspace:*",
     "@satoriapp/link": "workspace:*",
     "cordis": "3.18.1"
-  },
-  "peerDependencies": {
-    "@satoriapp/webui": "workspace:*",
-    "vue": "^3.5.0"
   },
   "sapp": {
     "node": true

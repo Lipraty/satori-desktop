@@ -8,11 +8,11 @@ import enUS from '../locales/en-US.yml'
 import { IconSquareCheck, IconSquareEmpty } from '../icons'
 
 defineProps({
-  schema: {} as PropType<Schema>,
-  modelValue: {} as PropType<number>,
-  disabled: {} as PropType<boolean>,
-  prefix: {} as PropType<string>,
-  initial: {} as PropType<{}>,
+  schema: { type: Object as PropType<Schema> },
+  modelValue: { type: Object as PropType<number> },
+  disabled: { type: Object as PropType<boolean> },
+  prefix: { type: Object as PropType<string> },
+  initial: { type: Object as PropType<{}> },
 })
 
 defineEmits(['update:modelValue'])

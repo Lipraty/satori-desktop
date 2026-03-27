@@ -2,7 +2,7 @@ import { onUnmounted, shallowReactive } from 'vue'
 import type { Context } from '@satoriapp/webui'
 import type { AppMessage } from '@satoriapp/plugin-message'
 
-interface ClientChannel { messages: ClientMessage[]; loading: boolean }
+interface ClientChannel { messages: ClientMessage[], loading: boolean }
 interface ClientMessage extends Omit<AppMessage, 'seq'> { seq: bigint }
 type SerializedMsg = Omit<AppMessage, 'seq'> & { seq: string }
 

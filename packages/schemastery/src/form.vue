@@ -7,7 +7,7 @@ import enUS from './locales/en-US.yml'
 import type form from '.'
 
 const props = defineProps({
-  schema: {} as PropType<Schema>,
+  schema: { type: Object as PropType<Schema> },
   initial: {},
   modelValue: {},
   disabled: Boolean,

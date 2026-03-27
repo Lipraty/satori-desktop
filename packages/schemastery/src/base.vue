@@ -7,13 +7,13 @@ import zhCN from './locales/zh-CN.yml'
 import enUS from './locales/en-US.yml'
 
 const props = defineProps({
-  schema: {} as PropType<Schema>,
-  modelValue: {} as PropType<{}>,
-  disabled: {} as PropType<boolean>,
-  prefix: {} as PropType<string>,
-  initial: {} as PropType<{}>,
-  extra: {} as PropType<any>,
-  collapsible: {} as PropType<{ initial: boolean }>,
+  schema: { type: Object as PropType<Schema> },
+  modelValue: { type: Object as PropType<{}> },
+  disabled: { type: Object as PropType<boolean> },
+  prefix: { type: Object as PropType<string> },
+  initial: { type: Object as PropType<{}> },
+  extra: { type: Object as PropType<any> },
+  collapsible: { type: Object as PropType<{ initial: boolean }> },
 })
 
 defineEmits(['update:modelValue'])

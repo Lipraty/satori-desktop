@@ -4,11 +4,11 @@ import { Schema, useModel } from '../utils'
 import SchemaBase from '../base.vue'
 
 const props = defineProps({
-  schema: {} as PropType<Schema>,
-  modelValue: {} as PropType<string>,
-  disabled: {} as PropType<boolean>,
-  prefix: {} as PropType<string>,
-  initial: {} as PropType<{}>,
+  schema: { type: Object as PropType<Schema> },
+  modelValue: { type: Object as PropType<string> },
+  disabled: { type: Object as PropType<boolean> },
+  prefix: { type: Object as PropType<string> },
+  initial: { type: Object as PropType<{}> },
 })
 
 defineEmits(['update:modelValue'])
