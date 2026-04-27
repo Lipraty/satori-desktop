@@ -107,6 +107,7 @@ export interface CreateMessageInput {
   id?: string
   platform: string
   channelId: string
+  selfId?: string
   timestamp?: number
   content?: string
   syncFlag?: 0 | 1 | 2 | 3

@@ -1,9 +1,7 @@
 import { Link } from '@satoriapp/link'
 import { Context } from 'cordis'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { IpcClientAdapter } from '../src/index.js'
-
-// ─── Mock ipcRenderer ─────────────────────────────────────────────────────────
+import { LinkIpcClient } from '../src/index.js'
 
 type IpcListener = (...args: unknown[]) => void
 
@@ -13,9 +11,10 @@ const mockIpc = {
   removeListener: vi.fn<(ch: string, fn: IpcListener) => void>(),
 }
 
-function makeAdapter() {
+function makeLink() {
   const ctx = new Context()
-  return { ctx, adapter: new IpcClientAdapter(ctx) }
+  const link = new LinkIpcClient(ctx)
+  return { ctx, link }
 }
 
 beforeEach(() => {
@@ -27,117 +26,110 @@ afterEach(() => {
   delete (globalThis as Record<string, unknown>).electron
 })
 
-// ─── Tests ────────────────────────────────────────────────────────────────────
-
-describe('ipcClientAdapter — invoke()', () => {
+describe('linkIpcClient — action() invoke', () => {
   it('calls ipcRenderer.invoke with the correct channel and payload', async () => {
-    const { adapter } = makeAdapter()
-    mockIpc.invoke.mockResolvedValueOnce({ pong: true })
+    const { link } = makeLink()
+    mockIpc.invoke.mockResolvedValueOnce({ data: { pong: true } })
 
-    const res = await adapter.invoke('ping', { ts: 1 })
+    const result = await link.action('ping', { ts: 1 })
 
-    expect(mockIpc.invoke).toHaveBeenCalledWith('satori:ping', { ts: 1 })
-    expect(res.data).toEqual({ pong: true })
-    expect(res.error).toBeUndefined()
+    expect(mockIpc.invoke).toHaveBeenCalledWith('sapp:ping', { ts: 1 })
+    expect(result).toEqual({ pong: true })
   })
 
   it('normalises path with satori: prefix', async () => {
-    const { adapter } = makeAdapter()
-    mockIpc.invoke.mockResolvedValueOnce({})
+    const { link } = makeLink()
+    mockIpc.invoke.mockResolvedValueOnce({ data: {} })
 
-    await adapter.invoke('message.list', {})
-    expect(mockIpc.invoke).toHaveBeenCalledWith('satori:message.list', {})
+    await link.action('message.list', {})
+    expect(mockIpc.invoke).toHaveBeenCalledWith('sapp:message.list', {})
   })
 
   it('strips leading slash from path', async () => {
-    const { adapter } = makeAdapter()
-    mockIpc.invoke.mockResolvedValueOnce({})
+    const { link } = makeLink()
+    mockIpc.invoke.mockResolvedValueOnce({ data: {} })
 
-    await adapter.invoke('/ping', {})
-    expect(mockIpc.invoke).toHaveBeenCalledWith('satori:ping', {})
+    await link.action('/ping', {})
+    expect(mockIpc.invoke).toHaveBeenCalledWith('sapp:ping', {})
   })
 
-  it('returns ENOSYS when ipcRenderer is unavailable', async () => {
+  it('throws ENOSYS when ipcRenderer is unavailable', async () => {
     delete (globalThis as Record<string, unknown>).electron
-    const { adapter } = makeAdapter()
+    const { link } = makeLink()
 
-    const res = await adapter.invoke('ping')
-    expect(res.error?.code).toBe(Link.ErrorCode.ENOSYS)
+    await expect(link.action('ping')).rejects.toMatchObject({ code: Link.ErrorCode.ENOSYS })
   })
 
-  it('returns EIPC on ipcRenderer.invoke rejection', async () => {
-    const { adapter } = makeAdapter()
+  it('throws EIPC on ipcRenderer.invoke rejection', async () => {
+    const { link } = makeLink()
     mockIpc.invoke.mockRejectedValueOnce(new Error('IPC error'))
 
-    const res = await adapter.invoke('ping')
-    expect(res.error?.code).toBe(Link.ErrorCode.EIPC)
-    expect(res.error?.message).toBe('IPC error')
+    await expect(link.action('ping')).rejects.toMatchObject({
+      code: Link.ErrorCode.EIPC,
+      message: 'IPC error',
+    })
   })
 
-  it('returns ETIMEOUT when invoke hangs past ACTION_TIMEOUT_MS', async () => {
+  it('throws ETIMEOUT when invoke hangs past ACTION_TIMEOUT_MS', async () => {
     vi.useFakeTimers()
-    const { adapter } = makeAdapter()
-    mockIpc.invoke.mockImplementationOnce(() => new Promise(() => {})) // never resolves
+    const { link } = makeLink()
+    mockIpc.invoke.mockImplementationOnce(() => new Promise(() => {}))
 
-    const invokePromise = adapter.invoke('slow')
+    const invokePromise = link.action('slow')
     vi.advanceTimersByTime(16_000)
-    const res = await invokePromise
-
-    expect(res.error?.code).toBe(Link.ErrorCode.ETIMEOUT)
+    await expect(invokePromise).rejects.toMatchObject({ code: Link.ErrorCode.ETIMEOUT })
     vi.useRealTimers()
   })
 })
 
-describe('ipcClientAdapter — subscribe()', () => {
+describe('linkIpcClient — on() subscribe', () => {
   it('registers a single ipcRenderer.on per event channel', () => {
-    const { adapter } = makeAdapter()
-    const listenerA = vi.fn()
-    const listenerB = vi.fn()
+    const { link } = makeLink()
 
-    adapter.subscribe('message.created', listenerA)
-    adapter.subscribe('message.created', listenerB)
+    link.on('message.created', vi.fn())
+    link.on('message.created', vi.fn())
 
     expect(mockIpc.on).toHaveBeenCalledTimes(1)
-    expect(mockIpc.on).toHaveBeenCalledWith('satori:message.created', expect.any(Function))
+    expect(mockIpc.on).toHaveBeenCalledWith('sapp:message.created', expect.any(Function))
   })
 
   it('delivers pushed event to all subscribers', () => {
-    const { adapter } = makeAdapter()
+    const { link } = makeLink()
     const listenerA = vi.fn()
     const listenerB = vi.fn()
 
-    adapter.subscribe('message.created', listenerA)
-    adapter.subscribe('message.created', listenerB)
+    link.on('message.created', listenerA)
+    link.on('message.created', listenerB)
 
     const [, wrappedListener] = mockIpc.on.mock.calls[0]
-    wrappedListener(undefined /* event */, { id: '1' })
+    wrappedListener(undefined, { id: '1' })
 
     expect(listenerA).toHaveBeenCalledWith({ id: '1' })
     expect(listenerB).toHaveBeenCalledWith({ id: '1' })
   })
 
   it('disposer removes listener; last listener also removes ipcRenderer.on', () => {
-    const { adapter } = makeAdapter()
+    const { link } = makeLink()
     const listener = vi.fn()
-    const dispose = adapter.subscribe('tick', listener)
+    const dispose = link.on('tick', listener)
 
     const [, wrapped] = mockIpc.on.mock.calls[0]
     wrapped(undefined, 42)
     expect(listener).toHaveBeenCalledWith(42)
 
     dispose()
-    expect(mockIpc.removeListener).toHaveBeenCalledWith('satori:tick', wrapped)
+    expect(mockIpc.removeListener).toHaveBeenCalledWith('sapp:tick', wrapped)
 
     wrapped(undefined, 99)
     expect(listener).toHaveBeenCalledTimes(1)
   })
 
   it('partial dispose keeps channel alive', () => {
-    const { adapter } = makeAdapter()
+    const { link } = makeLink()
     const a = vi.fn()
     const b = vi.fn()
-    const disposeA = adapter.subscribe('msg', a)
-    adapter.subscribe('msg', b)
+    const disposeA = link.on('msg', a)
+    link.on('msg', b)
 
     disposeA()
     expect(mockIpc.removeListener).not.toHaveBeenCalled()
@@ -149,35 +141,30 @@ describe('ipcClientAdapter — subscribe()', () => {
   })
 })
 
-describe('ipcClientAdapter — server-side stubs', () => {
-  it('handle() is a no-op and returns an empty disposer', () => {
-    const { adapter } = makeAdapter()
-    const dispose = adapter.handle('path', vi.fn())
+describe('linkIpcClient — server-side stubs', () => {
+  it('action(path, handler) is a no-op and returns an empty disposer', () => {
+    const { link } = makeLink()
+    const dispose = link.action('path', vi.fn())
     expect(typeof dispose).toBe('function')
     expect(() => dispose()).not.toThrow()
   })
-
-  it('broadcast() is a no-op', () => {
-    const { adapter } = makeAdapter()
-    expect(() => adapter.broadcast('event', {})).not.toThrow()
-  })
 })
 
-describe('ipcClientAdapter — dispose()', () => {
-  it('removes all ipcRenderer.on listeners', () => {
-    const { adapter } = makeAdapter()
-    adapter.subscribe('a', vi.fn())
-    adapter.subscribe('b', vi.fn())
+describe('linkIpcClient — stop()', () => {
+  it('removes all ipcRenderer.on listeners', async () => {
+    const { link } = makeLink()
+    link.on('a', vi.fn())
+    link.on('b', vi.fn())
 
-    adapter.dispose()
+    await link.stop()
 
     expect(mockIpc.removeListener).toHaveBeenCalledTimes(2)
   })
 
-  it('clears all internal state', () => {
-    const { adapter } = makeAdapter()
-    adapter.subscribe('a', vi.fn())
-    adapter.dispose()
+  it('clears all internal state', async () => {
+    const { link } = makeLink()
+    link.on('a', vi.fn())
+    await link.stop()
 
     expect(mockIpc.removeListener).toHaveBeenCalledTimes(1)
   })

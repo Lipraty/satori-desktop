@@ -9,34 +9,41 @@ interface PushEnvelope {
   data: unknown
 }
 
-export class WsClientAdapter extends Link.Adapter {
+export interface LinkWsClientConfig extends Link.Config {
+  baseUrl: string
+}
+
+export class LinkWsClient<C extends Context = Context> extends Link<C, LinkWsClientConfig> {
   private ws: WebSocket | null = null
   private reconnectTimer: ReturnType<typeof setTimeout> | undefined
-  private disposed = false
   private retryCount = 0
-  private readonly eventListeners = new Map<string, ((data: unknown) => void)[]>()
 
-  constructor(ctx: Context, private readonly baseUrl: string) {
-    super(ctx)
+  async start() {
     this.connect()
   }
 
-  handle(_path: string, _handler: Link.ActionHandler): () => void {
-    this.ctx.logger('link').warn('WsClientAdapter.handle(): server-side only — ignored')
-    return () => {}
+  async stop() {
+    clearTimeout(this.reconnectTimer)
+    this.reconnectTimer = undefined
+    this.eventListeners.clear()
+    if (this.ws) {
+      this.ws.onclose = null
+      this.ws.close()
+      this.ws = null
+    }
   }
 
-  async invoke<T>(path: string, payload?: unknown): Promise<Link.Response<T>> {
-    const url = `${this.baseUrl.replace(/\/$/, '')}/${path.replace(/^\//, '')}`
+  protected async call<T, R>(path: string, payload?: T): Promise<Link.Response<R>> {
+    const url = `${this.config.baseUrl.replace(/\/$/, '')}/${Link.PREFIX}/${path.replace(/^\//, '')}`
     try {
       const res = await Link.withTimeout(fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload ?? null),
       }))
-      const data = await res.json() as T
       if (!res.ok)
         return { id: path, error: { code: String(res.status), message: res.statusText } }
+      const data = await res.json() as R
       return { id: path, data }
     }
     catch (err) {
@@ -47,44 +54,12 @@ export class WsClientAdapter extends Link.Adapter {
     }
   }
 
-  subscribe<T>(event: string, listener: (data: T) => void): () => void {
-    const list = this.eventListeners.get(event) ?? []
-    list.push(listener as (data: unknown) => void)
-    this.eventListeners.set(event, list)
-
-    return () => {
-      const current = this.eventListeners.get(event) ?? []
-      const next = current.filter(l => l !== (listener as (data: unknown) => void))
-      if (next.length) {
-        this.eventListeners.set(event, next)
-      }
-      else {
-        this.eventListeners.delete(event)
-      }
-    }
-  }
-
-  broadcast(_event: string, _data: unknown): void {
-    this.ctx.logger('link').warn('WsClientAdapter.broadcast(): server-side only — ignored')
-  }
-
-  dispose(): void {
-    this.disposed = true
-    clearTimeout(this.reconnectTimer)
-    this.eventListeners.clear()
-    if (this.ws) {
-      this.ws.onclose = null
-      this.ws.close()
-      this.ws = null
-    }
-  }
-
-  private connect(): void {
-    if (this.disposed)
+  private connect() {
+    if (this.ws)
       return
 
     this.ctx.emit('link/status', 'connecting')
-    const wsUrl = this.baseUrl.replace(/^https?:\/\//, m => m.startsWith('https') ? 'wss://' : 'ws://')
+    const wsUrl = this.config.baseUrl.replace(/^https?:\/\//, m => m.startsWith('https') ? 'wss://' : 'ws://')
     const ws = new WebSocket(wsUrl)
     this.ws = ws
 
@@ -94,13 +69,13 @@ export class WsClientAdapter extends Link.Adapter {
     }
 
     ws.onclose = () => {
+      this.ws = null
       this.ctx.emit('link/status', 'disconnected')
-      if (!this.disposed)
-        this.scheduleReconnect()
+      this.scheduleReconnect()
     }
 
     ws.onerror = () => {
-      this.ctx.logger('link').warn('WebSocket error')
+      this.log.warn('WebSocket error')
     }
 
     ws.onmessage = (ev) => {
@@ -109,20 +84,20 @@ export class WsClientAdapter extends Link.Adapter {
         for (const l of this.eventListeners.get(msg.event) ?? []) l(msg.data)
       }
       catch {
-        this.ctx.logger('link').warn('WebSocket: failed to parse message')
+        this.log.warn('WebSocket: failed to parse message')
       }
     }
   }
 
-  private scheduleReconnect(): void {
+  private scheduleReconnect() {
     this.retryCount++
     if (this.retryCount > MAX_RETRIES) {
       this.ctx.emit('link/status', 'error')
-      this.ctx.logger('link').error('WebSocket: max retries (%d) reached', MAX_RETRIES)
+      this.log.error('WebSocket: max retries (%d) reached', MAX_RETRIES)
       return
     }
     const delay = BASE_RETRY_DELAY_MS * 2 ** (this.retryCount - 1)
-    this.ctx.logger('link').warn('WebSocket: reconnecting in %dms (attempt %d/%d)', delay, this.retryCount, MAX_RETRIES)
+    this.log.warn('WebSocket: reconnecting in %dms (attempt %d/%d)', delay, this.retryCount, MAX_RETRIES)
     this.reconnectTimer = setTimeout(() => this.connect(), delay)
   }
 }

@@ -19,11 +19,11 @@ export abstract class DataService<T> extends Service {
   abstract get(): T | Promise<T>
 
   async refresh(): Promise<void> {
-    ;(this.ctx as any).link.send(`data:${this.key}`, await this.get())
+    this.ctx.emit('link/send', `data:${this.key}`, await this.get())
   }
 
   patch(value: Partial<T>): void {
-    ;(this.ctx as any).link.send(`data:${this.key}.patch`, value)
+    this.ctx.emit('link/send', `data:${this.key}.patch`, value)
   }
 
   protected async start(): Promise<void> {

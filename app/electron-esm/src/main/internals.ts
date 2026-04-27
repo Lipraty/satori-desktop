@@ -54,7 +54,7 @@ export const plugins: RuntimePluginManifest[] = [
   {
     name: 'sqlite',
     packageName: '@minatojs/driver-sqlite',
-    meta: {},
+    meta: { service: { implements: ['database'] } },
     version: SQLitePkg.version,
     internal: true,
     plugin: SQLite,
@@ -70,7 +70,7 @@ export const plugins: RuntimePluginManifest[] = [
   {
     name: 'http',
     packageName: '@cordisjs/plugin-http',
-    meta: {},
+    meta: { service: { implements: ['http'] } },
     version: HTTPPkg.version,
     internal: true,
     plugin: HTTP,
@@ -78,7 +78,7 @@ export const plugins: RuntimePluginManifest[] = [
   {
     name: 'server',
     packageName: '@cordisjs/plugin-server',
-    meta: {},
+    meta: { service: { required: ['http'], implements: ['server'] } },
     version: ServerPkg.version,
     internal: true,
     plugin: Server,
@@ -86,7 +86,7 @@ export const plugins: RuntimePluginManifest[] = [
   {
     name: 'link',
     packageName: '@satoriapp/plugin-link',
-    meta: {},
+    meta: { service: { implements: ['link'] } },
     version: LinkPkg.version,
     internal: true,
     plugin: Link,
@@ -94,7 +94,7 @@ export const plugins: RuntimePluginManifest[] = [
   {
     name: 'app-server',
     packageName: '@satoriapp/plugin-app-server',
-    meta: {},
+    meta: { service: { required: ['link', 'message', 'state'], implements: ['appServer'] } },
     version: AppServerPkg.version,
     internal: true,
     plugin: AppServer,
@@ -102,7 +102,7 @@ export const plugins: RuntimePluginManifest[] = [
   {
     name: 'state',
     packageName: '@satoriapp/plugin-state',
-    meta: {},
+    meta: { service: { implements: ['stater'] } },
     version: StatePkg.version,
     internal: true,
     plugin: State,
@@ -110,7 +110,7 @@ export const plugins: RuntimePluginManifest[] = [
   {
     name: 'msgdb',
     packageName: '@satoriapp/plugin-msgdb',
-    meta: {},
+    meta: { service: { required: ['sqlite'] } },
     version: MsgDbPkg.version,
     internal: true,
     plugin: MsgDb,
@@ -118,7 +118,7 @@ export const plugins: RuntimePluginManifest[] = [
   {
     name: 'resource-store',
     packageName: '@satoriapp/plugin-resource-store',
-    meta: {},
+    meta: { service: { required: ['sqlite'] } },
     version: ResourceStorePkg.version,
     internal: true,
     plugin: ResourceStore,
@@ -126,7 +126,7 @@ export const plugins: RuntimePluginManifest[] = [
   {
     name: 'message',
     packageName: '@satoriapp/plugin-message',
-    meta: {},
+    meta: { service: { optional: ['sqlite', 'satori'], implements: ['message'] } },
     version: MessagePkg.version,
     internal: true,
     plugin: Message,

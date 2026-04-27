@@ -4,10 +4,11 @@ import { clone, deepEqual, isNullable } from 'cosmokit'
 import { computed, inject, PropType, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import SchemaBase from './base.vue'
-import { IconClose, IconCode, IconReset, IconUndo } from './icons'
+import { IconCode, IconReset, IconUndo } from './icons'
 import enUS from './locales/en-US.yml'
 import zhCN from './locales/zh-CN.yml'
 import SchemaPrimitive from './primitive.vue'
+import SchemaDialog from './schema-dialog.vue'
 import { getFallback, Schema, useI18nText } from './utils'
 
 defineOptions({
@@ -15,21 +16,25 @@ defineOptions({
 })
 
 const props = defineProps({
-  schema: { type: Object as PropType<Schema> },
-  initial: { type: Object as PropType<any> },
-  modelValue: { type: Object as PropType<any> },
-  extra: { type: Object as PropType<any> },
+  schema: {} as PropType<Schema>,
+  initial: {} as PropType<any>,
+  modelValue: {} as PropType<any>,
+  extra: {} as PropType<any>,
   disabled: Boolean,
   branch: Boolean,
   prefix: { type: String, default: '' },
 })
 
 const emit = defineEmits(['update:modelValue'])
-const extensions = inject<Set<form.Extension>>('__SCHEMASTERY_EXTENSIONS__', new Set())
-const slots = inject<Record<string, Function>>('__SCHEMASTERY_SLOTS__', {})
 
-const input = ref()
-const dialogRef = ref()
+const { t, setLocaleMessage } = useI18n({
+  messages: {
+    'zh-CN': zhCN,
+    'en-US': enUS,
+  },
+})
+
+const extensions = inject<Set<form.Extension>>('__SCHEMASTERY_EXTENSIONS__', new Set())
 const showJson = ref(false)
 const jsonInput = ref('')
 const jsonError = ref('')
@@ -44,19 +49,9 @@ watch(jsonInput, (value: string) => {
     const config = JSON.parse(value)
     Schema(props.schema)(config)
   }
+  // eslint-disable-next-line unused-imports/no-unused-vars
   catch (e) {
     jsonError.value = t('edit.invalid')
-  }
-})
-
-watch(showJson, (value) => {
-  if (!dialogRef.value)
-    return
-  if (value) {
-    dialogRef.value.show()
-  }
-  else {
-    dialogRef.value.hide()
   }
 })
 
@@ -87,7 +82,7 @@ const SchemaComponent = computed(() => {
     if (ext.role && props.schema?.meta.role !== ext.role)
       return
     if (ext.validate) {
-      const valid = isNullable(props.modelValue) && !ext.important || ext.validate(props.modelValue, props.schema)
+      const valid = (isNullable(props.modelValue) && !ext.important) || ext.validate(props.modelValue, props.schema)
       if (!valid)
         return
     }
@@ -95,13 +90,6 @@ const SchemaComponent = computed(() => {
   }).filter(Boolean).sort((a, b) => b[1] - a[1])
   candidates.push([SchemaBase, 0])
   return candidates[0][0]
-})
-
-const { t, setLocaleMessage } = useI18n({
-  messages: {
-    'zh-CN': zhCN,
-    'en-US': enUS,
-  },
 })
 
 if (import.meta.hot) {
@@ -145,7 +133,10 @@ if (import.meta.hot) {
       </div>
       <slot
         name="menu"
-        v-bind="{ schema, modelValue, initial, disabled }"
+        :schema="schema"
+        :model-value="modelValue"
+        :initial="initial"
+        :disabled="disabled"
         @update:model-value="$emit('update:modelValue', $event)"
       />
       <div
@@ -190,26 +181,13 @@ if (import.meta.hot) {
     </template>
   </component>
 
-  <fluent-dialog ref="dialogRef" class="k-schema-edit-dialog" :aria-label="t('edit.json')">
-    <fluent-dialog-body>
-      <fluent-text slot="title">{{ t('edit.json') }}</fluent-text>
-      <fluent-button slot="title-action" appearance="transparent" icon-only @click="showJson = false">
-        <IconClose />
-      </fluent-button>
-      <fluent-text-area
-        ref="input"
-        :class="{ invalid: jsonError }"
-        :value="jsonInput"
-        style="width: 100%"
-        :rows="Math.min(10, Math.max(2, jsonInput.split('\n').length))"
-        @change="jsonInput = ($event.target as HTMLTextAreaElement).value"
-      />
-      <fluent-button slot="action" @click="copyToClipboard">
-        {{ t('edit.copy') }}
-      </fluent-button>
-      <fluent-button slot="action" appearance="primary" :disabled="!!jsonError || undefined" @click="saveChanges">
-        {{ t('edit.save') }}
-      </fluent-button>
-    </fluent-dialog-body>
-  </fluent-dialog>
+  <SchemaDialog
+    :show="showJson"
+    :json-input="jsonInput"
+    :json-error="jsonError"
+    @update:show="showJson = $event"
+    @update:json-input="jsonInput = $event"
+    @copy-to-clipboard="copyToClipboard"
+    @save-changes="saveChanges"
+  />
 </template>

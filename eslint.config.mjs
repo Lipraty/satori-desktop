@@ -13,6 +13,7 @@ export default antfu({
       'style/no-mixed-operators': 'off',
       'array-callback-return': 'off',
       'perfectionist/sort-imports': 'off',
+      'valid-typeof': 'off',
     },
   },
 })

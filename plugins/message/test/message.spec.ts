@@ -4,42 +4,8 @@ import AppMessageService from '../src/index'
 
 function createTestService() {
   const ctx = new Context()
-
-  // Minimal ctx.state mock matching the StateService API used by the message plugin.
-  const _data = {
-    app: {
-      theme: 'dark' as const,
-      locale: 'zh-CN',
-      fontSize: 'medium' as const,
-      window: { width: 1000, height: 700, x: 0, y: 0 },
-      sidebar: { collapsed: false, width: 280 },
-      messageInput: { sendKey: 'Enter' as const },
-    },
-    conversation: {
-      currentId: '',
-      list: [] as any[],
-      drafts: {} as Record<string, string>,
-    },
-  }
-
-  const mockState = {
-    snapshot() {
-      return JSON.parse(JSON.stringify(_data))
-    },
-    get conversation() {
-      // Return a simple writable proxy over the live conversation object.
-      return new Proxy(_data.conversation, {
-        set(obj, key, value) {
-          ;(obj as any)[key as string] = value
-          return true
-        },
-      })
-    },
-  }
-
-  ctx.provide('stater', mockState as any, true)
   ctx.plugin(AppMessageService as any)
-  const service = (ctx as any).appMessage as AppMessageService
+  const service = (ctx as any).message as AppMessageService
   return { service, ctx }
 }
 
@@ -131,5 +97,22 @@ describe('plugin-message span runtime', () => {
       expect(sequencePart).toBeGreaterThanOrEqual(0)
       expect(sequencePart).toBeLessThanOrEqual(4095)
     }
+  })
+
+  it('deleteMessage marks message as dead', async () => {
+    const { service } = createTestService()
+    const message = await service.receive({
+      platform: 'test',
+      channelId: 'c1',
+      timestamp: 5000,
+      content: 'to-delete',
+    })
+
+    expect(message.dead).toBe(false)
+    const result = service.deleteMessage(message.seq)
+    expect(result).toBe(true)
+
+    const messages = service.listByChannel('test', 'c1', 10)
+    expect(messages[0].dead).toBe(true)
   })
 })

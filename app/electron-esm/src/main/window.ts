@@ -4,6 +4,8 @@ import { Schema, Service } from 'cordis'
 
 import * as electron from 'electron'
 
+import { WindowConfigSchema, WindowServiceConfig } from './config'
+
 const APP_NAME = 'Satori App for Desktop'
 
 declare module 'cordis' {
@@ -21,11 +23,7 @@ declare module 'cordis' {
 class WindowService extends Service {
   static readonly inject = ['app']
   static readonly name = 'window'
-  static Config: Schema<WindowService.Config> = Schema.object({
-    theme: Schema.union(['dark', 'light', 'system']).default('system'),
-    width: Schema.number().step(1).default(1076),
-    height: Schema.number().step(1).default(653),
-  })
+  static Config = WindowConfigSchema
 
   private mainWindow: electron.BrowserWindow | null = null
   private subWindow: Map<string, electron.BrowserWindow> = new Map()
@@ -98,12 +96,8 @@ class WindowService extends Service {
   }
 }
 
-namespace WindowService {
-  export interface Config {
-    theme: 'dark' | 'light' | 'system'
-    width: number
-    height: number
+  namespace WindowService {
+    export type Config = WindowServiceConfig
   }
-}
 
 export default WindowService

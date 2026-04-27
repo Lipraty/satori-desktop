@@ -1,10 +1,9 @@
 import { randomUUID } from 'node:crypto'
-import { } from '@satoriapp/plugin-msgdb'
-import { } from '@satoriapp/state'
+import {} from '@satoriapp/plugin-msgdb' // module augmentation
 import { Session } from '@satorijs/core'
-import { } from '@satorijs/protocol'
+import {} from '@satorijs/protocol' // module augmentation
 import { Context, Service } from 'cordis'
-import { } from 'minato'
+import {} from 'minato' // module augmentation
 
 import { AppMessage, CreateMessageInput } from './types'
 
@@ -40,6 +39,7 @@ interface ChannelRuntime {
   spanOrder: string[]
   messageSpan: Map<bigint, string>
   persisted: Set<bigint>
+  sortedCache: AppMessage[] | null
 }
 
 interface MessageMetrics {
@@ -54,7 +54,7 @@ interface MessageMetrics {
 
 declare module 'cordis' {
   interface Context {
-    appMessage: AppMessageService
+    message: AppMessageService
   }
 
   interface Events {
@@ -68,17 +68,17 @@ declare module 'cordis' {
   }
 }
 
+declare module '@satoriapp/link' {}
+
 export class AppMessageService extends Service {
   static readonly name = 'message'
   static readonly inject: Record<string, { required: boolean }> = {
-    stater: { required: true },
     database: { required: false },
     satori: { required: false },
   }
 
   private readonly channels = new Map<string, ChannelRuntime>()
   private readonly messageIdMap = new Map<string, bigint>()
-  private readonly listenerDisposers: Array<() => void> = []
   private readonly metrics: MessageMetrics = {
     ingested: 0,
     dedupHits: 0,
@@ -94,27 +94,33 @@ export class AppMessageService extends Service {
   private degraded = false
 
   constructor(ctx: Context) {
-    super(ctx, 'appMessage', true)
+    super(ctx, 'message', true)
   }
 
   async start() {
     if (this.started)
       return
 
-    this.bindRuntimeListeners()
+    this.ctx.on('message/persisted', (seq) => {
+      this.markPersisted(seq)
+    })
+
+    this.ctx.on('internal/session', (session: any) => {
+      void this.ingestSession(session as Session)
+    })
+
     await this.recoverFromDatabase()
     this.started = true
-    this.ctx.logger.info('message service started')
+    this.ctx.logger?.info('message service started')
   }
 
   async stop() {
-    this.unbindRuntimeListeners()
     this.channels.clear()
     this.messageIdMap.clear()
     this.started = false
     this.recoveredOnce = false
     this.degraded = false
-    this.ctx.logger.info('message service stopped')
+    this.ctx.logger?.info('message service stopped')
   }
 
   getMetrics(): MessageMetrics & { channels: number, spans: number } {
@@ -124,6 +130,17 @@ export class AppMessageService extends Service {
       channels: this.channels.size,
       spans,
     }
+  }
+
+  getMessage(channelId: string, messageId: string): AppMessage | undefined {
+    for (const runtime of this.channels.values()) {
+      if (runtime.channelId !== channelId)
+        continue
+      const seq = this.messageIdMap.get(this.remoteMessageKey(runtime.platform, channelId, messageId))
+      if (seq !== undefined)
+        return this.findMessageBySeq(seq)
+    }
+    return undefined
   }
 
   getByRemoteId(platform: string, channelId: string, messageId: string): AppMessage | undefined {
@@ -169,15 +186,19 @@ export class AppMessageService extends Service {
   }
 
   async create(input: CreateMessageInput): Promise<AppMessage> {
-    const message = await this.ingest({
-      ...input,
-      localOnly: input.localOnly ?? true,
-    })
+    // local-only messages skip platform send entirely
+    if (input.localOnly !== false) {
+      return this.ingest({ ...input, localOnly: true })
+    }
 
-    if (input.localOnly === true)
-      return message
-    await this.sendToPlatform(message, input)
-    return message
+    // send to platform first, then ingest with real ID on success
+    const sent = await this.sendToPlatform(input)
+    if (sent) {
+      return this.ingest({ ...input, id: sent.id, localOnly: false })
+    }
+    // platform send failed — ingest as local fallback
+    this.ctx.emit('message/error', 'create', 'platform send failed, message saved locally')
+    return this.ingest({ ...input, localOnly: true })
   }
 
   async receive(input: CreateMessageInput): Promise<AppMessage> {
@@ -225,14 +246,13 @@ export class AppMessageService extends Service {
     if (message.id) {
       this.messageIdMap.set(this.remoteMessageKey(message.platform, message.channelId, message.id), message.seq)
     }
-    this.syncConversationState(message, input.conversationType)
     this.metrics.ingested++
     this.logger.info('message ingested: seq=%s platform=%s channelId=%s', message.seq.toString(), message.platform, message.channelId)
     this.ctx.emit('message/created', message, input.payload)
     return message
   }
 
-  markDead(seq: bigint, dead = true): boolean {
+  deleteMessage(seq: bigint, dead = true): boolean {
     for (const runtime of this.channels.values()) {
       const spanId = runtime.messageSpan.get(seq)
       if (!spanId)
@@ -257,10 +277,22 @@ export class AppMessageService extends Service {
     const runtime = this.channels.get(this.channelKey(platform, channelId))
     if (!runtime)
       return []
-    const ordered = runtime.spanOrder
+    const ordered = this.getSortedMessages(runtime)
+    return ordered.slice(Math.max(0, ordered.length - limit))
+  }
+
+  private getSortedMessages(runtime: ChannelRuntime): AppMessage[] {
+    if (runtime.sortedCache)
+      return runtime.sortedCache
+    const sorted = runtime.spanOrder
       .flatMap(spanUid => runtime.spans.get(spanUid)?.data || [])
       .sort((left, right) => left.seq === right.seq ? 0 : left.seq < right.seq ? -1 : 1)
-    return ordered.slice(Math.max(0, ordered.length - limit))
+    runtime.sortedCache = sorted
+    return sorted
+  }
+
+  private invalidateSortedCache(runtime: ChannelRuntime) {
+    runtime.sortedCache = null
   }
 
   listSpans(platform: string, channelId: string): SpanRuntime[] {
@@ -302,35 +334,9 @@ export class AppMessageService extends Service {
     }
 
     sequence = Math.max(0, Math.min(4095, sequence))
+    if (sequence === 0 || sequence === 4095)
+      this.logger.warn('seq counter saturated at %d for timestamp %d', sequence, timestamp)
     return (timestampBits << 12n) | BigInt(sequence)
-  }
-
-  private bindRuntimeListeners(): void {
-    if (this.listenerDisposers.length)
-      return
-
-    this.listenerDisposers.push(this.ctx.on('message/persisted', (seq) => {
-      this.markPersisted(seq)
-    }))
-
-    this.listenerDisposers.push(this.ctx.on('message/created', (message) => {
-      void this.persistMessageRecord(message)
-    }))
-
-    this.listenerDisposers.push(this.ctx.on('message/dead', (seq, dead) => {
-      void this.persistDeadRecord(seq, dead)
-    }))
-
-    this.listenerDisposers.push(this.ctx.on('internal/session', (session: any) => {
-      void this.ingestSession(session as Session)
-    }))
-  }
-
-  private unbindRuntimeListeners(): void {
-    while (this.listenerDisposers.length) {
-      const dispose = this.listenerDisposers.pop()
-      dispose?.()
-    }
   }
 
   private channelKey(platform: string, channelId: string): string {
@@ -350,6 +356,7 @@ export class AppMessageService extends Service {
       spanOrder: [],
       messageSpan: new Map(),
       persisted: new Set(),
+      sortedCache: null,
     }
     this.channels.set(key, runtime)
     return runtime
@@ -388,6 +395,7 @@ export class AppMessageService extends Service {
   }
 
   private insertMessage(runtime: ChannelRuntime, message: AppMessage): string {
+    this.invalidateSortedCache(runtime)
     const leftNeighbor = this.findSpanNeighborBySeq(runtime, message.seq, false)
     const rightNeighbor = this.findSpanNeighborBySeq(runtime, message.seq, true)
     const leftSpanId = leftNeighbor ? runtime.messageSpan.get(leftNeighbor.seq) : undefined
@@ -598,25 +606,23 @@ export class AppMessageService extends Service {
     this.logger.warn('%s failed: %s', stage, message)
   }
 
-  private async sendToPlatform(message: AppMessage, input: CreateMessageInput): Promise<void> {
-    const bot = this.ctx.bots?.find(b => b.platform === input.platform)
+  private async sendToPlatform(input: CreateMessageInput): Promise<{ id: string } | undefined> {
+    const bot = this.ctx.bots?.find(b => b.platform === input.platform && (!input.selfId || b.selfId === input.selfId))
     if (!bot) {
       this.logger.warn('no bot for platform=%s, message stays local', input.platform)
-      return
+      return undefined
     }
     try {
       const sent = await bot.createMessage(input.channelId, input.content ?? '')
       if (sent?.[0]?.id) {
-        message.id = sent[0].id
-        message.localOnly = false
-        this.messageIdMap.set(
-          this.remoteMessageKey(message.platform, message.channelId, message.id),
-          message.seq,
-        )
+        return { id: sent[0].id }
       }
+      return undefined
     }
     catch (error) {
       this.handleError('send-to-platform', error)
+      this.ctx.emit('message/error', 'send-to-platform', error instanceof Error ? error.message : String(error))
+      return undefined
     }
   }
 
@@ -642,7 +648,7 @@ export class AppMessageService extends Service {
 
     try {
       const startedAt = Date.now()
-      const rows = await database.get('message', {})
+      const rows = await database.get('message', {}, { limit: 10000, sort: { seq: 'desc' } })
       const list = (Array.isArray(rows) ? rows as AppMessage[] : [])
         .map(item => this.asPersistedMessage(item as unknown as Record<string, unknown>))
         .filter(item => !!item.platform && !!item.channelId)
@@ -694,93 +700,6 @@ export class AppMessageService extends Service {
     }
   }
 
-  private async persistMessageRecord(message: AppMessage): Promise<void> {
-    const database = this.ctx.database
-    if (!database?.upsert) {
-      this.markDegraded('database service unavailable, skip message persistence')
-      return
-    }
-
-    try {
-      await database.upsert('message', [{
-        seq: message.seq,
-        platform: message.platform,
-        channelId: message.channelId,
-        syncFlag: message.syncFlag,
-        dead: message.dead,
-        localOnly: message.localOnly,
-        isEvent: message.isEvent,
-        eventType: message.eventType,
-        eventId: message.eventId,
-        id: message.id,
-        content: message.content,
-        elements: message.elements,
-        timestamp: message.timestamp ?? message.createdAt,
-        createdAt: message.createdAt,
-        updatedAt: Date.now(),
-      }])
-      this.metrics.persisted++
-      this.ctx.emit('message/persisted', message.seq)
-    }
-    catch (error) {
-      this.handleError('persist-message', error)
-    }
-  }
-
-  private async persistDeadRecord(seq: bigint, dead: boolean): Promise<void> {
-    const database = this.ctx.database
-    if (!database?.get || !database?.set)
-      return
-
-    try {
-      const rows = await database.get('message', { seq })
-      const target = rows[0]
-      if (!target?.uid)
-        return
-      await database.set('message', { uid: target.uid }, {
-        dead,
-        updatedAt: Date.now(),
-      })
-    }
-    catch (error) {
-      this.handleError('persist-dead', error)
-    }
-  }
-
-  private toArray<T>(value: T | T[] | undefined | null): T[] {
-    if (!value)
-      return []
-    return Array.isArray(value) ? value : [value]
-  }
-
-  private tableFieldName(name: string): string {
-    return name.replace(/_([a-z])/g, (_, c: string) => c.toUpperCase())
-  }
-
-  private patchResourceDefaults(name: string, item: Record<string, unknown>, session: Session, platform: string): Record<string, unknown> {
-    const now = Date.now()
-    const record: Record<string, unknown> = {
-      ...item,
-      updatedAt: item.updatedAt || now,
-    }
-
-    if (platform && !record.platform && name === 'login') {
-      record.platform = platform
-    }
-
-    if (name === 'guild_member') {
-      record.guildId = record.guildId || session.guildId || ''
-      const user = record.user as { id?: string } | undefined
-      record.userId = record.userId || user?.id || session.userId || ''
-    }
-
-    if (name === 'channel') {
-      record.guildId = record.guildId || session.guildId || ''
-    }
-
-    return record
-  }
-
   private restoreChannelRuntime(runtime: ChannelRuntime, messages: AppMessage[]): number {
     if (!messages.length)
       return 0
@@ -823,32 +742,6 @@ export class AppMessageService extends Service {
     return deduped.length
   }
 
-  private async projectSessionResources(session: Session): Promise<void> {
-    const database = this.ctx.database
-    if (!database?.upsert)
-      return
-
-    const platform = session.platform || ''
-    const tables = ['user', 'guild', 'channel', 'guild_member', 'guild_role', 'login'] as const
-
-    for (const name of tables) {
-      const payload = (session as unknown as Record<string, unknown>)[this.tableFieldName(name)]
-      const rows = this.toArray(payload as Record<string, unknown> | Record<string, unknown>[] | undefined)
-      if (!rows.length)
-        continue
-
-      const records = rows.map(item => this.patchResourceDefaults(name, item, session, platform))
-      try {
-        await database.upsert(name, records)
-        this.metrics.resourceProjected += records.length
-        this.ctx.emit('message/resource-projected', name, records.length)
-      }
-      catch (error) {
-        this.handleError(`project-resource:${name}`, error)
-      }
-    }
-  }
-
   private async ingestSession(session: Session): Promise<void> {
     const type = session.type
     if (!type)
@@ -861,9 +754,7 @@ export class AppMessageService extends Service {
 
     this.logger.info('ingestSession: type=%s platform=%s channelId=%s', type, platform, channelId)
 
-    await this.projectSessionResources(session)
-
-    if (type === 'message') {
+    if (type === 'message-created') {
       const timestamp = Number(session.event.message?.createdAt || session.timestamp || Date.now())
       await this.receive({
         id: session.messageId?.toString(),
@@ -885,7 +776,7 @@ export class AppMessageService extends Service {
       const seq = this.messageIdMap.get(remoteKey)
       if (seq === undefined)
         return
-      this.markDead(seq, true)
+      this.deleteMessage(seq, true)
       return
     }
 
@@ -914,52 +805,6 @@ export class AppMessageService extends Service {
 
   private remoteMessageKey(platform: string, channelId: string, messageId: string): string {
     return `${platform}:${channelId}:${messageId}`
-  }
-
-  private syncConversationState(message: AppMessage, conversationType: 'channel' | 'group' | 'private' = 'channel'): void {
-    const state = this.ctx.stater
-    if (!state)
-      return
-
-    const snap = state.snapshot().conversation as {
-      currentId: string
-      list: Array<{
-        type: 'channel' | 'group' | 'private'
-        opened: boolean
-        pinned: boolean
-        platform: string
-        channelId: string
-        unreadCount: number
-        mute: boolean
-      }>
-    }
-
-    const list = [...(snap?.list || [])]
-    const index = list.findIndex(item => item.platform === message.platform && item.channelId === message.channelId)
-    const unreadCount = (message.localOnly || message.isEvent) ? 0 : 1
-
-    if (index >= 0) {
-      const current = list[index]
-      list[index] = {
-        ...current,
-        opened: true,
-        unreadCount: current.unreadCount + unreadCount,
-      }
-    }
-    else {
-      list.push({
-        type: conversationType,
-        opened: true,
-        pinned: false,
-        platform: message.platform,
-        channelId: message.channelId,
-        unreadCount,
-        mute: false,
-      })
-    }
-
-    state.conversation.list = list
-    state.conversation.currentId = snap?.currentId || message.channelId
   }
 }
 

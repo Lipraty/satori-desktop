@@ -20,11 +20,9 @@ export class ClientMessagesService extends Service {
   }
 
   async start() {
-    const link = (this.ctx as any).link
-
     this.ctx.on('message/created', (msg: AppMessage) => {
-      this.logger.debug('message/created → link.send: seq=%s platform=%s channelId=%s', msg.seq.toString(), msg.platform, msg.channelId)
-      link.send('message.created', this.serializeMsg(msg))
+      this.logger.debug('message/created → link/send: seq=%s platform=%s channelId=%s', msg.seq.toString(), msg.platform, msg.channelId)
+      this.ctx.emit('link/send', 'message.created', this.serializeMsg(msg))
     })
 
     this.logger.info('client-messages bridge started')

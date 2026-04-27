@@ -7,7 +7,6 @@ import { form } from '@satoriapp/schemastery'
 import { install } from './components'
 import DefaultLayout from './components/layout.vue'
 import I18nService from './plugins/i18n'
-import { Link } from './plugins/link'
 import LoaderService from './plugins/loader'
 import RouterService from './plugins/router'
 import SettingService from './plugins/setting'
@@ -30,7 +29,7 @@ export interface CirnoAPI {
 }
 
 export interface Versions {
-  Electorn?: string
+  Electron?: string
   Cirno?: string
   Chromium: string
   Node?: string
@@ -68,7 +67,6 @@ export class Context extends cordis.Context {
     })))
     this.app.provide(rootContext, this)
 
-    this.plugin(Link)
     this.plugin(FrontendStateService)
     this.plugin(LoaderService)
     this.plugin(RouterService)
@@ -100,7 +98,7 @@ export class Context extends cordis.Context {
     }
 
     return {
-      Electorn: win.electron?.process?.versions?.electron || undefined,
+      Electron: win.electron?.process?.versions?.electron || undefined,
       Cirno: win.cirno?.version || undefined,
       Chromium: win.electron?.process?.versions?.chrome || win.cirno?.chromium || navigator.userAgent,
       Node: win.electron?.process?.versions?.node || undefined,

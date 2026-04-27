@@ -1,19 +1,13 @@
-import { IpcClientAdapter } from '@plugin/link-ipc'
-import { WsClientAdapter } from '@plugin/link-ws'
+import { LinkIpcClient } from '@plugin/link-ipc'
 import messages from '@plugin/client-messages'
 import network from '@plugin/client-network'
 import person from '@plugin/client-person'
 import settings from '@plugin/client-settings'
 import { root } from '@satoriapp/webui'
+import type {} from '@satoriapp/link' // module augmentation
 
 async function bootstrap() {
-  if (root.platform === 'electron') {
-    root.link.setAdapter(new IpcClientAdapter(root as any))
-  }
-  else {
-    root.link.setAdapter(new WsClientAdapter(root as any, window.location.origin))
-  }
-
+  root.plugin(LinkIpcClient)
   root.plugin(messages)
   root.plugin(network)
   root.plugin(person)
@@ -35,7 +29,7 @@ async function bootstrap() {
   })
 
   try {
-    const pong = await root.link.action<{ ok: boolean, timestamp: number }>('ping', {
+    const pong = await root.link.action<unknown, { ok: boolean, timestamp: number }>('ping', {
       source: root.platform,
       ts: Date.now(),
     })

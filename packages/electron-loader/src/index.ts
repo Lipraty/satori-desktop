@@ -44,16 +44,13 @@ export interface LoaderPluginConfig<TConfig = any> {
 }
 
 export interface LoaderConfigFile<TConfig = unknown> {
-  $root?: Record<string, unknown>
-  root?: Record<string, unknown>
   plugins?: Record<string, LoaderPluginConfig<TConfig> | TConfig>
   [key: string]: unknown
 }
 
 export interface BootOptions<TContext = unknown> {
-  configPath: string
+  baseDir: string
   externalPluginRoot: string
-  applyRootConfig?: (ctx: TContext, rootConfig: Record<string, unknown>) => void | Promise<void>
 }
 
 export interface LoaderPlugin<TContext = unknown, TConfig = any> extends LoaderPluginMeta {
@@ -76,11 +73,10 @@ export interface LoaderEntry<TContext = unknown, TConfig = any> {
 export class ElectronLoader<TContext = unknown, TConfig = any> {
   private readonly entries = new Map<string, LoaderEntry<TContext, TConfig>>()
   private context?: TContext
-  private configPath = ''
+  private baseDir = ''
   private externalPluginRoot = ''
   private rootConfig: Record<string, unknown> = {}
   private rawConfig: LoaderConfigFile<TConfig> = {}
-  private applyRootConfigHook?: (ctx: TContext, rootConfig: Record<string, unknown>) => void | Promise<void>
 
   constructor(context?: TContext) {
     this.context = context
@@ -130,15 +126,20 @@ export class ElectronLoader<TContext = unknown, TConfig = any> {
   }
 
   async boot(options: BootOptions<TContext>): Promise<void> {
-    this.configPath = options.configPath
+    this.baseDir = options.baseDir
     this.externalPluginRoot = options.externalPluginRoot
-    this.applyRootConfigHook = options.applyRootConfig
 
     const config = await this.readConfig()
+
+    if (!this.rawConfig.plugins) {
+      this.rawConfig = { plugins: {} }
+      await this.writeConfig()
+    }
+
     this.applySavedPluginConfigs()
 
     await this.startBySource('internal')
-    await this.applyRootConfig(config)
+    this.applyRootConfig(config)
 
     const discovered = await this.discoverExternalPlugins()
     this.emit('scan', discovered.map(item => ({
@@ -392,16 +393,26 @@ export class ElectronLoader<TContext = unknown, TConfig = any> {
 
   async patchPluginsConfig(patches: Record<string, any>): Promise<void> {
     this.rawConfig.plugins = { ...(this.rawConfig.plugins || {}), ...patches }
-    await mkdir(dirname(this.configPath), { recursive: true })
-    await writeFile(this.configPath, JSON.stringify(this.rawConfig, null, 2), 'utf-8')
+    await this.writeConfig()
+  }
+
+  private async writeConfig(): Promise<void> {
+    const path = this.configFilePath()
+    await mkdir(dirname(path), { recursive: true })
+    await writeFile(path, JSON.stringify(this.rawConfig, null, 2), 'utf-8')
+  }
+
+  private configFilePath(): string {
+    return resolve(this.baseDir, 'config.json')
   }
 
   private async readConfig(): Promise<LoaderConfigFile<TConfig>> {
-    if (!this.configPath)
+    if (!this.baseDir)
       return {}
 
+    const path = this.configFilePath()
     try {
-      const raw = await readFile(this.configPath, 'utf-8')
+      const raw = await readFile(path, 'utf-8')
       this.rawConfig = JSON.parse(raw) as LoaderConfigFile<TConfig>
       return this.rawConfig
     }
@@ -413,30 +424,11 @@ export class ElectronLoader<TContext = unknown, TConfig = any> {
     }
   }
 
-  private async applyRootConfig(config: LoaderConfigFile<TConfig>): Promise<void> {
-    const ctx = this.ensureContext() as Record<string, unknown>
+  private applyRootConfig(config: LoaderConfigFile<TConfig>): void {
     const fromTopLevel = Object.fromEntries(
-      Object.entries(config).filter(([key]) => !['plugins', '$root', 'root'].includes(key)),
+      Object.entries(config).filter(([key]) => key !== 'plugins'),
     )
-    this.rootConfig = {
-      ...(config.$root || {}),
-      ...(config.root || {}),
-      ...fromTopLevel,
-    } as Record<string, unknown>
-
-    if (this.applyRootConfigHook) {
-      await this.applyRootConfigHook(this.ensureContext(), this.rootConfig)
-      return
-    }
-
-    for (const [key, value] of Object.entries(this.rootConfig)) {
-      if (typeof (ctx as { set?: unknown }).set === 'function') {
-        (ctx as { set: (k: string, v: unknown) => void }).set(key, value)
-      }
-      else {
-        ctx[key] = value
-      }
-    }
+    this.rootConfig = fromTopLevel as Record<string, unknown>
   }
 
   private async discoverExternalPlugins(): Promise<ExternalPluginSpec<TContext, TConfig>[]> {

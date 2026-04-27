@@ -3,134 +3,90 @@ import type { IpcMainInvokeEvent, WebContents } from 'electron'
 import { Link } from '@satoriapp/link'
 import { ipcMain, webContents } from 'electron'
 
-const PREFIX = 'satori'
-
-function toChannel(path: string): string {
-  const normalized = (path ?? '').trim().replace(/^\/+/, '').replace(new RegExp(`^${PREFIX}:`), '')
-  return `${PREFIX}:${normalized || 'ping'}`
-}
-
-class IpcAdapter extends Link.Adapter {
+export class LinkIpc<C extends Context = Context> extends Link<C> {
   private readonly handlers = new Map<string, Link.ActionHandler>()
-  private readonly subscribers = new Map<string, Set<(data: unknown) => void>>()
   private bound = false
 
-  start(): void {
+  private toChannel(path: string) {
+    const normalized = (path ?? '').trim().replace(/^\/+/, '').replace(new RegExp(`^${Link.PREFIX}:`), '')
+    return `${Link.PREFIX}:${normalized || 'ping'}`
+  }
+
+  async start() {
     if (this.bound)
       return
-    for (const path of this.handlers.keys()) this._bindHandler(path)
+    for (const path of this.handlers.keys()) this.bindIpc(path)
+
+    this.ctx.on('link/send', (event, data) => {
+      for (const l of this.eventListeners.get(event) ?? []) l(data)
+      const channel = this.toChannel(event)
+      for (const content of webContents.getAllWebContents()) this.trySend(content, channel, data)
+    })
+
     this.bound = true
-    this.ctx.logger('link').info('IPC adapter started (%d handlers)', this.handlers.size)
+    this.log.info('IPC link started (%d handlers)', this.handlers.size)
   }
 
-  stop(): void {
-    if (!this.bound)
-      return
-    for (const path of this.handlers.keys()) ipcMain.removeHandler(toChannel(path))
-    this.bound = false
+  async stop() {
+    if (this.bound) {
+      for (const path of this.handlers.keys()) ipcMain.removeHandler(this.toChannel(path))
+      this.bound = false
+    }
+    this.handlers.clear()
+    this.eventListeners.clear()
   }
 
-  handle(path: string, handler: Link.ActionHandler): () => void {
+  protected handle<T, R>(path: string, handler: Link.ActionHandler<T, R>) {
     this.handlers.set(path, handler)
     if (this.bound)
-      this._bindHandler(path)
+      this.bindIpc(path)
     return () => {
       this.handlers.delete(path)
       if (this.bound)
-        ipcMain.removeHandler(toChannel(path))
+        ipcMain.removeHandler(this.toChannel(path))
     }
   }
 
-  async invoke<T>(path: string, payload?: unknown): Promise<Link.Response<T>> {
+  protected async call<T, R>(path: string, payload?: T): Promise<Link.Response<R>> {
     const handler = this.handlers.get(path)
     if (!handler)
       return { id: path, error: { code: Link.ErrorCode.ENOENT, message: `action not registered: ${path}` } }
     try {
-      return { id: path, data: await handler(payload) as T }
+      return { id: path, data: await handler(payload) }
     }
     catch (err) {
-      return { id: path, error: { code: 'EINTERNAL', message: err instanceof Error ? err.message : String(err) } }
+      return { id: path, error: { code: Link.ErrorCode.EINTERNAL, message: err instanceof Error ? err.message : String(err) } }
     }
   }
 
-  subscribe<T>(event: string, listener: (data: T) => void): () => void {
-    const set = this.subscribers.get(event) ?? new Set()
-    set.add(listener as (data: unknown) => void)
-    this.subscribers.set(event, set)
-    return () => {
-      const s = this.subscribers.get(event)
-      if (!s)
-        return
-      s.delete(listener as (data: unknown) => void)
-      if (!s.size)
-        this.subscribers.delete(event)
-    }
-  }
-
-  broadcast(event: string, data: unknown): void {
-    const set = this.subscribers.get(event)
-    if (set?.size) {
-      for (const l of set) l(data)
-    }
-    const ch = toChannel(event)
-    for (const wc of webContents.getAllWebContents()) this._trySend(wc, ch, data)
-  }
-
-  dispose(): void {
-    this.stop()
-    this.handlers.clear()
-    this.subscribers.clear()
-  }
-
-  private _bindHandler(path: string): void {
-    const ch = toChannel(path)
-    ipcMain.removeHandler(ch)
-    ipcMain.handle(ch, async (_event: IpcMainInvokeEvent, payload: unknown) => {
-      this.ctx.logger('link').info('← %s (frame %d)', path, _event.frameId)
+  private bindIpc(path: string) {
+    const channel = this.toChannel(path)
+    ipcMain.removeHandler(channel)
+    ipcMain.handle(channel, async (_event: IpcMainInvokeEvent, payload: any) => {
+      this.log.info('← %s (frame %d)', path, _event.frameId)
       const handler = this.handlers.get(path)
       if (!handler)
         return { error: { code: Link.ErrorCode.ENOENT, message: `action not registered: ${path}` } }
       try {
         const result = await handler(payload)
-        this.ctx.logger('link').info('→ %s ok', path)
-        return result
+        this.log.info('→ %s success', path)
+        return { data: result }
       }
       catch (err) {
-        this.ctx.logger('link').warn('→ %s error: %s', path, err instanceof Error ? err.message : String(err))
-        return { error: { code: 'EINTERNAL', message: err instanceof Error ? err.message : String(err) } }
+        this.log.warn('→ %s error: %s', path, err instanceof Error ? err.message : String(err))
+        return { error: { code: Link.ErrorCode.EINTERNAL, message: err instanceof Error ? err.message : String(err) } }
       }
     })
   }
 
-  private _trySend(wc: WebContents, ch: string, data: unknown): void {
+  private trySend(wc: WebContents, ch: string, data: any) {
     try {
       if (!wc.isDestroyed())
         wc.send(ch, data)
     }
     catch (err) {
-      this.ctx.logger('link').warn('broadcast %s failed: %s', ch, err instanceof Error ? err.message : String(err))
+      this.log.warn('broadcast %s failed: %s', ch, err instanceof Error ? err.message : String(err))
     }
-  }
-}
-
-export class LinkIpc<C extends Context = Context> extends Link<C> {
-  static inject: string[] = []
-
-  private readonly ipc: IpcAdapter
-
-  constructor(ctx: C) {
-    super(ctx)
-    this.ipc = new IpcAdapter(ctx)
-    this.setAdapter(this.ipc)
-  }
-
-  async start(): Promise<void> {
-    this.ipc.start()
-  }
-
-  async stop(): Promise<void> {
-    this.ipc.dispose()
-    await super.stop()
   }
 }
 

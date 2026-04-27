@@ -2,7 +2,6 @@ import type { AppStateNamespaces, Patch } from '@satoriapp/state'
 import type { Context } from 'cordis'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
-import process from 'node:process'
 import {
   applyPatchToObject,
   deepClone,
@@ -26,16 +25,8 @@ export class BackendStateService extends StateService {
 
   constructor(ctx: Context) {
     super(ctx)
-    let home = process.cwd()
-    try {
-      const electronApp = (ctx as Context & { app?: { getPath: (name: string) => string } }).app
-      if (electronApp && typeof electronApp.getPath === 'function')
-        home = electronApp.getPath('home')
-    }
-    catch {
-      /* no Electron app, use cwd */
-    }
-    this.storagePath = resolve(home, '.satori', 'state.json')
+    const baseDir = (ctx.root as any).baseDir ?? process.cwd()
+    this.storagePath = resolve(baseDir, 'state.json')
   }
 
   async start(): Promise<void> {
@@ -126,7 +117,7 @@ export class BackendStateService extends StateService {
   }
 
   private broadcast(patches: Patch[]): void {
-    this.ctx.link.send('state.updated', patches)
+    this.ctx.emit('link/send', 'state.updated', patches)
   }
 }
 

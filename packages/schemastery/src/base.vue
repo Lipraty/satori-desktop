@@ -1,20 +1,22 @@
 <script lang="ts" setup>
-import { onMounted, onUnmounted, PropType, ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Schema } from './utils'
 import { IconCollapse, IconEllipsis, IconExpand } from './icons'
 import zhCN from './locales/zh-CN.yml'
 import enUS from './locales/en-US.yml'
 
-const props = defineProps({
-  schema: { type: Object as PropType<Schema> },
-  modelValue: { type: Object as PropType<{}> },
-  disabled: { type: Object as PropType<boolean> },
-  prefix: { type: Object as PropType<string> },
-  initial: { type: Object as PropType<{}> },
-  extra: { type: Object as PropType<any> },
-  collapsible: { type: Object as PropType<{ initial: boolean }> },
-})
+interface SchemaItemProps {
+  schema?: Schema
+  modelValue?: {}
+  disabled?: boolean
+  prefix?: string
+  initial?: {}
+  extra?: any
+  collapsible?: { initial: boolean }
+}
+
+const props = defineProps<SchemaItemProps>()
 
 defineEmits(['update:modelValue'])
 

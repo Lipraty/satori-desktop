@@ -9,8 +9,7 @@ const convList = ref<ConversationItem[]>([])
 const selected = ref<ConversationItem | null>(null)
 const search = ref('')
 
-const ns = (ctx.stater as any)._namespaces.conversation
-convList.value = [...(ns.list ?? [])]
+convList.value = [...(ctx.stater.snapshot().conversation?.list ?? [])]
 
 ctx.on('state/changed', (path: string, value: unknown) => {
   if (path === 'conversation.list')
@@ -29,21 +28,21 @@ function avatarChar(item: ConversationItem) {
 
 function goToMessages(item: ConversationItem) {
   ctx.stater.conversation.currentId = `${item.platform}:${item.channelId}`
-  ctx.$router.router.push('/')
+  ctx.$router?.router.push('/')
 }
 </script>
 
 <template>
   <satori-view style="width: 280px; flex-shrink: 0;" title="Contacts">
     <div class="person-search">
-      <fluent-text-input v-model="search" placeholder="Search contacts…" style="width: 100%;" />
+      <fluent-text-input :value="search" placeholder="Search contacts…" style="width: 100%;" @input="search = ($event.target as HTMLInputElement).value" />
     </div>
     <div class="person-list">
       <div
         v-for="item in contacts"
         :key="`${item.platform}:${item.channelId}`"
         class="person-item"
-        :class="{ active: selected === item }"
+        :class="{ active: selected && `${selected.platform}:${selected.channelId}` === `${item.platform}:${item.channelId}` }"
         @click="selected = item"
       >
         <div class="person-avatar">

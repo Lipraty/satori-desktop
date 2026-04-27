@@ -12,10 +12,17 @@
     "./package.json": "./package.json"
   },
   "main": "./lib/index.mjs",
+  "peerDependencies": {
+    "@satoriapp/webui": "workspace:*",
+    "vue": "^3.5.0"
+  },
   "dependencies": {
     "@satoriapp/link": "workspace:*",
-    "@satoriapp/plugin-message": "workspace:*",
+    "@satoriapp/state": "workspace:*",
     "cordis": "3.18.1"
+  },
+  "devDependencies": {
+    "@satoriapp/plugin-message": "workspace:*"
   },
   "sapp": {
     "node": true

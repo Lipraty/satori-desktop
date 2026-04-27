@@ -2,7 +2,7 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { useContext } from '@satoriapp/webui'
 import type { ConversationItem } from '@satoriapp/state'
-import { useMessages } from './composables/messages'
+import { parseChannelId, useMessages } from './composables/messages'
 
 const ctx = useContext()
 const { channels, loadChannel } = useMessages(ctx)
@@ -10,13 +10,12 @@ const { channels, loadChannel } = useMessages(ctx)
 const convList = ref<ConversationItem[]>([])
 const currentId = ref('')
 const inputText = ref('')
+const sending = ref(false)
 
-const appNs = (ctx.stater as any)._namespaces.app
-const convNs = (ctx.stater as any)._namespaces.conversation
-
-convList.value = [...(convNs.list ?? [])]
-currentId.value = convNs.currentId ?? ''
-let sendKey: string = appNs.messageInput?.sendKey ?? 'Enter'
+const snap = ctx.stater.snapshot()
+convList.value = [...(snap.conversation?.list ?? [])]
+currentId.value = snap.conversation?.currentId ?? ''
+const sendKey = ref<string>(snap.app?.messageInput?.sendKey ?? 'Enter')
 
 ctx.on('state/changed', (path: string, value: unknown) => {
   if (path === 'conversation.list')
@@ -24,7 +23,7 @@ ctx.on('state/changed', (path: string, value: unknown) => {
   if (path === 'conversation.currentId')
     currentId.value = value as string
   if (path === 'app.messageInput.sendKey')
-    sendKey = value as string
+    sendKey.value = value as string
 })
 
 const channelState = computed(() => channels.get(currentId.value))
@@ -41,13 +40,12 @@ async function select(item: ConversationItem) {
     ctx.stater.conversation.drafts[currentId.value] = inputText.value
   }
   ctx.stater.conversation.currentId = id
-  inputText.value = convNs.drafts?.[id] ?? ''
   if (!channels.has(id))
     await loadChannel(id)
 }
 
 watch(currentId, (id) => {
-  inputText.value = convNs.drafts?.[id] ?? ''
+  inputText.value = ctx.stater.snapshot().conversation?.drafts?.[id] ?? ''
 })
 
 function onInput() {
@@ -58,24 +56,33 @@ function onInput() {
 
 async function sendMessage() {
   const content = inputText.value.trim()
-  if (!content || !currentId.value)
+  if (!content || !currentId.value || sending.value)
     return
-  const [platform, ...rest] = currentId.value.split(':')
-  await ctx.link.action('message.create', { platform, channelId: rest.join(':'), content })
-  inputText.value = ''
-  delete ctx.stater.conversation.drafts[currentId.value]
+  sending.value = true
+  try {
+    const { platform, channelId } = parseChannelId(currentId.value)
+    await ctx.link.action('message.create', { platform, channelId, content })
+    inputText.value = ''
+    delete ctx.stater.conversation.drafts[currentId.value]
+  }
+  catch (err) {
+    ctx.logger('messages').warn('sendMessage failed: %s', err instanceof Error ? err.message : String(err))
+  }
+  finally {
+    sending.value = false
+  }
 }
 
 function onKeydown(e: KeyboardEvent) {
-  if (sendKey === 'Enter' && e.key === 'Enter' && !e.shiftKey && !e.ctrlKey && !e.metaKey) {
+  if (sendKey.value === 'Enter' && e.key === 'Enter' && !e.shiftKey && !e.ctrlKey && !e.metaKey) {
     e.preventDefault()
     sendMessage()
   }
-  else if (sendKey === 'Ctrl+Enter' && e.key === 'Enter' && e.ctrlKey) {
+  else if (sendKey.value === 'Ctrl+Enter' && e.key === 'Enter' && e.ctrlKey) {
     e.preventDefault()
     sendMessage()
   }
-  else if (sendKey === 'Cmd+Enter' && e.key === 'Enter' && e.metaKey) {
+  else if (sendKey.value === 'Cmd+Enter' && e.key === 'Enter' && e.metaKey) {
     e.preventDefault()
     sendMessage()
   }
@@ -135,7 +142,7 @@ function formatTime(ts?: number) {
         @input="onInput"
         @keydown="onKeydown"
       />
-      <fluent-button appearance="primary" @click="sendMessage">
+      <fluent-button appearance="primary" :disabled="sending || undefined" @click="sendMessage">
         Send
       </fluent-button>
     </div>
