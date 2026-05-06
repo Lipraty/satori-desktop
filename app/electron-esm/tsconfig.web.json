@@ -23,12 +23,20 @@
       "@plugin/client-person": [
         "../../plugins/client-person/client/index.ts"
       ]
-    }
+    },
+    "strictNullChecks": false,
+    "noImplicitReturns": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "ignoreDeprecations": "6.0"
   },
   "include": [
     "src/renderer/src/env.d.ts",
     "src/renderer/src/**/*",
     "src/renderer/src/**/*.vue",
     "src/preload/*.d.ts"
+  ],
+  "exclude": [
+    "../../packages/schemastery"
   ]
 }

@@ -38,9 +38,12 @@ export function buildDefaultEntries(manifests: PluginManifest[], dbPath: string)
       id: `builtin-${m.name}`,
       name: `cordis:${m.name}`,
     }
-    if (m.name === 'database-sqlite') entry.config = { path: dbPath }
-    if (m.name === 'server') entry.config = { host: '127.0.0.1', port: 5140 }
-    if (m.name === 'window') entry.config = { theme: 'system', width: 1076, height: 653 }
+    if (m.name === 'database-sqlite')
+      entry.config = { path: dbPath }
+    if (m.name === 'server')
+      entry.config = { host: '127.0.0.1', port: 5140 }
+    if (m.name === 'window')
+      entry.config = { theme: 'system', width: 1076, height: 653 }
     return entry
   })
 }

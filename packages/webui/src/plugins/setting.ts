@@ -8,7 +8,6 @@ import { Service } from 'cordis'
 import { defineProperty, remove } from 'cosmokit'
 import { computed, markRaw, reactive, ref, watch } from 'vue'
 import { insert } from '../utils'
-import type {} from '@satoriapp/state'
 
 export interface SettingOptions extends Ordered {
   id: string
@@ -35,11 +34,13 @@ let activeStater: StateService | undefined
 
 const defaultFactory: StorageFactory = <T extends object>(key: string, version?: number, fallback?: () => T): StorageRef<T> => {
   const initial = (fallback ? fallback() : {}) as T & { __version__?: number }
-  if (version !== undefined) initial.__version__ = version
+  if (version !== undefined)
+    initial.__version__ = version
   const localFallback = ref(initial) as Ref<T>
   return computed({
     get(): T {
-      if (!activeStater) return localFallback.value
+      if (!activeStater)
+        return localFallback.value
       const ns = activeStater.data[key] as (T & { __version__?: number }) | undefined
       if (!ns || (version !== undefined && ns.__version__ !== version)) {
         activeStater.mutate((d) => {
@@ -113,7 +114,8 @@ export default class SettingService {
       insert(list, options)
       return () => {
         remove(list, options)
-        if (!list.length) delete this._settings[options.id]
+        if (!list.length)
+          delete this._settings[options.id]
       }
     })
   }

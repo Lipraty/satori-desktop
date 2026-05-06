@@ -30,11 +30,11 @@ export const KSlot = defineComponent({
       const internal: SlotEntry[] = props.single
         ? []
         : [...(slots.default?.() || [])]
-          .filter((node): node is VNode => (node as VNode).type === KSlotItem)
-          .map((node) => {
-            const propsAny = node.props as { order?: number } | null
-            return { node, order: propsAny?.order ?? 0 }
-          })
+            .filter((node): node is VNode => (node as VNode).type === KSlotItem)
+            .map((node) => {
+              const propsAny = node.props as { order?: number } | null
+              return { node, order: propsAny?.order ?? 0 }
+            })
       const views = (ctx.client.router.views[props.name] as SlotOptions[] | undefined) ?? []
       const external: SlotEntry[] = views
         .filter(item => !item.disabled?.())

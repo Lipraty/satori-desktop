@@ -36,7 +36,7 @@ export class Activity {
     Object.assign(this, omit(options, ['icon', 'name', 'desc', 'disabled']))
   }
 
-  *setup() {
+  * setup() {
     const { path, id = getActivityId(path), component } = this.options
     const router = this.ctx.client.router
     yield router.router.addRoute({ path, name: id, component, meta: { activity: this } })
@@ -85,9 +85,12 @@ export default class RouterService {
   }
 
   get platform(): Platform {
-    if (typeof window === 'undefined') return 'web'
-    if ('electron' in window) return 'electron'
-    if ('cirno' in window) return 'cirno'
+    if (typeof window === 'undefined')
+      return 'web'
+    if ('electron' in window)
+      return 'electron'
+    if ('cirno' in window)
+      return 'cirno'
     return 'web'
   }
 
@@ -99,14 +102,16 @@ export default class RouterService {
       insert(list, options)
       return () => {
         remove(list, options)
-        if (!list.length) delete this.views[options.type]
+        if (!list.length)
+          delete this.views[options.type]
       }
     })
   }
 
   page(options: Activity.Options) {
     const wrapped = this.ctx.client.wrapComponent(options.component)
-    if (wrapped) options.component = wrapped
+    if (wrapped)
+      options.component = wrapped
     if (options.icon && typeof options.icon === 'object' && !isRef(options.icon)) {
       markRaw(options.icon)
     }

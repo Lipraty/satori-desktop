@@ -9,7 +9,8 @@ export type SerializedMsg = Omit<AppMessage, 'seq'> & { seq: string }
 
 export function parseChannelId(id: string): { platform: string, channelId: string } {
   const colonIdx = id.indexOf(':')
-  if (colonIdx < 0) return { platform: '', channelId: id }
+  if (colonIdx < 0)
+    return { platform: '', channelId: id }
   return { platform: id.slice(0, colonIdx), channelId: id.slice(colonIdx + 1) }
 }
 
@@ -57,7 +58,8 @@ export function useMessageStream(ctx: Context, channelId: ComputedRef<string>): 
   const channels = shallowReactive(new Map<string, { messages: ClientMessage[], loading: boolean }>())
 
   async function load(id: string) {
-    if (!id) return
+    if (!id)
+      return
     const { platform, channelId: cid } = parseChannelId(id)
     channels.set(id, { messages: channels.get(id)?.messages ?? [], loading: true })
     try {
@@ -73,14 +75,16 @@ export function useMessageStream(ctx: Context, channelId: ComputedRef<string>): 
   const unsub = ctx.link.on<SerializedMsg>('message.created', (raw) => {
     const id = toChannelId(raw)
     const ch = channels.get(id)
-    if (!ch) return
+    if (!ch)
+      return
     const msg = deserialize(raw)
     const messages = [...ch.messages]
     let lo = 0
     let hi = messages.length
     while (lo < hi) {
       const mid = (lo + hi) >>> 1
-      if (messages[mid].seq < msg.seq) lo = mid + 1
+      if (messages[mid].seq < msg.seq)
+        lo = mid + 1
       else hi = mid
     }
     messages.splice(lo, 0, msg)
@@ -88,7 +92,8 @@ export function useMessageStream(ctx: Context, channelId: ComputedRef<string>): 
   })
 
   watch(channelId, (id) => {
-    if (id && !channels.has(id)) void load(id)
+    if (id && !channels.has(id))
+      void load(id)
   }, { immediate: true })
 
   onUnmounted(unsub)
@@ -115,9 +120,11 @@ export function useDraft(ctx: Context, channelId: ComputedRef<string>): DraftApi
     set: (val) => {
       local.value = val
       const id = channelId.value
-      if (!id) return
+      if (!id)
+        return
       ctx.stater.mutate((d) => {
-        if (val) d.conversation.drafts[id] = val
+        if (val)
+          d.conversation.drafts[id] = val
         else delete d.conversation.drafts[id]
       })
     },

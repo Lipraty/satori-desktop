@@ -1,5 +1,5 @@
 import type { ElectronAPI } from '@electron-toolkit/preload'
-import type { App, Component, DefineComponent, Ref } from 'vue'
+import type { App, Component, Ref } from 'vue'
 import * as cordis from 'cordis'
 import { Service } from 'cordis'
 import Logger from '@cordisjs/plugin-logger'
@@ -97,16 +97,19 @@ export class ClientService extends Service {
       .use(this.router.router)
 
     const store = this._store
+    // eslint-disable-next-line prefer-arrow-callback
     ctx.on('internal/service', function (this: cordis.Context, name: string) {
       const ref = store[name]
-      if (ref) ref.value = Symbol(name)
+      if (ref)
+        ref.value = Symbol(name)
     }, { global: true })
 
     ctx.on('internal/get', (childCtx, name, _error, next) => {
       const ref = store[name] ??= customRef((get, set) => ({ get, set }))
       void ref.value
       const value = childCtx.reflect.get(name, false)
-      if (value !== undefined) return value
+      if (value !== undefined)
+        return value
       return next()
     }, { prepend: true })
   }
@@ -115,14 +118,15 @@ export class ClientService extends Service {
     this.app.mount(selector)
   }
 
-  wrapComponent(component?: Component): DefineComponent | undefined {
-    if (!component) return undefined
+  wrapComponent(component?: Component): Component | undefined {
+    if (!component)
+      return undefined
     const ctx = this.ctx
     return markRaw(defineComponent((props, { slots }) => {
       provide(kContext, ctx)
       onErrorCaptured(() => ctx.fiber.uid !== null)
       return () => h(component, props, slots)
-    })) as DefineComponent
+    }))
   }
 }
 
@@ -147,17 +151,20 @@ export class Context extends cordis.Context {
 }
 
 function getOS(): OSKey {
-  if (typeof navigator === 'undefined') return 'unknown'
+  if (typeof navigator === 'undefined')
+    return 'unknown'
   const nav: NavigatorWithUAData = navigator
   const uadPlatform = nav.userAgentData?.platform
   if (uadPlatform) {
     for (const [key, values] of Object.entries(osMap)) {
-      if (values.some(v => uadPlatform.includes(v))) return key as OSKey
+      if (values.some(v => uadPlatform.includes(v)))
+        return key as OSKey
     }
   }
   const ua = navigator.userAgent
   for (const [key, values] of Object.entries(osMap)) {
-    if (values.some(v => ua.includes(v))) return key as OSKey
+    if (values.some(v => ua.includes(v)))
+      return key as OSKey
   }
   return 'unknown'
 }

@@ -12,7 +12,8 @@ declare module 'cordis' {
 type ConversationType = 'channel' | 'group' | 'private'
 
 function asConversationType(value: unknown): ConversationType {
-  if (value === 'channel' || value === 'group' || value === 'private') return value
+  if (value === 'channel' || value === 'group' || value === 'private')
+    return value
   return 'channel'
 }
 

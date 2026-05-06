@@ -11,7 +11,8 @@ const { currentId } = useConversation(ctx)
 
 const channelTitle = computed(() => {
   const id = currentId.value
-  if (!id) return 'Messages'
+  if (!id)
+    return 'Messages'
   const { channelId, platform } = parseChannelId(id)
   return channelId || platform || id
 })

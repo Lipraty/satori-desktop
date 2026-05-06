@@ -1,7 +1,7 @@
 import antfu from '@antfu/eslint-config'
 
 export default antfu({
-  ignores: ['docs/**'],
+  ignores: ['docs/**', 'packages/schemastery/**'],
   typescript: {
     overrides: {
       'ts/no-namespace': 'off',
@@ -15,5 +15,26 @@ export default antfu({
       'perfectionist/sort-imports': 'off',
       'valid-typeof': 'off',
     },
+  },
+  rules: {
+    'no-restricted-syntax': ['error', {
+      selector: 'TSAsExpression[typeAnnotation.type="TSAnyKeyword"]',
+      message: 'Avoid using `as any`; please use proper type annotations.',
+    }],
+  },
+}, {
+  files: ['**/*.test.ts', '**/test/*.ts', '**/__tests__/**/*.ts'],
+  rules: {
+    'no-restricted-syntax': 'off',
+  },
+}, {
+  files: ['app/electron-esm/electron.vite.config.ts', 'app/electron-esm/vite/**'],
+  rules: {
+    'no-restricted-syntax': 'off',
+  },
+}, {
+  files: ['app/electron-esm/src/renderer/src/process-polyfill.ts'],
+  rules: {
+    'node/prefer-global/process': 'off',
   },
 })

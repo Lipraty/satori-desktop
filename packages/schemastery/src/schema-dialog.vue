@@ -37,10 +37,16 @@ if (import.meta.hot) {
 <template>
   <fluent-dialog class="k-schema-edit-dialog" :aria-label="t('edit.json')" :hidden="!show || undefined">
     <fluent-dialog-body>
-      <fluent-text :slot="'title'">{{ t('edit.json') }}</fluent-text>
-      <fluent-button :slot="'title-action'" appearance="transparent" icon-only @click="$emit('update:show', false)">
-        <IconClose />
-      </fluent-button>
+      <template #title>
+        <fluent-text>
+          {{ t('edit.json') }}
+        </fluent-text>
+      </template>
+      <template #title-action>
+        <fluent-button appearance="transparent" icon-only @click="$emit('update:show', false)">
+          <IconClose />
+        </fluent-button>
+      </template>
       <fluent-text-area
         :class="{ invalid: jsonError }"
         :value="jsonInput"

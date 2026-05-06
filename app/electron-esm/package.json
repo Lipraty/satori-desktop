@@ -86,7 +86,7 @@
     "magic-string": "^0.30.17",
     "prettier": "^3.5.3",
     "sass-embedded": "^1.98.0",
-    "typescript": "^5.8.3",
+    "typescript": "^6.0.3",
     "vite": "^6.2.6",
     "vue-tsc": "^2.2.12"
   }
