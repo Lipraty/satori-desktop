@@ -1,5 +1,6 @@
 import type { Context } from 'cordis'
 import { Link, LinkError } from '@satoriapp/link'
+import { Service } from 'cordis'
 
 interface IpcRendererBridge {
   invoke: (channel: string, ...args: unknown[]) => Promise<unknown>
@@ -51,13 +52,15 @@ export class LinkIpcClient<C extends Context = Context> extends Link<C> {
     }
   }
 
-  async stop() {
-    const bridge = this.bridge
-    for (const [event, wrapped] of this.boundListeners.entries()) {
-      bridge?.removeListener(this.toChannel(event), wrapped)
+  async* [Service.init]() {
+    yield () => {
+      const bridge = this.bridge
+      for (const [event, wrapped] of this.boundListeners.entries()) {
+        bridge?.removeListener(this.toChannel(event), wrapped)
+      }
+      this.boundListeners.clear()
+      this.eventListeners.clear()
     }
-    this.boundListeners.clear()
-    this.eventListeners.clear()
   }
 
   protected async call<T, R>(path: string, payload?: T): Promise<Link.Response<R>> {
@@ -76,7 +79,7 @@ export class LinkIpcClient<C extends Context = Context> extends Link<C> {
     try {
       const result = await Link.withTimeout(bridge.invoke(channel, raw)) as Link.Response<R>
       this.log.debug('← %s success', channel)
-      return { id: path, ...result }
+      return { ...result, id: path }
     }
     catch (err) {
       this.log.warn('← %s error: %s', channel, err instanceof Error ? err.message : String(err))

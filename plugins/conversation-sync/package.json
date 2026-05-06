@@ -1,7 +1,7 @@
 {
-  "name": "@satoriapp/plugin-client-settings",
+  "name": "@satoriapp/plugin-conversation-sync",
   "version": "0.0.1",
-  "description": "SAPP: settings client plugin",
+  "description": "Satori App — sync message events into AppState.conversation",
   "license": "AGPL-3.0-only",
   "exports": {
     ".": {
@@ -12,14 +12,12 @@
     "./package.json": "./package.json"
   },
   "main": "./lib/index.mjs",
-  "peerDependencies": {
-    "@satoriapp/webui": "workspace:*",
-    "vue": "^3.5.0"
-  },
   "dependencies": {
-    "@satoriapp/link": "workspace:*",
-    "@satoriapp/state": "workspace:*",
-    "cordis": "3.18.1"
+    "cordis": "^4.0.0-rc.4"
+  },
+  "devDependencies": {
+    "@satoriapp/plugin-message": "workspace:*",
+    "@satoriapp/state": "workspace:*"
   },
   "sapp": {
     "node": true

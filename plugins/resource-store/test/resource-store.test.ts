@@ -1,5 +1,5 @@
 import { Context } from 'cordis'
-import Database from 'minato'
+import Database from '@cordisjs/plugin-database'
 import { describe, expect, it } from 'vitest'
 import { apply } from '../src/index'
 

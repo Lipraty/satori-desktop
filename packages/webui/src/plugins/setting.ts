@@ -1,70 +1,119 @@
-import type { Context } from '@satoriapp/webui'
-import type { Component } from 'vue'
+import type { Context } from 'cordis'
+import type { Component, Ref, WritableComputedRef } from 'vue'
+import type { Dict } from 'cosmokit'
+import type Schema from 'schemastery'
+import type { StateService } from '@satoriapp/state'
+import type { Ordered } from '../utils'
 import { Service } from 'cordis'
-import Schema from 'schemastery'
-import { markRaw, reactive } from 'vue'
+import { defineProperty, remove } from 'cosmokit'
+import { computed, markRaw, reactive, ref, watch } from 'vue'
+import { insert } from '../utils'
+import type {} from '@satoriapp/state'
 
-declare module '@satoriapp/webui' {
-  interface Context {
-    $setting: SettingService
-    settings: SettingService['settings']
-    internal: {
-      settings: SettingRecord
-      [key: string]: unknown
-    }
-  }
-}
-
-export interface SettingOptions {
+export interface SettingOptions extends Ordered {
   id: string
   title?: string
-  order?: number
   disabled?: () => boolean
   schema?: Schema
   component?: Component
 }
 
-type SettingRecord = Record<string, SettingOptions[]>
-
-function insertOrdered(list: SettingOptions[], options: SettingOptions) {
-  const order = options.order ?? 0
-  const index = list.findIndex(item => (item.order ?? 0) > order)
-  if (index < 0)
-    list.push(options)
-  else
-    list.splice(index, 0, options)
+export interface Config {
+  theme?: {
+    mode: 'auto' | 'dark' | 'light'
+    dark: string
+    light: string
+  }
+  locale?: string
+  [key: string]: any
 }
 
-export default class SettingService extends Service<never, Context> {
-  private readonly entriesMap = reactive<SettingRecord>({})
+export type StorageRef<T> = WritableComputedRef<T> | Ref<T>
+export type StorageFactory = <T extends object>(key: string, version?: number, fallback?: () => T) => StorageRef<T>
 
-  constructor(ctx: Context) {
-    super(ctx, '$setting', true)
-    ctx.mixin('$setting', ['settings'])
-    ctx.provide('internal', { settings: this.entriesMap })
+let activeStater: StateService | undefined
+
+const defaultFactory: StorageFactory = <T extends object>(key: string, version?: number, fallback?: () => T): StorageRef<T> => {
+  const initial = (fallback ? fallback() : {}) as T & { __version__?: number }
+  if (version !== undefined) initial.__version__ = version
+  const localFallback = ref(initial) as Ref<T>
+  return computed({
+    get(): T {
+      if (!activeStater) return localFallback.value
+      const ns = activeStater.data[key] as (T & { __version__?: number }) | undefined
+      if (!ns || (version !== undefined && ns.__version__ !== version)) {
+        activeStater.mutate((d) => {
+          d[key] = initial
+        })
+        return initial
+      }
+      return ns
+    },
+    set(value: T) {
+      if (!activeStater) {
+        localFallback.value = value
+        return
+      }
+      activeStater.mutate((d) => {
+        d[key] = value
+      })
+    },
+  })
+}
+
+let storageFactory: StorageFactory = defaultFactory
+
+export function provideStorage(factory: StorageFactory) {
+  storageFactory = factory
+}
+
+export function useStorage<T extends object>(key: string, version?: number, fallback?: () => T): StorageRef<T> {
+  return storageFactory(key, version, fallback)
+}
+
+export const original = useStorage<Config>('config', undefined, () => ({
+  theme: { mode: 'auto', dark: 'default-dark', light: 'default-light' },
+  locale: 'zh-CN',
+}))
+
+export const resolved = ref({} as Config)
+
+export const useConfig = (useOriginal = false) => useOriginal ? original : resolved
+
+export default class SettingService {
+  _settings: Dict<SettingOptions[]> = reactive({})
+
+  constructor(public ctx: Context) {
+    defineProperty(this, Service.tracker, { property: 'ctx' })
+    activeStater = ctx.stater
+
+    const update = () => {
+      try {
+        resolved.value = original.value
+      }
+      catch (error) {
+        console.error(error)
+      }
+    }
+
+    ctx.effect(() => watch(original, update, { deep: true }))
+    update()
   }
 
-  get entries() {
-    return this.entriesMap
-  }
+  get entries() { return this._settings }
 
-  settings(options: SettingOptions): () => void {
+  settings(options: SettingOptions) {
     markRaw(options)
     options.order ??= 0
     if (options.component) {
-      options.component = this.ctx.component(options.component)
+      options.component = this.ctx.client.wrapComponent(options.component)
     }
-
     return this.ctx.effect(() => {
-      const list = (this.entriesMap[options.id] ??= [])
-      insertOrdered(list, options)
-
+      const list = this._settings[options.id] ||= []
+      insert(list, options)
       return () => {
-        const index = list.indexOf(options)
-        if (index >= 0)
-          list.splice(index, 1)
-        if (!list.length)
-          delete this.entriesMap[options.id]
+        remove(list, options)
+        if (!list.length) delete this._settings[options.id]
       }
     })
   }

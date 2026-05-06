@@ -19,7 +19,7 @@
   "dependencies": {
     "@satoriapp/link": "workspace:*",
     "@satoriapp/state": "workspace:*",
-    "cordis": "3.18.1"
+    "cordis": "^4.0.0-rc.4"
   },
   "devDependencies": {
     "@satoriapp/plugin-message": "workspace:*"

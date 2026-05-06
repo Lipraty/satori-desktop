@@ -11,9 +11,8 @@ const search = ref('')
 
 convList.value = [...(ctx.stater.snapshot().conversation?.list ?? [])]
 
-ctx.on('state/changed', (path: string, value: unknown) => {
-  if (path === 'conversation.list')
-    convList.value = value as ConversationItem[]
+ctx.on('state/changed', () => {
+  convList.value = [...(ctx.stater.data.conversation?.list ?? [])]
 })
 
 const contacts = computed(() =>
@@ -27,8 +26,10 @@ function avatarChar(item: ConversationItem) {
 }
 
 function goToMessages(item: ConversationItem) {
-  ctx.stater.conversation.currentId = `${item.platform}:${item.channelId}`
-  ctx.$router?.router.push('/')
+  ctx.stater.mutate((d) => {
+    d.conversation.currentId = `${item.platform}:${item.channelId}`
+  })
+  ctx.client.router.router.push('/')
 }
 </script>
 

@@ -1,12 +1,24 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useContext } from '../context'
+import type { Activity } from '../plugins/router'
 
 const ctx = useContext()
-const topPages = Object.values(ctx.$router.pages).filter(pager => pager.options?.position === 'top')
-const bottomPages = Object.values(ctx.$router.pages).filter(pager => pager.options?.position === 'bottom')
+function byOrder(a: Activity, b: Activity) {
+  return (a.options?.order ?? 0) - (b.options?.order ?? 0)
+}
+const topPages = computed(() =>
+  Object.values(ctx.client.router.pages)
+    .filter(p => p.options?.position === 'top')
+    .sort(byOrder),
+)
+const bottomPages = computed(() =>
+  Object.values(ctx.client.router.pages)
+    .filter(p => p.options?.position === 'bottom')
+    .sort(byOrder),
+)
 const current = ref('/')
-ctx.$router.router.afterEach((to) => {
+ctx.client.router.router.afterEach((to) => {
   current.value = to.path
 })
 </script>

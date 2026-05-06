@@ -13,8 +13,7 @@
   },
   "main": "./lib/index.mjs",
   "dependencies": {
-    "@satorijs/adapter-satori": "^1.5.1",
-    "@satorijs/core": "^4.5.0",
-    "schemastery": "^3.16.0"
+    "cordis": "^4.0.0-rc.4",
+    "schemastery": "^3.18.0"
   }
 }

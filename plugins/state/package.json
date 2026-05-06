@@ -12,12 +12,13 @@
     "./package.json": "./package.json"
   },
   "main": "./lib/index.mjs",
-  "scripts": {
-    "test": "vitest run"
-  },
   "dependencies": {
+    "@cordisjs/muon": "^0.2.2",
+    "@cordisjs/plugin-database": "^4.0.1",
+    "@cordisjs/plugin-loader": "^1.0.0-rc.3",
+    "@cordisjs/plugin-logger": "^1.0.2",
     "@satoriapp/state": "workspace:*",
-    "cordis": "3.18.1"
+    "cordis": "^4.0.0-rc.4"
   },
   "devDependencies": {
     "vitest": "^3.1.1"

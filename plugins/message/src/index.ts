@@ -1,9 +1,7 @@
 import { randomUUID } from 'node:crypto'
 import {} from '@satoriapp/plugin-msgdb' // module augmentation
-import { Session } from '@satorijs/core'
-import {} from '@satorijs/protocol' // module augmentation
 import { Context, Service } from 'cordis'
-import {} from 'minato' // module augmentation
+import {} from '@cordisjs/plugin-database' // module augmentation
 
 import { AppMessage, CreateMessageInput } from './types'
 
@@ -48,7 +46,6 @@ interface MessageMetrics {
   persisted: number
   recovered: number
   deadMarked: number
-  resourceProjected: number
   errors: number
 }
 
@@ -64,7 +61,6 @@ declare module 'cordis' {
     'message/recovered': (count: number) => void
     'message/degraded': (reason: string) => void
     'message/error': (stage: string, error: string) => void
-    'message/resource-projected': (table: string, count: number) => void
   }
 }
 
@@ -72,9 +68,9 @@ declare module '@satoriapp/link' {}
 
 export class AppMessageService extends Service {
   static readonly name = 'message'
-  static readonly inject: Record<string, { required: boolean }> = {
+  static readonly inject = {
     database: { required: false },
-    satori: { required: false },
+    logger: { required: true },
   }
 
   private readonly channels = new Map<string, ChannelRuntime>()
@@ -85,42 +81,31 @@ export class AppMessageService extends Service {
     persisted: 0,
     recovered: 0,
     deadMarked: 0,
-    resourceProjected: 0,
     errors: 0,
   }
 
-  private started = false
   private recoveredOnce = false
   private degraded = false
 
   constructor(ctx: Context) {
-    super(ctx, 'message', true)
+    super(ctx, 'message')
   }
 
-  async start() {
-    if (this.started)
-      return
-
+  async* [Service.init]() {
     this.ctx.on('message/persisted', (seq) => {
       this.markPersisted(seq)
     })
 
-    this.ctx.on('internal/session', (session: any) => {
-      void this.ingestSession(session as Session)
-    })
-
     await this.recoverFromDatabase()
-    this.started = true
-    this.ctx.logger?.info('message service started')
-  }
+    this.ctx.logger('message').info('message service started')
 
-  async stop() {
-    this.channels.clear()
-    this.messageIdMap.clear()
-    this.started = false
-    this.recoveredOnce = false
-    this.degraded = false
-    this.ctx.logger?.info('message service stopped')
+    yield () => {
+      this.channels.clear()
+      this.messageIdMap.clear()
+      this.recoveredOnce = false
+      this.degraded = false
+      this.ctx.logger('message').info('message service stopped')
+    }
   }
 
   getMetrics(): MessageMetrics & { channels: number, spans: number } {
@@ -186,18 +171,6 @@ export class AppMessageService extends Service {
   }
 
   async create(input: CreateMessageInput): Promise<AppMessage> {
-    // local-only messages skip platform send entirely
-    if (input.localOnly !== false) {
-      return this.ingest({ ...input, localOnly: true })
-    }
-
-    // send to platform first, then ingest with real ID on success
-    const sent = await this.sendToPlatform(input)
-    if (sent) {
-      return this.ingest({ ...input, id: sent.id, localOnly: false })
-    }
-    // platform send failed — ingest as local fallback
-    this.ctx.emit('message/error', 'create', 'platform send failed, message saved locally')
     return this.ingest({ ...input, localOnly: true })
   }
 
@@ -247,7 +220,7 @@ export class AppMessageService extends Service {
       this.messageIdMap.set(this.remoteMessageKey(message.platform, message.channelId, message.id), message.seq)
     }
     this.metrics.ingested++
-    this.logger.info('message ingested: seq=%s platform=%s channelId=%s', message.seq.toString(), message.platform, message.channelId)
+    this.ctx.logger('message').info('message ingested: seq=%s platform=%s channelId=%s', message.seq.toString(), message.platform, message.channelId)
     this.ctx.emit('message/created', message, input.payload)
     return message
   }
@@ -335,7 +308,7 @@ export class AppMessageService extends Service {
 
     sequence = Math.max(0, Math.min(4095, sequence))
     if (sequence === 0 || sequence === 4095)
-      this.logger.warn('seq counter saturated at %d for timestamp %d', sequence, timestamp)
+      this.ctx.logger('message').warn('seq counter saturated at %d for timestamp %d', sequence, timestamp)
     return (timestampBits << 12n) | BigInt(sequence)
   }
 
@@ -603,27 +576,7 @@ export class AppMessageService extends Service {
     const message = error instanceof Error ? error.message : String(error)
     this.metrics.errors++
     this.ctx.emit('message/error', stage, message)
-    this.logger.warn('%s failed: %s', stage, message)
-  }
-
-  private async sendToPlatform(input: CreateMessageInput): Promise<{ id: string } | undefined> {
-    const bot = this.ctx.bots?.find(b => b.platform === input.platform && (!input.selfId || b.selfId === input.selfId))
-    if (!bot) {
-      this.logger.warn('no bot for platform=%s, message stays local', input.platform)
-      return undefined
-    }
-    try {
-      const sent = await bot.createMessage(input.channelId, input.content ?? '')
-      if (sent?.[0]?.id) {
-        return { id: sent[0].id }
-      }
-      return undefined
-    }
-    catch (error) {
-      this.handleError('send-to-platform', error)
-      this.ctx.emit('message/error', 'send-to-platform', error instanceof Error ? error.message : String(error))
-      return undefined
-    }
+    this.ctx.logger('message').warn('%s failed: %s', stage, message)
   }
 
   private markDegraded(reason: string): void {
@@ -631,7 +584,7 @@ export class AppMessageService extends Service {
       return
     this.degraded = true
     this.ctx.emit('message/degraded', reason)
-    this.logger.warn(reason)
+    this.ctx.logger('message').warn(reason)
   }
 
   private async recoverFromDatabase(): Promise<void> {
@@ -688,7 +641,7 @@ export class AppMessageService extends Service {
 
       this.metrics.recovered += recovered
       this.ctx.emit('message/recovered', recovered)
-      this.logger.info('message recovery completed: %d records (%d ms)', recovered, Date.now() - startedAt)
+      this.ctx.logger('message').info('message recovery completed: %d records (%d ms)', recovered, Date.now() - startedAt)
     }
     catch (error) {
       this.handleError('recover', error)
@@ -740,67 +693,6 @@ export class AppMessageService extends Service {
     this.recomputeSpan(span.uid, runtime)
     this.relinkSpans(runtime)
     return deduped.length
-  }
-
-  private async ingestSession(session: Session): Promise<void> {
-    const type = session.type
-    if (!type)
-      return
-
-    const platform = (session.platform || '').toString()
-    const channelId = (session.channelId || '').toString()
-    if (!platform || !channelId)
-      return
-
-    this.logger.info('ingestSession: type=%s platform=%s channelId=%s', type, platform, channelId)
-
-    if (type === 'message-created') {
-      const timestamp = Number(session.event.message?.createdAt || session.timestamp || Date.now())
-      await this.receive({
-        id: session.messageId?.toString(),
-        platform,
-        channelId,
-        timestamp,
-        content: session.content,
-        localOnly: false,
-        conversationType: this.toConversationType(session.event.channel?.type),
-      })
-      return
-    }
-
-    if (type === 'message-deleted') {
-      const messageId = session.messageId?.toString()
-      if (!messageId)
-        return
-      const remoteKey = this.remoteMessageKey(platform, channelId, messageId)
-      const seq = this.messageIdMap.get(remoteKey)
-      if (seq === undefined)
-        return
-      this.deleteMessage(seq, true)
-      return
-    }
-
-    await this.receive({
-      platform,
-      channelId,
-      timestamp: Number(session.timestamp || Date.now()),
-      content: session.content,
-      localOnly: false,
-      isEvent: true,
-      eventType: type,
-      conversationType: this.toConversationType(session.event.channel?.type),
-      payload: {
-        sessionType: type,
-      },
-    })
-  }
-
-  private toConversationType(channelType: unknown): 'channel' | 'group' | 'private' {
-    if (channelType === 1 || channelType === 'DIRECT' || channelType === 'direct')
-      return 'private'
-    if (channelType === 3 || channelType === 'GROUP' || channelType === 'group')
-      return 'group'
-    return 'channel'
   }
 
   private remoteMessageKey(platform: string, channelId: string, messageId: string): string {

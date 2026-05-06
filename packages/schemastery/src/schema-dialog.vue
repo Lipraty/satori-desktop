@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
 import { IconClose } from './icons'
 import { useI18n } from 'vue-i18n'
 import zhCN from './locales/zh-CN.yml'
@@ -14,8 +13,8 @@ defineProps<{
 const emit = defineEmits<{
   'update:show': [value: boolean]
   'update:jsonInput': [value: string]
-  copyToClipboard: []
-  saveChanges: []
+  'copyToClipboard': []
+  'saveChanges': []
 }>()
 
 const { t, setLocaleMessage } = useI18n({
@@ -38,8 +37,8 @@ if (import.meta.hot) {
 <template>
   <fluent-dialog class="k-schema-edit-dialog" :aria-label="t('edit.json')" :hidden="!show || undefined">
     <fluent-dialog-body>
-      <fluent-text slot="title">{{ t('edit.json') }}</fluent-text>
-      <fluent-button slot="title-action" appearance="transparent" icon-only @click="$emit('update:show', false)">
+      <fluent-text :slot="'title'">{{ t('edit.json') }}</fluent-text>
+      <fluent-button :slot="'title-action'" appearance="transparent" icon-only @click="$emit('update:show', false)">
         <IconClose />
       </fluent-button>
       <fluent-text-area

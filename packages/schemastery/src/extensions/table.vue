@@ -200,7 +200,7 @@ if (import.meta.hot) {
               @blur="handleBlur($event, i, -1)"
             >
               <template v-if="validateCell(i, -1)">
-                <span :id="`invalid-cell-${i}`" slot="end" class="suffix-icon">
+                <span :id="`invalid-cell-${i}`" :slot="'end'" class="suffix-icon">
                   <IconInvalid class="invalid" />
                 </span>
                 <fluent-tooltip :anchor="`invalid-cell-${i}`" positioning="above">

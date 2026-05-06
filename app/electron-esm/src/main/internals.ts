@@ -1,158 +1,46 @@
-import type { Plugin } from 'cordis'
-import HTTP from '@cordisjs/plugin-http'
-import HTTPPkg from '@cordisjs/plugin-http/package.json' with { type: 'json' }
-import Server from '@cordisjs/plugin-server'
-import ServerPkg from '@cordisjs/plugin-server/package.json' with { type: 'json' }
+import type { EntryOptions } from '@cordisjs/plugin-loader'
+import type { PluginManifest } from '@satoriapp/electron-loader'
 import AppServer from '@satoriapp/plugin-app-server'
-import AppServerPkg from '@satoriapp/plugin-app-server/package.json' with { type: 'json' }
 import ClientMessages from '@satoriapp/plugin-client-messages'
-import ClientMessagesPkg from '@satoriapp/plugin-client-messages/package.json' with { type: 'json' }
-import ClientNetwork from '@satoriapp/plugin-client-network'
-import ClientNetworkPkg from '@satoriapp/plugin-client-network/package.json' with { type: 'json' }
-import ClientSettings from '@satoriapp/plugin-client-settings'
-import ClientSettingsPkg from '@satoriapp/plugin-client-settings/package.json' with { type: 'json' }
+import ConversationSync from '@satoriapp/plugin-conversation-sync'
 import Link from '@satoriapp/plugin-link-ipc'
-import LinkPkg from '@satoriapp/plugin-link-ipc/package.json' with { type: 'json' }
 import Message from '@satoriapp/plugin-message'
-
-import MessagePkg from '@satoriapp/plugin-message/package.json' with { type: 'json' }
 import * as MsgDb from '@satoriapp/plugin-msgdb'
-import MsgDbPkg from '@satoriapp/plugin-msgdb/package.json' with { type: 'json' }
 import * as ResourceStore from '@satoriapp/plugin-resource-store'
-import ResourceStorePkg from '@satoriapp/plugin-resource-store/package.json' with { type: 'json' }
 import State from '@satoriapp/plugin-state'
-import StatePkg from '@satoriapp/plugin-state/package.json' with { type: 'json' }
-import Satori from '@satorijs/core'
+import Database from '@cordisjs/plugin-database'
+import DatabaseSqlite from '@cordisjs/plugin-database-sqlite'
+import HTTP from '@cordisjs/plugin-http'
+import Logger from '@cordisjs/plugin-logger'
+import Server from '@cordisjs/plugin-server'
+import WindowService from './window'
 
-import SatoriPkg from '@satorijs/core/package.json' with { type: 'json' }
-
-import SQLite from '@minatojs/driver-sqlite'
-import SQLitePkg from '@minatojs/driver-sqlite/package.json' with { type: 'json' }
-
-export interface PluginCordisService {
-  required?: string[]
-  implements?: string[]
-  optional?: string[]
-}
-
-export interface PluginMeta {
-  service?: PluginCordisService
-  node?: boolean
-  [key: string]: unknown
-}
-
-export interface RuntimePluginManifest {
-  name: string
-  packageName: string
-  meta: PluginMeta
-  version: string
-  internal?: boolean
-  plugin: Plugin<any, any>
-}
-
-export const plugins: RuntimePluginManifest[] = [
-  {
-    name: 'sqlite',
-    packageName: '@minatojs/driver-sqlite',
-    meta: { service: { implements: ['database'] } },
-    version: SQLitePkg.version,
-    internal: true,
-    plugin: SQLite,
-  },
-  {
-    name: 'satori',
-    packageName: '@satorijs/core',
-    meta: SatoriPkg.cordis || {},
-    version: SatoriPkg.version,
-    internal: true,
-    plugin: Satori,
-  },
-  {
-    name: 'http',
-    packageName: '@cordisjs/plugin-http',
-    meta: { service: { implements: ['http'] } },
-    version: HTTPPkg.version,
-    internal: true,
-    plugin: HTTP,
-  },
-  {
-    name: 'server',
-    packageName: '@cordisjs/plugin-server',
-    meta: { service: { required: ['http'], implements: ['server'] } },
-    version: ServerPkg.version,
-    internal: true,
-    plugin: Server,
-  },
-  {
-    name: 'link',
-    packageName: '@satoriapp/plugin-link',
-    meta: { service: { implements: ['link'] } },
-    version: LinkPkg.version,
-    internal: true,
-    plugin: Link,
-  },
-  {
-    name: 'app-server',
-    packageName: '@satoriapp/plugin-app-server',
-    meta: { service: { required: ['link', 'message', 'state'], implements: ['appServer'] } },
-    version: AppServerPkg.version,
-    internal: true,
-    plugin: AppServer,
-  },
-  {
-    name: 'state',
-    packageName: '@satoriapp/plugin-state',
-    meta: { service: { implements: ['stater'] } },
-    version: StatePkg.version,
-    internal: true,
-    plugin: State,
-  },
-  {
-    name: 'msgdb',
-    packageName: '@satoriapp/plugin-msgdb',
-    meta: { service: { required: ['sqlite'] } },
-    version: MsgDbPkg.version,
-    internal: true,
-    plugin: MsgDb,
-  },
-  {
-    name: 'resource-store',
-    packageName: '@satoriapp/plugin-resource-store',
-    meta: { service: { required: ['sqlite'] } },
-    version: ResourceStorePkg.version,
-    internal: true,
-    plugin: ResourceStore,
-  },
-  {
-    name: 'message',
-    packageName: '@satoriapp/plugin-message',
-    meta: { service: { optional: ['sqlite', 'satori'], implements: ['message'] } },
-    version: MessagePkg.version,
-    internal: true,
-    plugin: Message,
-  },
-  {
-    name: 'client-messages',
-    packageName: '@satoriapp/plugin-client-messages',
-    meta: {},
-    version: ClientMessagesPkg.version,
-    internal: true,
-    plugin: ClientMessages,
-  },
-  {
-    name: 'client-network',
-    packageName: '@satoriapp/plugin-client-network',
-    meta: {},
-    version: ClientNetworkPkg.version,
-    internal: true,
-    plugin: ClientNetwork,
-  },
-  {
-    name: 'client-settings',
-    packageName: '@satoriapp/plugin-client-settings',
-    meta: {},
-    version: ClientSettingsPkg.version,
-    internal: true,
-    plugin: ClientSettings,
-  },
+export const plugins: PluginManifest[] = [
+  { name: 'logger', plugin: Logger },
+  { name: 'database', plugin: Database },
+  { name: 'database-sqlite', plugin: DatabaseSqlite },
+  { name: 'http', plugin: HTTP },
+  { name: 'server', plugin: Server },
+  { name: 'link', plugin: Link },
+  { name: 'app-server', plugin: AppServer },
+  { name: 'state', plugin: State },
+  { name: 'msgdb', plugin: MsgDb },
+  { name: 'resource-store', plugin: ResourceStore },
+  { name: 'message', plugin: Message },
+  { name: 'conversation-sync', plugin: ConversationSync },
+  { name: 'client-messages', plugin: ClientMessages },
+  { name: 'window', plugin: WindowService },
 ]
+
+export function buildDefaultEntries(manifests: PluginManifest[], dbPath: string): EntryOptions[] {
+  return manifests.map((m) => {
+    const entry: EntryOptions = {
+      id: `builtin-${m.name}`,
+      name: `cordis:${m.name}`,
+    }
+    if (m.name === 'database-sqlite') entry.config = { path: dbPath }
+    if (m.name === 'server') entry.config = { host: '127.0.0.1', port: 5140 }
+    if (m.name === 'window') entry.config = { theme: 'system', width: 1076, height: 653 }
+    return entry
+  })
+}

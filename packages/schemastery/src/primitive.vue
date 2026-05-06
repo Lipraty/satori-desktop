@@ -162,18 +162,18 @@ if (import.meta.hot) {
       @focus="$emit('focus', $event)" @blur="$emit('blur', $event)"
     >
       <template v-if="isLink">
-        <span slot="end" class="suffix-icon" @click="onClickExternal(config)">
+        <span :slot="'end'" class="suffix-icon" @click="onClickExternal(config)">
           <IconExternal />
         </span>
       </template>
       <template v-else-if="schema.meta.role === 'secret'">
-        <span slot="end" class="suffix-icon" @click="showPass = !showPass">
+        <span :slot="'end'" class="suffix-icon" @click="showPass = !showPass">
           <IconEye v-if="showPass" />
           <IconEyeSlash v-else />
         </span>
       </template>
       <template v-if="invalid">
-        <span :id="invalidAnchorId" slot="end" class="suffix-icon">
+        <span :id="invalidAnchorId" :slot="'end'" class="suffix-icon">
           <IconInvalid class="invalid" />
         </span>
         <fluent-tooltip :anchor="invalidAnchorId" positioning="above">

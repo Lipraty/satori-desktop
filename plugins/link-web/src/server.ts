@@ -4,15 +4,16 @@ import type { Context } from 'cordis'
 import type { IncomingMessage } from 'node:http'
 import { WebSocket } from 'ws'
 import { Link } from '@satoriapp/link'
+import { Service } from 'cordis'
 import '@cordisjs/plugin-server'
 
 export class LinkWeb<C extends Context = Context> extends Link<C> {
-  static inject = ['server']
+  static inject = { server: { required: true }, logger: { required: false } }
 
   private readonly handlers = new Map<string, Link.ActionHandler>()
   private ws?: WebSocketLayer
 
-  async start() {
+  async* [Service.init]() {
     this.ctx.server.post(`/${Link.PREFIX}/:path+`, async (ktx: Router.RouterContext) => {
       const path: string = ktx.params.path
       const handler = this.handlers.get(path)
@@ -31,7 +32,7 @@ export class LinkWeb<C extends Context = Context> extends Link<C> {
     })
 
     this.ws = this.ctx.server.ws(`/${Link.PREFIX}`, (socket: WebSocket, _req: IncomingMessage) => {
-      this.log.info('WebSocket client connected (total: %d)', this.ws.clients.size)
+      this.log.info('WebSocket client connected (total: %d)', this.ws!.clients.size)
       socket.on('close', () => this.log.info('WebSocket client disconnected'))
       socket.on('error', (err: Error) => this.log.warn('WebSocket client error: %s', err.message))
     })
@@ -52,13 +53,13 @@ export class LinkWeb<C extends Context = Context> extends Link<C> {
     })
 
     this.log.info('web adapter started')
-  }
 
-  async stop() {
-    this.ws?.close()
-    this.ws = undefined
-    this.handlers.clear()
-    this.eventListeners.clear()
+    yield () => {
+      this.ws?.close()
+      this.ws = undefined
+      this.handlers.clear()
+      this.eventListeners.clear()
+    }
   }
 
   protected handle<T, R>(path: string, handler: Link.ActionHandler<T, R>) {

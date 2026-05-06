@@ -12,6 +12,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
+    "@cordisjs/muon": "^0.2.2",
     "@fluentui/tokens": "^1.0.0-alpha.21",
     "@fluentui/web-components": "^3.0.0-beta.95",
     "@kalimahapps/vue-icons": "^1.7.1",
@@ -22,7 +23,7 @@
     "@satoriapp/state": "workspace:*",
     "@satorijs/protocol": "^1.6.0",
     "@vueuse/core": "^13.1.0",
-    "cordis": "^3.18.1",
+    "cordis": "^4.0.0-rc.4",
     "element-plus": "^2.9.8",
     "pinia": "^3.0.2",
     "schemastery": "^3.18.0",

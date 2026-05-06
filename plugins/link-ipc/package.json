@@ -12,12 +12,10 @@
     "./package.json": "./package.json"
   },
   "main": "./lib/index.mjs",
-  "scripts": {
-    "test": "vitest run"
-  },
   "dependencies": {
+    "@cordisjs/plugin-logger": "^1.0.2",
     "@satoriapp/link": "workspace:*",
-    "cordis": "3.18.1",
+    "cordis": "^4.0.0-rc.4",
     "electron": "35.1.5"
   },
   "devDependencies": {

@@ -9,7 +9,7 @@
         "src/renderer/src/*"
       ],
       "@plugin/link-ipc": [
-        "../../plugins/link-ipc/src/index.ts"
+        "../../plugins/link-ipc/src/client.ts"
       ],
       "@plugin/link-ws": [
         "../../plugins/link-web/src/client.ts"
@@ -17,11 +17,8 @@
       "@plugin/client-messages": [
         "../../plugins/client-messages/client/index.ts"
       ],
-      "@plugin/client-network": [
-        "../../plugins/client-network/client/index.ts"
-      ],
-      "@plugin/client-settings": [
-        "../../plugins/client-settings/client/index.ts"
+      "@plugin/client-config": [
+        "../../plugins/client-config/client/index.ts"
       ],
       "@plugin/client-person": [
         "../../plugins/client-person/client/index.ts"

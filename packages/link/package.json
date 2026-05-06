@@ -13,11 +13,9 @@
     "./package.json": "./package.json"
   },
   "main": "./lib/index.mjs",
-  "scripts": {
-    "test": "vitest run"
-  },
   "dependencies": {
-    "cordis": "3.18.1"
+    "@cordisjs/plugin-logger": "^1.0.2",
+    "cordis": "^4.0.0-rc.4"
   },
   "devDependencies": {
     "vitest": "^3.1.1"

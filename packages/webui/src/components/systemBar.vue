@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useContext } from '@satoriapp/webui'
-import { } from 'vue'
 
 const ctx = useContext()
 </script>

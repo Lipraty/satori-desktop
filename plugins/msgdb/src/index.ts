@@ -1,11 +1,11 @@
 import type { AppMessage } from '@satoriapp/plugin-message'
 import type { Context } from 'cordis'
-import type {} from 'minato' // module augmentation
+import type {} from '@cordisjs/plugin-database' // module augmentation
 
 export const name = 'msgdb'
-export const inject = ['database']
+export const inject = ['database', 'model', 'logger']
 
-declare module 'minato' {
+declare module '@cordisjs/plugin-database' {
   interface Tables {
     message: AppMessage
   }

@@ -1,3 +1,7 @@
+<script setup lang="ts">
+import Layout from './layout.vue'
+</script>
+
 <template>
-  <satori-slot name="root" :single="true" />
+  <Layout />
 </template>

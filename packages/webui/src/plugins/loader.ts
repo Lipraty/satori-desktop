@@ -1,40 +1,42 @@
-import type { Context } from '@satoriapp/webui'
+import type { Context } from 'cordis'
 import { Service } from 'cordis'
+import { defineProperty } from 'cosmokit'
+import { reactive } from 'vue'
 import { store } from '../data'
+import type {} from '@satoriapp/link'
 
-declare module '@satoriapp/webui' {
-  interface Context {
-    $loader: LoaderService
-    addEntry: LoaderService['addEntry']
-  }
-}
+export default class LoaderService {
+  public initTask: Promise<void>
+  public state = reactive<{ ready: boolean }>({ ready: false })
 
-export default class LoaderService extends Service<never, Context> {
-  constructor(ctx: Context) {
-    super(ctx, '$loader', true)
-    ctx.mixin('$loader', ['addEntry'])
+  constructor(public ctx: Context) {
+    defineProperty(this, Service.tracker, { property: 'ctx' })
+    this.initTask = Promise.resolve().then(() => {
+      this.state.ready = true
+    })
   }
 
   addEntry(key: string): () => void {
     return this.ctx.effect(() => {
+      const link = this.ctx.link
       const disposers: Array<() => void> = []
 
       disposers.push(
-        this.ctx.link.on(`data:${key}`, (value: unknown) => {
+        link.on(`data:${key}`, (value: unknown) => {
           store[key] = value
         }),
       )
 
       disposers.push(
-        this.ctx.link.on(`data:${key}.patch`, (patch: Record<string, unknown>) => {
+        link.on(`data:${key}.patch`, (patch: Record<string, unknown>) => {
           if (store[key] && typeof store[key] === 'object') {
             store[key] = { ...(store[key] as Record<string, unknown>), ...patch }
           }
         }),
       )
 
-      void this.ctx.link.action<unknown>(`data:${key}.get`)
-        .then((value) => { store[key] = value })
+      void link.action(`data:${key}.get`)
+        .then((value: unknown) => { store[key] = value })
         .catch(() => {})
 
       return () => {

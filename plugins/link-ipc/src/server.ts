@@ -1,6 +1,7 @@
 import type { Context } from 'cordis'
 import type { IpcMainInvokeEvent, WebContents } from 'electron'
 import { Link } from '@satoriapp/link'
+import { Service } from 'cordis'
 import { ipcMain, webContents } from 'electron'
 
 export class LinkIpc<C extends Context = Context> extends Link<C> {
@@ -12,28 +13,28 @@ export class LinkIpc<C extends Context = Context> extends Link<C> {
     return `${Link.PREFIX}:${normalized || 'ping'}`
   }
 
-  async start() {
-    if (this.bound)
-      return
-    for (const path of this.handlers.keys()) this.bindIpc(path)
+  async* [Service.init]() {
+    if (!this.bound) {
+      for (const path of this.handlers.keys()) this.bindIpc(path)
 
-    this.ctx.on('link/send', (event, data) => {
-      for (const l of this.eventListeners.get(event) ?? []) l(data)
-      const channel = this.toChannel(event)
-      for (const content of webContents.getAllWebContents()) this.trySend(content, channel, data)
-    })
+      this.ctx.on('link/send', (event, data) => {
+        for (const l of this.eventListeners.get(event) ?? []) l(data)
+        const channel = this.toChannel(event)
+        for (const content of webContents.getAllWebContents()) this.trySend(content, channel, data)
+      })
 
-    this.bound = true
-    this.log.info('IPC link started (%d handlers)', this.handlers.size)
-  }
-
-  async stop() {
-    if (this.bound) {
-      for (const path of this.handlers.keys()) ipcMain.removeHandler(this.toChannel(path))
-      this.bound = false
+      this.bound = true
+      this.log.info('IPC link started (%d handlers)', this.handlers.size)
     }
-    this.handlers.clear()
-    this.eventListeners.clear()
+
+    yield () => {
+      if (this.bound) {
+        for (const path of this.handlers.keys()) ipcMain.removeHandler(this.toChannel(path))
+        this.bound = false
+      }
+      this.handlers.clear()
+      this.eventListeners.clear()
+    }
   }
 
   protected handle<T, R>(path: string, handler: Link.ActionHandler<T, R>) {

@@ -1,7 +1,7 @@
 {
   "name": "@satoriapp/electron-loader",
   "version": "0.0.1",
-  "description": "Satori App for Electron - Loader",
+  "description": "Satori App for Electron - Loader (Cordis v4 Loader subclass)",
   "license": "MIT",
   "exports": {
     ".": {
@@ -10,5 +10,13 @@
       "require": "./lib/index.js"
     },
     "./package.json": "./package.json"
+  },
+  "main": "./lib/index.mjs",
+  "dependencies": {
+    "@cordisjs/plugin-loader": "^1.0.0-rc.3",
+    "@cordisjs/plugin-logger": "^1.0.2",
+    "@npmcli/arborist": "^7.5.4",
+    "cordis": "^4.0.0-rc.4",
+    "pacote": "^18.0.6"
   }
 }

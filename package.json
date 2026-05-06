@@ -58,14 +58,14 @@
     "vitest": "^3.1.1"
   },
   "resolutions": {
-    "vue": "3.5.16",
-    "@vue/compiler-sfc": "3.5.16",
-    "@vue/compiler-dom": "3.5.16",
     "@vue/compiler-core": "3.5.16",
-    "@vue/shared": "3.5.16",
-    "@vue/runtime-dom": "3.5.16",
-    "@vue/runtime-core": "3.5.16",
+    "@vue/compiler-dom": "3.5.16",
+    "@vue/compiler-sfc": "3.5.16",
     "@vue/reactivity": "3.5.16",
-    "@vue/server-renderer": "3.5.16"
+    "@vue/runtime-core": "3.5.16",
+    "@vue/runtime-dom": "3.5.16",
+    "@vue/server-renderer": "3.5.16",
+    "@vue/shared": "3.5.16",
+    "vue": "3.5.16"
   }
 }

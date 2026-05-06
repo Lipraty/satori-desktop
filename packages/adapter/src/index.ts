@@ -1,4 +1,4 @@
-import { Schema } from 'cordis'
+import { Schema } from 'schemastery'
 
 export interface AdapterPluginConfig<T = Record<string, any>> {
   enabled: boolean

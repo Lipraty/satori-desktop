@@ -1,13 +1,20 @@
 import type { Context as CordisContext } from 'cordis'
+import type { Mutation } from '@cordisjs/muon'
 import { Service } from 'cordis'
-import { makeDeepProxy } from './proxy.js'
+import { apply, observe } from '@cordisjs/muon'
 
-export { makeDeepProxy } from './proxy.js'
+export { apply, DeltaState, observe } from '@cordisjs/muon'
+export type { Delta, DeltaOp, Mutation, MutationKind, PathSegment } from '@cordisjs/muon'
 
-export interface Patch {
-  p: string
-  o: 'set' | 'delete'
-  v?: unknown
+export interface AdapterEntry {
+  enabled: boolean
+  config: Record<string, any>
+}
+
+export interface PluginEntry {
+  enabled: boolean
+  source: 'internal' | 'external'
+  config: Record<string, any>
 }
 
 export interface AppNamespaceState {
@@ -27,6 +34,10 @@ export interface AppNamespaceState {
   messageInput: {
     sendKey: 'Enter' | 'Ctrl+Enter' | 'Cmd+Enter'
   }
+  network: {
+    adapters: Record<string, AdapterEntry>
+  }
+  plugins: Record<string, PluginEntry>
 }
 
 export interface ConversationItem {
@@ -59,6 +70,8 @@ export const DEFAULT_STATE: AppStateNamespaces = {
     window: { width: 1076, height: 653, x: 0, y: 0 },
     sidebar: { collapsed: false, width: 280 },
     messageInput: { sendKey: 'Enter' },
+    network: { adapters: {} },
+    plugins: {},
   },
   conversation: {
     currentId: '',
@@ -71,50 +84,59 @@ export function deepClone<T>(value: T): T {
   return JSON.parse(JSON.stringify(value)) as T
 }
 
-export function setByPath(target: Record<string, unknown>, path: string, value: unknown): void {
-  const segs = path.split('.').filter(Boolean)
-  if (!segs.length)
-    return
-  let cur: Record<string, unknown> = target
-  for (let i = 0; i < segs.length - 1; i++) {
-    const k = segs[i]
-    if (!cur[k] || typeof cur[k] !== 'object')
-      cur[k] = {}
-    cur = cur[k] as Record<string, unknown>
+export function pickFields<T extends object>(source: T, fields: string[]): Record<string, any> {
+  const result: Record<string, any> = {}
+  for (const field of fields) {
+    const segments = field.split('.')
+    let cursor: any = source
+    let valid = true
+    for (const seg of segments) {
+      if (cursor && typeof cursor === 'object' && seg in cursor) {
+        cursor = cursor[seg]
+      }
+      else {
+        valid = false
+        break
+      }
+    }
+    if (!valid)
+      continue
+    let dst = result
+    for (let i = 0; i < segments.length - 1; i++) {
+      const seg = segments[i]
+      dst[seg] ??= {}
+      dst = dst[seg]
+    }
+    dst[segments[segments.length - 1]] = cursor
   }
-  cur[segs[segs.length - 1]] = value
+  return result
 }
 
-export function deleteByPath(target: Record<string, unknown>, path: string): void {
-  const segs = path.split('.').filter(Boolean)
-  if (!segs.length)
-    return
-  let cur: Record<string, unknown> = target
-  for (let i = 0; i < segs.length - 1; i++) {
-    const k = segs[i]
-    if (!cur[k] || typeof cur[k] !== 'object')
-      return
-    cur = cur[k] as Record<string, unknown>
+export function setByFields<T extends object>(target: T, source: any, fields: string[]): void {
+  for (const field of fields) {
+    const segments = field.split('.')
+    let cur: any = source
+    let valid = true
+    for (const seg of segments) {
+      if (cur && typeof cur === 'object' && seg in cur) {
+        cur = cur[seg]
+      }
+      else {
+        valid = false
+        break
+      }
+    }
+    if (!valid)
+      continue
+    let dst: any = target
+    for (let i = 0; i < segments.length - 1; i++) {
+      const seg = segments[i]
+      if (typeof dst[seg] !== 'object' || dst[seg] === null)
+        dst[seg] = {}
+      dst = dst[seg]
+    }
+    dst[segments[segments.length - 1]] = cur
   }
-  delete cur[segs[segs.length - 1]]
-}
-
-export function getByPath(target: Record<string, unknown>, path: string): unknown {
-  const segs = path.split('.').filter(Boolean)
-  let cur: unknown = target
-  for (const seg of segs) {
-    if (cur == null || typeof cur !== 'object')
-      return undefined
-    cur = (cur as Record<string, unknown>)[seg]
-  }
-  return cur
-}
-
-export function applyPatchToObject(target: Record<string, unknown>, patch: Patch): void {
-  if (patch.o === 'set')
-    setByPath(target, patch.p, patch.v)
-  else
-    deleteByPath(target, patch.p)
 }
 
 declare module 'cordis' {
@@ -122,53 +144,33 @@ declare module 'cordis' {
     stater: StateService
   }
   interface Events {
-    'state/changed': (path: string, value: unknown) => void
+    'state/changed': (mutation: Mutation) => void
   }
 }
 
-// applyPatch/applyPatches bypass _onChange to avoid re-broadcast loops; they emit state/changed directly.
 export abstract class StateService extends Service {
-  protected _namespaces: AppStateNamespaces = deepClone(DEFAULT_STATE)
+  public data: AppStateNamespaces = deepClone(DEFAULT_STATE)
 
   constructor(ctx: CordisContext) {
-    super(ctx, 'stater', true)
+    super(ctx, 'stater')
   }
 
-  get app(): AppNamespaceState {
-    return makeDeepProxy(
-      this._namespaces.app,
-      (p, v) => this._onChange(`app.${p}`, v),
-    )
+  mutate(fn: (data: AppStateNamespaces) => void): Mutation | null {
+    const mutation = observe(this.data, fn)
+    if (!mutation)
+      return null
+    this._onMutate(mutation)
+    return mutation
   }
 
-  get conversation(): ConversationNamespaceState {
-    return makeDeepProxy(
-      this._namespaces.conversation,
-      (p, v) => this._onChange(`conversation.${p}`, v),
-    )
-  }
-
-  ns<T extends Record<string, unknown> = Record<string, unknown>>(namespace: string): T {
-    if (!(namespace in this._namespaces))
-      (this._namespaces as Record<string, unknown>)[namespace] = {}
-    return makeDeepProxy(
-      (this._namespaces as Record<string, unknown>)[namespace] as T,
-      (p, v) => this._onChange(`${namespace}.${p}`, v),
-    )
+  applyMutation(mutation: Mutation): void {
+    apply(this.data, mutation)
+    this.ctx.emit('state/changed', mutation)
   }
 
   snapshot(): AppStateNamespaces {
-    return deepClone(this._namespaces)
+    return deepClone(this.data)
   }
 
-  applyPatch(patch: Patch): void {
-    applyPatchToObject(this._namespaces as Record<string, unknown>, patch)
-    this.ctx.emit('state/changed', patch.p, patch.v)
-  }
-
-  applyPatches(patches: Patch[]): void {
-    for (const p of patches) this.applyPatch(p)
-  }
-
-  protected abstract _onChange(path: string, value: unknown): void
+  protected abstract _onMutate(mutation: Mutation): void
 }

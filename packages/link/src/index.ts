@@ -1,4 +1,5 @@
 import { Context, Service } from 'cordis'
+import type {} from '@cordisjs/plugin-logger'
 
 export class LinkError extends Error {
   constructor(
@@ -20,13 +21,14 @@ declare module 'cordis' {
   }
 }
 
-export abstract class Link<C extends Context = Context, O extends Link.Config = Link.Config> extends Service<O, C> {
+export abstract class Link<C extends Context = Context, O extends Link.Config = Link.Config> extends Service<O> {
   static PREFIX = 'sapp'
+  static readonly inject = { logger: { required: false } }
 
   protected eventListeners = new Map<string, Link.Listener<any>[]>()
 
   constructor(protected ctx: C, public config: O = {} as O) {
-    super(ctx, 'link', true)
+    super(ctx, 'link')
   }
 
   action<T, R>(path: string, handler: Link.ActionHandler<T, R>): () => void

@@ -1,5 +1,6 @@
 import type { Context } from 'cordis'
 import { Link, LinkError } from '@satoriapp/link'
+import { Service } from 'cordis'
 
 const MAX_RETRIES = 5
 const BASE_RETRY_DELAY_MS = 1_000
@@ -18,18 +19,17 @@ export class LinkWsClient<C extends Context = Context> extends Link<C, LinkWsCli
   private reconnectTimer: ReturnType<typeof setTimeout> | undefined
   private retryCount = 0
 
-  async start() {
+  async* [Service.init]() {
     this.connect()
-  }
-
-  async stop() {
-    clearTimeout(this.reconnectTimer)
-    this.reconnectTimer = undefined
-    this.eventListeners.clear()
-    if (this.ws) {
-      this.ws.onclose = null
-      this.ws.close()
-      this.ws = null
+    yield () => {
+      clearTimeout(this.reconnectTimer)
+      this.reconnectTimer = undefined
+      this.eventListeners.clear()
+      if (this.ws) {
+        this.ws.onclose = null
+        this.ws.close()
+        this.ws = null
+      }
     }
   }
 

@@ -1,67 +1,56 @@
-import type { Context } from '@satoriapp/webui'
+import type { Context } from 'cordis'
 import { setTheme } from '@fluentui/web-components'
 import { Service } from 'cordis'
+import { defineProperty } from 'cosmokit'
+import { watch } from 'vue'
 import { Theme } from '../components/themes'
+import type {} from '@satoriapp/state'
 
-declare module '@satoriapp/webui' {
-  interface Context {
-    $theme: ThemeService
-    theme: ThemeService['theme']
-  }
+export interface ThemeOptions {
+  id: string
+  name: string
 }
 
-export namespace ThemeService {
-  export interface ThemeOptions {
-    id: string
-    name: string
-  }
-}
-
-export default class ThemeService extends Service<never, Context> {
+export default class ThemeService {
   private _mode: Theme.Mode = 'light'
   private _token: Theme.Token = 'koishi'
-  private _cleanup: (() => void) | null = null
 
-  constructor(ctx: Context) {
-    super(ctx, '$theme', true)
-    ctx.mixin('$theme', ['theme'])
-  }
+  constructor(public ctx: Context) {
+    defineProperty(this, Service.tracker, { property: 'ctx' })
 
-  async start(): Promise<void> {
     const themeMedia = window.matchMedia('(prefers-color-scheme: dark)')
     this._mode = themeMedia.matches ? 'dark' : 'light'
-
-    const onThemeChange = (e: MediaQueryListEvent) => {
+    const onChange = (e: MediaQueryListEvent) => {
       this._mode = e.matches ? 'dark' : 'light'
       this._apply()
     }
+    themeMedia.addEventListener('change', onChange)
+    ctx.effect(() => () => themeMedia.removeEventListener('change', onChange))
 
-    themeMedia.addEventListener('change', onThemeChange)
-    this._cleanup = () => themeMedia.removeEventListener('change', onThemeChange)
+    ctx.effect(() => watch(
+      () => ctx.stater?.data?.app?.theme,
+      (next) => {
+        if (next === 'dark' || next === 'light') {
+          this._mode = next
+          this._apply()
+        }
+      },
+      { immediate: true },
+    ))
 
-    this.ctx.on('ready', () => this._apply())
+    this._apply()
   }
 
-  async stop(): Promise<void> {
-    this._cleanup?.()
-    this._cleanup = null
-  }
-
-  get mode(): Theme.Mode {
-    return this._mode
-  }
-
-  get token(): Theme.Token {
-    return this._token
-  }
+  get mode(): Theme.Mode { return this._mode }
+  get token(): Theme.Token { return this._token }
 
   switch(id: string): void {
     this._token = id as Theme.Token
     this._apply()
   }
 
-  theme(_options: ThemeService.ThemeOptions): () => void {
-    return this.ctx.effect(() => () => {})
+  theme(_options: ThemeOptions): () => void {
+    return () => {}
   }
 
   private _apply(): void {
