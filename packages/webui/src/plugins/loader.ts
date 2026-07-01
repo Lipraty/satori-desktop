@@ -1,9 +1,14 @@
 import type { Context } from 'cordis'
 import { Service } from 'cordis'
 import { defineProperty } from 'cosmokit'
+import type { Ref } from 'vue'
 import { reactive } from 'vue'
 import { store } from '../data'
 import type {} from '@satoriapp/link'
+
+export interface LoadState {
+  data: Ref
+}
 
 export default class LoaderService {
   public initTask: Promise<void>

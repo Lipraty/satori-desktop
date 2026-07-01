@@ -2,6 +2,7 @@ import { randomUUID } from 'node:crypto'
 import {} from '@satoriapp/plugin-msgdb' // module augmentation
 import { Context, Service } from 'cordis'
 import {} from '@cordisjs/plugin-database' // module augmentation
+import {} from '@cordisjs/plugin-logger' // module augmentation
 
 import { AppMessage, CreateMessageInput } from './types'
 

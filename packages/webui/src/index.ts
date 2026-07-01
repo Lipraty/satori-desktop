@@ -1,23 +1,26 @@
 import type { ElectronAPI } from '@electron-toolkit/preload'
-import type { App, Component, Ref } from 'vue'
+import type { App, Component, DefineComponent, Ref } from 'vue'
 import * as cordis from 'cordis'
 import { Service } from 'cordis'
 import Logger from '@cordisjs/plugin-logger'
-import { createApp, customRef, defineComponent, h, markRaw, onErrorCaptured, provide, resolveComponent } from 'vue'
+import { createApp, customRef, defineComponent, h, markRaw, onErrorCaptured, provide, resolveComponent, watchEffect } from 'vue'
 
 import { form } from '@satoriapp/schemastery'
 import { install } from './components'
 import { kContext } from './context'
+import ActionService from './plugins/action'
 import I18nService from './plugins/i18n'
 import LoaderService from './plugins/loader'
+import type { LoadState } from './plugins/loader'
 import RouterService from './plugins/router'
-import SettingService from './plugins/setting'
+import SettingService, { useConfig } from './plugins/setting'
 import ThemeService from './plugins/theme'
 import { FrontendStateService } from './plugins/state'
 
 export { Theme } from './components/themes'
 export * from './context'
 export * from './data'
+export * from './plugins/action'
 export * from './plugins/i18n'
 export * from './plugins/loader'
 export * from './plugins/router'
@@ -51,10 +54,17 @@ export interface Versions {
 declare module 'cordis' {
   interface Context {
     client: ClientService
+    $entry?: LoadState
     readonly os: OSKey
     readonly versions: Versions
     readonly platform: PlatformType
   }
+}
+
+export interface ActionContext {}
+
+export interface Config {
+  locale?: string
 }
 
 interface NavigatorUAData {
@@ -68,65 +78,96 @@ interface NavigatorWithUAData extends Navigator {
 export class ClientService extends Service {
   public app: App
 
+  public action: ActionService
+  public loader: LoaderService
   public router: RouterService
   public setting: SettingService
   public theme: ThemeService
   public i18n: I18nService
-  public loader: LoaderService
 
   private _store: Record<string | symbol, Ref<unknown>> = Object.create(null)
 
   constructor(ctx: cordis.Context) {
     super(ctx, 'client')
 
+    ctx.root.$entry = undefined as LoadState | undefined
+
     this.app = createApp(defineComponent({
-      setup: () => () => h(resolveComponent('satori-root')),
+      setup: () => () => [
+        h(resolveComponent('k-slot'), { name: 'root', single: true }),
+        h(resolveComponent('k-slot'), { name: 'global' }),
+      ],
     }))
-    this.app.provide(kContext, ctx)
+    this.app.provide(kContext, ctx as cordis.Context)
     this.app.use(install)
 
+    this.action = new ActionService(ctx)
+    this.loader = new LoaderService(ctx)
     this.router = new RouterService(ctx)
     this.setting = new SettingService(ctx)
     this.theme = new ThemeService(ctx)
     this.i18n = new I18nService(ctx)
-    this.loader = new LoaderService(ctx)
-
-    this.app
-      .use(form)
-      .use(this.i18n.i18n)
-      .use(this.router.router)
 
     const store = this._store
-    // eslint-disable-next-line prefer-arrow-callback
+
     ctx.on('internal/service', function (this: cordis.Context, name: string) {
-      const ref = store[name]
-      if (ref)
-        ref.value = Symbol(name)
+      // eslint-disable-next-line no-restricted-syntax
+      const ref1 = store[(this as any)[cordis.Context.isolate][name]]
+      if (ref1)
+        ref1.value = Symbol(name)
+      const ref2 = store[name]
+      if (ref2)
+        ref2.value = Symbol(name)
     }, { global: true })
 
     ctx.on('internal/get', (childCtx, name, _error, next) => {
-      const ref = store[name] ??= customRef((get, set) => ({ get, set }))
+      const ref = store[childCtx.reflect.store[name] ?? name] ??= customRef((get, set) => ({ get, set }))
       void ref.value
-      const value = childCtx.reflect.get(name, false)
-      if (value !== undefined)
-        return value
       return next()
     }, { prepend: true })
+
+    const _config = useConfig()
+    ctx.effect(() => watchEffect(() => {
+      // locale sync handled by i18n plugin
+    }, { flush: 'post' }))
+
+    this.loader.initTask.then(() => {
+      this.app.use(form)
+      this.app.use(this.i18n.i18n)
+      this.app.use(this.router.router)
+      this.app.mount('#app')
+    })
+  }
+
+  addEventListener<K extends keyof WindowEventMap>(
+    type: K,
+    listener: (this: Window, ev: WindowEventMap[K]) => any,
+    options?: boolean | AddEventListenerOptions,
+  ) {
+    return this.ctx.effect(() => {
+      window.addEventListener(type, listener, options)
+      return () => window.removeEventListener(type, listener, options)
+    })
+  }
+
+  wrapComponent(component: Component): DefineComponent
+  wrapComponent(component?: Component): DefineComponent | undefined
+  wrapComponent(component: Component) {
+    if (!component)
+      return undefined
+    if (!this.ctx.$entry)
+      return component
+    return markRaw(defineComponent((props, { slots }) => {
+      provide(kContext, this.ctx as cordis.Context)
+      onErrorCaptured(() => {
+        return this.ctx.fiber.uid !== null
+      })
+      return () => h(component, props, slots)
+    }))
   }
 
   mount(selector = '#app') {
     this.app.mount(selector)
-  }
-
-  wrapComponent(component?: Component): Component | undefined {
-    if (!component)
-      return undefined
-    const ctx = this.ctx
-    return markRaw(defineComponent((props, { slots }) => {
-      provide(kContext, ctx)
-      onErrorCaptured(() => ctx.fiber.uid !== null)
-      return () => h(component, props, slots)
-    }))
   }
 }
 
@@ -169,11 +210,10 @@ function getOS(): OSKey {
   return 'unknown'
 }
 
-markRaw(cordis.Context.prototype)
-markRaw(cordis.Service.prototype)
-
 export const root = new Context()
 root.plugin(Logger)
 root.plugin(FrontendStateService)
 const client = new ClientService(root)
 export { client }
+
+root.on('activity', data => !data)

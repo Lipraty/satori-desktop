@@ -1,4 +1,5 @@
 import type { AppMessage } from '@satoriapp/plugin-message'
+import type { } from '@cordisjs/logger'
 import type { Context } from 'cordis'
 import { Service } from 'cordis'
 

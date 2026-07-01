@@ -1,10 +1,9 @@
-import type { Context } from 'cordis'
 import type { Component, Ref, WritableComputedRef } from 'vue'
 import type { Dict } from 'cosmokit'
-import type Schema from 'schemastery'
+import Schema from 'schemastery'
 import type { StateService } from '@satoriapp/state'
 import type { Ordered } from '../utils'
-import { Service } from 'cordis'
+import { Context, Service } from 'cordis'
 import { defineProperty, remove } from 'cosmokit'
 import { computed, markRaw, reactive, ref, watch } from 'vue'
 import { insert } from '../utils'
@@ -88,17 +87,48 @@ export default class SettingService {
     defineProperty(this, Service.tracker, { property: 'ctx' })
     activeStater = ctx.stater
 
+    this.settings({
+      id: '',
+      title: '通用设置',
+      order: 1000,
+      schema: Schema.object({
+        locale: Schema.union(['zh-CN', 'en-US']).description('语言设置。'),
+      }).description('通用设置'),
+    })
+
+    const schema = computed(() => {
+      const list: Schema[] = []
+      for (const settings of Object.values(this._settings)) {
+        for (const options of settings) {
+          if (options.schema) {
+            list.push(options.schema)
+          }
+        }
+      }
+      return Schema.intersect(list)
+    })
+
+    const doWatch = () => watch(resolved, (value) => {
+      original.value = JSON.parse(JSON.stringify(value))
+    }, { deep: true })
+
+    let stop = doWatch()
+
     const update = () => {
+      stop?.()
       try {
-        resolved.value = original.value
+        resolved.value = schema.value(original.value)
       }
       catch (error) {
         console.error(error)
       }
+      stop = doWatch()
     }
 
+    ctx.effect(() => () => stop?.())
+
     ctx.effect(() => watch(original, update, { deep: true }))
-    update()
+    ctx.effect(() => watch(schema, update))
   }
 
   get entries() { return this._settings }
@@ -106,9 +136,7 @@ export default class SettingService {
   settings(options: SettingOptions) {
     markRaw(options)
     options.order ??= 0
-    if (options.component) {
-      options.component = this.ctx.client.wrapComponent(options.component)
-    }
+    options.component = this.ctx.client.wrapComponent(options.component)
     return this.ctx.effect(() => {
       const list = this._settings[options.id] ||= []
       insert(list, options)

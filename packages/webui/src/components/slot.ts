@@ -1,7 +1,19 @@
-import { defineComponent, h, VNode } from 'vue'
+import type { App, Component, DefineComponent, VNode } from 'vue'
+import { defineComponent, h } from 'vue'
 import { useContext } from '../context'
 import { insert } from '../utils'
-import type { SlotOptions } from '../plugins/router'
+
+export interface SlotItem {
+  order?: number
+  component: Component | DefineComponent
+}
+
+export interface SlotOptions extends SlotItem {
+  type: string
+  /** @deprecated */
+  when?: () => boolean
+  disabled?: () => boolean
+}
 
 export const KSlotItem = defineComponent({
   props: {
@@ -44,7 +56,6 @@ export const KSlot = defineComponent({
           layer: 1,
         }))
       const merged = [...internal, ...external]
-      // re-sort by order desc using insert helper for stability
       const ordered: SlotEntry[] = []
       for (const item of merged) insert(ordered, item)
       ordered.reverse()
@@ -55,3 +66,19 @@ export const KSlot = defineComponent({
     }
   },
 })
+
+function defineSlotComponent(name: string) {
+  return defineComponent({
+    inheritAttrs: false,
+    setup(_, { slots, attrs }) {
+      return () => h(KSlot, { name, data: attrs, single: true }, slots)
+    },
+  })
+}
+
+export default (app: App) => {
+  app.component('k-slot', KSlot)
+  app.component('k-slot-item', KSlotItem)
+  app.component('k-layout', defineSlotComponent('layout'))
+  app.component('k-status', defineSlotComponent('status'))
+}

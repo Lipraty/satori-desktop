@@ -1,30 +1,39 @@
-import type { Context, Service as CordisService } from 'cordis'
-import type { InjectionKey, Ref } from 'vue'
-import { inject, markRaw, onScopeDispose, ref } from 'vue'
+import type { Context as CordisContext } from 'cordis'
+import { Context, Fiber, Service } from 'cordis'
+import type {} from '@cordisjs/plugin-loader'
+import { inject, InjectionKey, markRaw, onScopeDispose, Ref, ref } from 'vue'
 
-export const kContext = Symbol('context') as InjectionKey<Context>
+declare module 'cordis' {
+  interface Events {
+    'app-state-updated': (data: { owner_id: string, delta: any, timestamp: number }) => void
+  }
+}
 
-export function useContext(): Context {
+export const kContext = Symbol('context') as InjectionKey<CordisContext>
+
+export function useContext() {
   const parent = inject(kContext)!
   const fiber = parent.plugin(() => {})
   onScopeDispose(fiber.dispose)
-  return fiber.ctx
+  return fiber.ctx as CordisContext
 }
 
-export function useInject<K extends string & keyof Context>(name: K): Ref<Context[K] | undefined> {
+export function useInject<K extends string & keyof CordisContext>(name: K): Ref<CordisContext[K]> {
   const parent = inject(kContext)!
-  function wrap(v: Context[K] | undefined): Context[K] | undefined {
-    if (v !== null && typeof v === 'object') {
-      markRaw(v as object)
-    }
-    return v
-  }
-  const service = ref(wrap(parent.get(name))) as Ref<Context[K] | undefined>
+  const initial = parent.get(name)
+  const service = ref<any>(typeof initial === 'object' && initial ? markRaw(initial) : initial)
   onScopeDispose(parent.on('internal/service', () => {
-    service.value = wrap(parent.get(name))
+    const value = parent.get(name)
+    service.value = typeof value === 'object' && value ? markRaw(value) : value
   }))
   return service
 }
 
-export type { Context }
-export type { CordisService as Service }
+export function useRpc<T>(): Ref<T> {
+  const parent = inject(kContext)!
+  return parent.$entry!.data
+}
+
+markRaw(Context.prototype)
+markRaw(Fiber.prototype)
+markRaw(Service.prototype)
