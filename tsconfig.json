@@ -3,12 +3,8 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "satoriapp": ["legacy/app/electron-esm/src"],
-      "satoriapp-cirno": ["legacy/app/cirno/src"],
-
-      "@satoriapp/app": ["packages/app/src"],
       "@satoriapp/webui": ["packages/webui/src"],
-      "@satoriapp/common": ["packages/common/src"],
+      "@satoriapp/link": ["packages/link/src"],
       "@satoriapp/*": ["packages/*/src"],
 
       // plugins

@@ -7,13 +7,36 @@
     "paths": {
       "@renderer/*": [
         "src/renderer/src/*"
+      ],
+      "@plugin/link-ipc": [
+        "../../plugins/link-ipc/src/client.ts"
+      ],
+      "@plugin/link-ws": [
+        "../../plugins/link-web/src/client.ts"
+      ],
+      "@plugin/client-messages": [
+        "../../plugins/client-messages/client/index.ts"
+      ],
+      "@plugin/client-config": [
+        "../../plugins/client-config/client/index.ts"
+      ],
+      "@plugin/client-person": [
+        "../../plugins/client-person/client/index.ts"
       ]
-    }
+    },
+    "strictNullChecks": false,
+    "noImplicitReturns": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "ignoreDeprecations": "6.0"
   },
   "include": [
     "src/renderer/src/env.d.ts",
     "src/renderer/src/**/*",
     "src/renderer/src/**/*.vue",
     "src/preload/*.d.ts"
+  ],
+  "exclude": [
+    "../../packages/schemastery"
   ]
 }

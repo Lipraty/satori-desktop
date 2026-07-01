@@ -1,5 +1,7 @@
 /// <reference types="vite/client" />
 
+export {}
+
 declare module '*.vue' {
   import type { Component } from 'vue'
 
@@ -7,7 +9,7 @@ declare module '*.vue' {
   export default component
 }
 
-declare namespace globalThis {
+declare global {
   interface Window {
     electron: {
       process: any

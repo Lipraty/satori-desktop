@@ -1,6 +1,7 @@
 import type { OutputBundle, OutputChunk } from 'rollup'
 import type { Plugin } from 'vite'
 import { extname } from 'node:path'
+import process from 'node:process'
 import MagicString from 'magic-string'
 
 interface ImportAttributesPluginOptions {
@@ -26,7 +27,7 @@ export default function importAttributesPlugin(
 
   const nodeMajor = Number.parseInt(process.versions.node.split('.')[0], 10)
   const enabled = force || nodeMajor >= minNodeVersion
-  const log = (msg: string, ...args: any[]) => debug && console.log(`[vite-plugin-import-attrs] ${msg}`, ...args)
+  const log = (msg: string, ...args: any[]) => debug && console.warn(`[vite-plugin-import-attrs] ${msg}`, ...args)
 
   return {
     name: 'vite-plugin-import-attributes',
@@ -40,7 +41,7 @@ export default function importAttributesPlugin(
         const chunk = bundle[fileName] as OutputChunk
         if (chunk.type !== 'chunk' || chunk.isEntry === false || chunk.facadeModuleId == null)
           continue
-        if (chunk.fileName.endsWith('.js') && chunk.fileName.endsWith('.mjs') || chunk.fileName.endsWith('.cjs')) {
+        if ((chunk.fileName.endsWith('.js') && chunk.fileName.endsWith('.mjs')) || chunk.fileName.endsWith('.cjs')) {
           // skip non-esm or cjs
         }
         // only process esm
@@ -60,7 +61,7 @@ export default function importAttributesPlugin(
               if (node.attributes && node.attributes.length > 0)
                 continue
 
-              const { start, end } = node.source
+              const { end } = node.source
               const type = ext.slice(1)
               // insert before end quote
               magic.appendRight(end, ` with { type: '${type}' }`)

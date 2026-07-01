@@ -19,7 +19,10 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const iconName = computed(() => props.filled ? `Filled${props.name}` : props.name)
+    const iconName = computed(() => {
+      const base = props.name || ''
+      return props.filled ? `Filled${base}` : base
+    })
     const iconSvg = computed(() => icons[iconName.value])
     return () => {
       if (!iconSvg.value) {

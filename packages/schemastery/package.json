@@ -1,0 +1,25 @@
+{
+  "name": "@satoriapp/schemastery",
+  "version": "1.0.0",
+  "author": "Lipraty <i@lonay.me>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lipraty/satori-desktop",
+    "directory": "packages/schemastery"
+  },
+  "bugs": {
+    "url": "https://github.com/lipraty/satori-desktop/issues"
+  },
+  "main": "src/index.ts",
+  "files": [
+    "src"
+  ],
+  "peerDependencies": {
+    "@fluentui/web-components": "^3",
+    "@vueuse/core": "^13.1.0",
+    "vue": "^3.5.13"
+  },
+  "dependencies": {
+    "schemastery": "^3.18.0"
+  }
+}

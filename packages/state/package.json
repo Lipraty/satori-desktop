@@ -1,0 +1,25 @@
+{
+  "name": "@satoriapp/state",
+  "version": "0.0.1",
+  "description": "Satori App — ctx.state shared types, proxy builder, and base service",
+  "license": "AGPL-3.0-only",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./lib/index.mjs",
+      "require": "./lib/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./lib/index.mjs",
+  "scripts": {
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@cordisjs/muon": "^0.2.2",
+    "cordis": "^4.0.0-rc.4"
+  },
+  "devDependencies": {
+    "vitest": "^3.1.1"
+  }
+}

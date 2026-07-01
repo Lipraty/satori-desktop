@@ -1,82 +1,192 @@
-import type { Context } from '@satoriapp/webui'
+import { createRouter, createWebHistory, RouteLocation, START_LOCATION } from 'vue-router'
+import { Context, Service } from 'cordis'
+import { insert } from '../utils'
+import { Component, isRef, markRaw, MaybeRefOrGetter, reactive, ref, toValue } from 'vue'
+import { defineProperty, Dict, omit, remove } from 'cosmokit'
 import type { Disposable } from 'cordis'
-import type { Component } from 'vue'
-import { Service } from 'cordis'
+import { SlotOptions } from '../components/slot'
 
-import { createMemoryHistory, createRouter, createWebHashHistory } from 'vue-router'
-
-declare module '@satoriapp/webui' {
-  interface Context {
-    $router: RouterService
-    page: (options: Pager.Options) => void
+declare module 'vue-router' {
+  interface RouteMeta {
+    activity?: Activity
   }
 }
 
-export namespace Pager {
+declare module 'cordis' {
+  interface Events {
+    activity: (activity: Activity) => boolean
+  }
+}
+
+export namespace Activity {
   export interface Options {
+    id?: string
     path: string
-    icon?: string
-    name: string
-    tooltip?: string
+    strict?: boolean
     component: Component
+    name: MaybeRefOrGetter<string>
+    desc?: MaybeRefOrGetter<string>
+    icon?: MaybeRefOrGetter<string | Component | undefined>
+    order?: number
+    authority?: number
     position?: 'top' | 'bottom'
+    disabled?: () => boolean | undefined
   }
 }
 
-export class Pager {
-  private fibers: Disposable[] = []
+export interface Activity extends Activity.Options {}
 
-  constructor(private ctx: Context, private options: Pager.Options) {
+function getActivityId(path: string) {
+  return path.replace(/^\//, '') || ''
+}
+
+export const redirectTo = ref<string>()
+
+export class Activity {
+  id!: string
+  _disposables: Disposable[] = []
+
+  constructor(public ctx: Context, public options: Activity.Options) {
+    options.order ??= 0
     options.position ??= 'top'
-    const { path, name, component } = options
-    this.fibers.push(this.ctx.$router.router.addRoute({
-      path,
-      name,
-      component,
-      meta: { activity: this },
-    }))
-    ctx.$router.pages[name] = this
+    Object.assign(this, omit(options, ['icon', 'name', 'desc', 'disabled']))
   }
 
-  get path() {
-    return this.options.path
+  * setup() {
+    const { path, id = getActivityId(path), component } = this.options
+    yield this.ctx.client.router.router.addRoute({ path, name: id, component, meta: { activity: this } })
+    this.id ??= id
+    this.authority ??= 0
+    this.ctx.client.router.pages[this.id] = this
+    yield () => delete this.ctx.client.router.pages[this.id]
+    this.handleUpdate()
+    yield () => {
+      const { meta, fullPath } = this.ctx.client.router.router.currentRoute.value
+      this._disposables.forEach(dispose => dispose())
+      if (meta?.activity === this) {
+        redirectTo.value = fullPath
+        this.ctx.client.router.router.replace(this.ctx.client.router.cache.home || '/')
+      }
+    }
   }
 
-  get name() {
-    return this.options.name
+  handleUpdate() {
+    if (redirectTo.value) {
+      const location = this.ctx.client.router.router.resolve(redirectTo.value)
+      if (location.matched.length) {
+        redirectTo.value = undefined
+        this.ctx.client.router.router.replace(location)
+      }
+    }
   }
 
   get icon() {
-    return this.options.icon ?? 'default'
+    return toValue(this.options.icon) ?? 'activity:default'
   }
 
-  get tooltip() {
-    return this.options.tooltip
+  get name() {
+    return toValue(this.options.name ?? this.id)
   }
 
-  dispose() {
-    this.fibers.forEach(dispose => dispose())
+  get desc() {
+    return toValue(this.options.desc)
+  }
+
+  disabled() {
+    if (this.ctx.bail('activity', this))
+      return true
+    if (this.options.disabled?.())
+      return true
   }
 }
 
-export default class RouterService extends Service<any, Context> {
-  public pages: Record<string, Pager> = {}
+export type Platform = 'electron' | 'cirno' | 'web'
+
+export default class RouterService {
+  public views = reactive<Dict<SlotOptions[]>>({})
+  public cache = reactive<Record<keyof any, string>>({})
+  public pages = reactive<Dict<Activity>>({})
   public router = createRouter({
-    // in electron app, since there is no address bar, using memory is better.
-    history: this.ctx.platform !== 'web' ? createMemoryHistory() : createWebHashHistory(),
+    history: this.platform !== 'web' ? createWebHistory('/') : createWebHistory('/'),
+    linkActiveClass: 'active',
     routes: [],
   })
 
-  constructor(ctx: Context) {
-    super(ctx, '$router', true)
-    ctx.mixin('$router', ['page'])
+  constructor(public ctx: Context) {
+    defineProperty(this, Service.tracker, { property: 'ctx' })
+
+    ctx.effect(() => {
+      const initialTitle = document.title
+      const dispose = this.router.afterEach((route) => {
+        const { name, fullPath } = this.router.currentRoute.value
+        this.cache[name!] = fullPath
+        if (route.meta.activity) {
+          document.title = `${route.meta.activity.name}`
+          if (initialTitle)
+            document.title += ` | ${initialTitle}`
+        }
+      })
+      return () => {
+        document.title = initialTitle
+        dispose()
+      }
+    })
+
+    ctx.effect(() => this.router.beforeEach(async (to: RouteLocation, from) => {
+      if (to.matched.length) {
+        if (to.matched[0].path !== '/') {
+          redirectTo.value = undefined
+        }
+        return
+      }
+
+      if (from === START_LOCATION) {
+        await ctx.client.loader.initTask
+        to = this.router.resolve(to)
+        if (to.matched.length)
+          return to
+      }
+
+      redirectTo.value = to.fullPath
+      const result = this.cache.home || '/'
+      if (result === to.fullPath)
+        return
+      return result
+    }))
   }
 
-  page(options: Pager.Options) {
-    options.component = this.ctx.component(options.component)
+  get platform(): Platform {
+    if (typeof window === 'undefined')
+      return 'web'
+    if ('electron' in window)
+      return 'electron'
+    if ('cirno' in window)
+      return 'cirno'
+    return 'web'
+  }
+
+  slot(options: SlotOptions) {
+    options.order ??= 0
+    options.component = this.ctx.client.wrapComponent(options.component)
     return this.ctx.effect(() => {
-      const page = new Pager(this.ctx, options)
-      return () => page.dispose()
+      const list = this.views[options.type] ||= []
+      insert(list, options)
+      return () => {
+        remove(list, options)
+        if (!list.length)
+          delete this.views[options.type]
+      }
+    })
+  }
+
+  page(options: Activity.Options) {
+    options.component = this.ctx.client.wrapComponent(options.component)
+    if (options.icon && typeof options.icon === 'object' && !isRef(options.icon)) {
+      markRaw(options.icon)
+    }
+    return this.ctx.effect(() => {
+      const activity = new Activity(this.ctx, options)
+      return activity.setup()
     })
   }
 }

@@ -1,0 +1,31 @@
+{
+  "name": "@satoriapp/plugin-client-config",
+  "version": "0.0.1",
+  "description": "SAPP: client-side config plugin (network + settings pages, all backed by ctx.stater AppState)",
+  "license": "AGPL-3.0-only",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./lib/index.mjs",
+      "require": "./lib/index.js"
+    },
+    "./client": {
+      "types": "./client/index.ts",
+      "import": "./lib/client/index.mjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./lib/index.mjs",
+  "peerDependencies": {
+    "@satoriapp/webui": "workspace:*",
+    "vue": "^3.5.0"
+  },
+  "dependencies": {
+    "@satoriapp/adapter": "workspace:*",
+    "cordis": "^4.0.0-rc.4",
+    "schemastery": "^3.18.0"
+  },
+  "sapp": {
+    "node": false
+  }
+}

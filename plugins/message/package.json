@@ -13,8 +13,14 @@
   },
   "main": "./lib/index.mjs",
   "dependencies": {
-    "@satoriapp/webui": "workspace:*",
-    "electron": "35.1.5"
+    "@cordisjs/plugin-database": "^4.0.1",
+    "@cordisjs/plugin-logger": "^1.0.2",
+    "cordis": "^4.0.0-rc.4"
+  },
+  "devDependencies": {
+    "@satoriapp/link": "workspace:*",
+    "@satorijs/protocol": "^1.6.0",
+    "vitest": "^3.1.1"
   },
   "sapp": {
     "node": true

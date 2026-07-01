@@ -1,0 +1,28 @@
+{
+  "namespaces": {
+    "app": {
+      "theme": "dark",
+      "locale": "zh-CN",
+      "fontSize": "medium",
+      "window": {
+        "width": 1076,
+        "height": 653,
+        "x": 0,
+        "y": 0
+      },
+      "sidebar": {
+        "collapsed": false,
+        "width": 280
+      },
+      "messageInput": {
+        "sendKey": "Enter"
+      }
+    },
+    "conversation": {
+      "currentId": "",
+      "list": [],
+      "drafts": {}
+    }
+  },
+  "updatedAt": 1777292470647
+}

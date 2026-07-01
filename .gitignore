@@ -112,3 +112,10 @@ yarn.lock
 packages/loader/src/plugins.ts
 
 legacy
+
+_docs
+_memory
+.claude
+
+CLAUDE.md
+.satori/

@@ -1,0 +1,30 @@
+{
+  "name": "@satoriapp/plugin-msgdb",
+  "version": "0.0.1",
+  "description": "Satori App — message table schema plugin",
+  "license": "AGPL-3.0-only",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./lib/index.mjs",
+      "require": "./lib/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./lib/index.mjs",
+  "scripts": {
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@cordisjs/plugin-database": "^4.0.1",
+    "@cordisjs/plugin-logger": "^1.0.2",
+    "cordis": "^4.0.0-rc.4"
+  },
+  "devDependencies": {
+    "@satoriapp/plugin-message": "workspace:*",
+    "vitest": "^3.1.1"
+  },
+  "sapp": {
+    "node": true
+  }
+}
